@@ -13,12 +13,21 @@
           "Assembly-CSharp": "0.0.0.0",
           "BepInEx": "5.4.22.0",
           "BepInEx.Harmony": "2.0.0.0",
+          "LethalLib": "1.0.0.0",
           "MMHOOK_Assembly-CSharp": "0.0.0.0",
           "Mono.Cecil": "0.10.4.0",
+          "MonoMod.RuntimeDetour": "22.1.29.1",
           "MonoMod.Utils": "22.1.29.1",
+          "Unity.AI.Navigation": "0.0.0.0",
+          "Unity.Animation.Rigging": "0.0.0.0",
+          "Unity.Netcode.Runtime": "0.0.0.0",
+          "UnityEngine.AIModule": "0.0.0.0",
+          "UnityEngine.AnimationModule": "0.0.0.0",
           "UnityEngine.AssetBundleModule": "0.0.0.0",
+          "UnityEngine.AudioModule": "0.0.0.0",
           "UnityEngine.CoreModule": "0.0.0.0",
-          "UnityEngine": "0.0.0.0"
+          "UnityEngine": "0.0.0.0",
+          "UnityEngine.PhysicsModule": "0.0.0.0"
         },
         "runtime": {
           "LethalThings.dll": {}
@@ -56,6 +65,14 @@
           }
         }
       },
+      "LethalLib/1.0.0.0": {
+        "runtime": {
+          "LethalLib.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
       "MMHOOK_Assembly-CSharp/0.0.0.0": {
         "runtime": {
           "MMHOOK_Assembly-CSharp.dll": {
@@ -72,6 +89,14 @@
           }
         }
       },
+      "MonoMod.RuntimeDetour/22.1.29.1": {
+        "runtime": {
+          "MonoMod.RuntimeDetour.dll": {
+            "assemblyVersion": "22.1.29.1",
+            "fileVersion": "22.1.29.1"
+          }
+        }
+      },
       "MonoMod.Utils/22.1.29.1": {
         "runtime": {
           "MonoMod.Utils.dll": {
@@ -80,9 +105,57 @@
           }
         }
       },
+      "Unity.AI.Navigation/0.0.0.0": {
+        "runtime": {
+          "Unity.AI.Navigation.dll": {
+            "assemblyVersion": "0.0.0.0",
+            "fileVersion": "0.0.0.0"
+          }
+        }
+      },
+      "Unity.Animation.Rigging/0.0.0.0": {
+        "runtime": {
+          "Unity.Animation.Rigging.dll": {
+            "assemblyVersion": "0.0.0.0",
+            "fileVersion": "0.0.0.0"
+          }
+        }
+      },
+      "Unity.Netcode.Runtime/0.0.0.0": {
+        "runtime": {
+          "Unity.Netcode.Runtime.dll": {
+            "assemblyVersion": "0.0.0.0",
+            "fileVersion": "0.0.0.0"
+          }
+        }
+      },
+      "UnityEngine.AIModule/0.0.0.0": {
+        "runtime": {
+          "UnityEngine.AIModule.dll": {
+            "assemblyVersion": "0.0.0.0",
+            "fileVersion": "0.0.0.0"
+          }
+        }
+      },
+      "UnityEngine.AnimationModule/0.0.0.0": {
+        "runtime": {
+          "UnityEngine.AnimationModule.dll": {
+            "assemblyVersion": "0.0.0.0",
+            "fileVersion": "0.0.0.0"
+          }
+        }
+      },
       "UnityEngine.AssetBundleModule/0.0.0.0": {
         "runtime": {
           "UnityEngine.AssetBundleModule.dll": {
+            "assemblyVersion": "0.0.0.0",
+            "fileVersion": "0.0.0.0"
+          }
+        }
+      },
+      "UnityEngine.AudioModule/0.0.0.0": {
+        "runtime": {
+          "UnityEngine.AudioModule.dll": {
             "assemblyVersion": "0.0.0.0",
             "fileVersion": "0.0.0.0"
           }
@@ -99,46 +172,6 @@
       "UnityEngine/0.0.0.0": {
         "runtime": {
           "UnityEngine.dll": {
-            "assemblyVersion": "0.0.0.0",
-            "fileVersion": "0.0.0.0"
-          }
-        }
-      },
-      "MonoMod.RuntimeDetour/22.1.29.1": {
-        "runtime": {
-          "MonoMod.RuntimeDetour.dll": {
-            "assemblyVersion": "22.1.29.1",
-            "fileVersion": "22.1.29.1"
-          }
-        }
-      },
-      "UnityEngine.AnimationModule/0.0.0.0": {
-        "runtime": {
-          "UnityEngine.AnimationModule.dll": {
-            "assemblyVersion": "0.0.0.0",
-            "fileVersion": "0.0.0.0"
-          }
-        }
-      },
-      "UnityEngine.AudioModule/0.0.0.0": {
-        "runtime": {
-          "UnityEngine.AudioModule.dll": {
-            "assemblyVersion": "0.0.0.0",
-            "fileVersion": "0.0.0.0"
-          }
-        }
-      },
-      "Unity.Netcode.Runtime/0.0.0.0": {
-        "runtime": {
-          "Unity.Netcode.Runtime.dll": {
-            "assemblyVersion": "0.0.0.0",
-            "fileVersion": "0.0.0.0"
-          }
-        }
-      },
-      "Unity.Animation.Rigging/0.0.0.0": {
-        "runtime": {
-          "Unity.Animation.Rigging.dll": {
             "assemblyVersion": "0.0.0.0",
             "fileVersion": "0.0.0.0"
           }
@@ -179,14 +212,6 @@
       "UnityEngine.VFXModule/0.0.0.0": {
         "runtime": {
           "UnityEngine.VFXModule.dll": {
-            "assemblyVersion": "0.0.0.0",
-            "fileVersion": "0.0.0.0"
-          }
-        }
-      },
-      "UnityEngine.AIModule/0.0.0.0": {
-        "runtime": {
-          "UnityEngine.AIModule.dll": {
             "assemblyVersion": "0.0.0.0",
             "fileVersion": "0.0.0.0"
           }
@@ -288,14 +313,6 @@
           }
         }
       },
-      "Unity.AI.Navigation/0.0.0.0": {
-        "runtime": {
-          "Unity.AI.Navigation.dll": {
-            "assemblyVersion": "0.0.0.0",
-            "fileVersion": "0.0.0.0"
-          }
-        }
-      },
       "Unity.Collections/0.0.0.0": {
         "runtime": {
           "Unity.Collections.dll": {
@@ -339,6 +356,54 @@
       "UnityEngine.GridModule/0.0.0.0": {
         "runtime": {
           "UnityEngine.GridModule.dll": {
+            "assemblyVersion": "0.0.0.0",
+            "fileVersion": "0.0.0.0"
+          }
+        }
+      },
+      "Unity.Burst/0.0.0.0": {
+        "runtime": {
+          "Unity.Burst.dll": {
+            "assemblyVersion": "0.0.0.0",
+            "fileVersion": "0.0.0.0"
+          }
+        }
+      },
+      "Unity.Multiplayer.Tools.NetStats/0.0.0.0": {
+        "runtime": {
+          "Unity.Multiplayer.Tools.NetStats.dll": {
+            "assemblyVersion": "0.0.0.0",
+            "fileVersion": "0.0.0.0"
+          }
+        }
+      },
+      "Unity.Multiplayer.Tools.MetricTypes/0.0.0.0": {
+        "runtime": {
+          "Unity.Multiplayer.Tools.MetricTypes.dll": {
+            "assemblyVersion": "0.0.0.0",
+            "fileVersion": "0.0.0.0"
+          }
+        }
+      },
+      "Unity.Multiplayer.Tools.NetworkSolutionInterface/0.0.0.0": {
+        "runtime": {
+          "Unity.Multiplayer.Tools.NetworkSolutionInterface.dll": {
+            "assemblyVersion": "0.0.0.0",
+            "fileVersion": "0.0.0.0"
+          }
+        }
+      },
+      "Unity.Networking.Transport/0.0.0.0": {
+        "runtime": {
+          "Unity.Networking.Transport.dll": {
+            "assemblyVersion": "0.0.0.0",
+            "fileVersion": "0.0.0.0"
+          }
+        }
+      },
+      "Unity.Multiplayer.Tools.NetStatsReporting/0.0.0.0": {
+        "runtime": {
+          "Unity.Multiplayer.Tools.NetStatsReporting.dll": {
             "assemblyVersion": "0.0.0.0",
             "fileVersion": "0.0.0.0"
           }
@@ -696,54 +761,6 @@
           }
         }
       },
-      "Unity.Multiplayer.Tools.NetStats/0.0.0.0": {
-        "runtime": {
-          "Unity.Multiplayer.Tools.NetStats.dll": {
-            "assemblyVersion": "0.0.0.0",
-            "fileVersion": "0.0.0.0"
-          }
-        }
-      },
-      "Unity.Multiplayer.Tools.MetricTypes/0.0.0.0": {
-        "runtime": {
-          "Unity.Multiplayer.Tools.MetricTypes.dll": {
-            "assemblyVersion": "0.0.0.0",
-            "fileVersion": "0.0.0.0"
-          }
-        }
-      },
-      "Unity.Multiplayer.Tools.NetworkSolutionInterface/0.0.0.0": {
-        "runtime": {
-          "Unity.Multiplayer.Tools.NetworkSolutionInterface.dll": {
-            "assemblyVersion": "0.0.0.0",
-            "fileVersion": "0.0.0.0"
-          }
-        }
-      },
-      "Unity.Networking.Transport/0.0.0.0": {
-        "runtime": {
-          "Unity.Networking.Transport.dll": {
-            "assemblyVersion": "0.0.0.0",
-            "fileVersion": "0.0.0.0"
-          }
-        }
-      },
-      "Unity.Burst/0.0.0.0": {
-        "runtime": {
-          "Unity.Burst.dll": {
-            "assemblyVersion": "0.0.0.0",
-            "fileVersion": "0.0.0.0"
-          }
-        }
-      },
-      "Unity.Multiplayer.Tools.NetStatsReporting/0.0.0.0": {
-        "runtime": {
-          "Unity.Multiplayer.Tools.NetStatsReporting.dll": {
-            "assemblyVersion": "0.0.0.0",
-            "fileVersion": "0.0.0.0"
-          }
-        }
-      },
       "Unity.Mathematics/1.0.0.0": {
         "runtime": {
           "Unity.Mathematics.dll": {
@@ -776,6 +793,14 @@
           }
         }
       },
+      "Unity.Burst.Unsafe/4.0.5.0": {
+        "runtime": {
+          "Unity.Burst.Unsafe.dll": {
+            "assemblyVersion": "4.0.5.0",
+            "fileVersion": "0.0.0.0"
+          }
+        }
+      },
       "Unity.Multiplayer.Tools.Common/0.0.0.0": {
         "runtime": {
           "Unity.Multiplayer.Tools.Common.dll": {
@@ -788,14 +813,6 @@
         "runtime": {
           "Unity.Services.Relay.dll": {
             "assemblyVersion": "0.0.0.0",
-            "fileVersion": "0.0.0.0"
-          }
-        }
-      },
-      "Unity.Burst.Unsafe/4.0.5.0": {
-        "runtime": {
-          "Unity.Burst.Unsafe.dll": {
-            "assemblyVersion": "4.0.5.0",
             "fileVersion": "0.0.0.0"
           }
         }
@@ -876,6 +893,11 @@
       "serviceable": false,
       "sha512": ""
     },
+    "LethalLib/1.0.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
     "MMHOOK_Assembly-CSharp/0.0.0.0": {
       "type": "reference",
       "serviceable": false,
@@ -886,12 +908,47 @@
       "serviceable": false,
       "sha512": ""
     },
+    "MonoMod.RuntimeDetour/22.1.29.1": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
     "MonoMod.Utils/22.1.29.1": {
       "type": "reference",
       "serviceable": false,
       "sha512": ""
     },
+    "Unity.AI.Navigation/0.0.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Unity.Animation.Rigging/0.0.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Unity.Netcode.Runtime/0.0.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "UnityEngine.AIModule/0.0.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "UnityEngine.AnimationModule/0.0.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
     "UnityEngine.AssetBundleModule/0.0.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "UnityEngine.AudioModule/0.0.0.0": {
       "type": "reference",
       "serviceable": false,
       "sha512": ""
@@ -902,31 +959,6 @@
       "sha512": ""
     },
     "UnityEngine/0.0.0.0": {
-      "type": "reference",
-      "serviceable": false,
-      "sha512": ""
-    },
-    "MonoMod.RuntimeDetour/22.1.29.1": {
-      "type": "reference",
-      "serviceable": false,
-      "sha512": ""
-    },
-    "UnityEngine.AnimationModule/0.0.0.0": {
-      "type": "reference",
-      "serviceable": false,
-      "sha512": ""
-    },
-    "UnityEngine.AudioModule/0.0.0.0": {
-      "type": "reference",
-      "serviceable": false,
-      "sha512": ""
-    },
-    "Unity.Netcode.Runtime/0.0.0.0": {
-      "type": "reference",
-      "serviceable": false,
-      "sha512": ""
-    },
-    "Unity.Animation.Rigging/0.0.0.0": {
       "type": "reference",
       "serviceable": false,
       "sha512": ""
@@ -952,11 +984,6 @@
       "sha512": ""
     },
     "UnityEngine.VFXModule/0.0.0.0": {
-      "type": "reference",
-      "serviceable": false,
-      "sha512": ""
-    },
-    "UnityEngine.AIModule/0.0.0.0": {
       "type": "reference",
       "serviceable": false,
       "sha512": ""
@@ -1021,11 +1048,6 @@
       "serviceable": false,
       "sha512": ""
     },
-    "Unity.AI.Navigation/0.0.0.0": {
-      "type": "reference",
-      "serviceable": false,
-      "sha512": ""
-    },
     "Unity.Collections/0.0.0.0": {
       "type": "reference",
       "serviceable": false,
@@ -1052,6 +1074,36 @@
       "sha512": ""
     },
     "UnityEngine.GridModule/0.0.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Unity.Burst/0.0.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Unity.Multiplayer.Tools.NetStats/0.0.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Unity.Multiplayer.Tools.MetricTypes/0.0.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Unity.Multiplayer.Tools.NetworkSolutionInterface/0.0.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Unity.Networking.Transport/0.0.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Unity.Multiplayer.Tools.NetStatsReporting/0.0.0.0": {
       "type": "reference",
       "serviceable": false,
       "sha512": ""
@@ -1276,36 +1328,6 @@
       "serviceable": false,
       "sha512": ""
     },
-    "Unity.Multiplayer.Tools.NetStats/0.0.0.0": {
-      "type": "reference",
-      "serviceable": false,
-      "sha512": ""
-    },
-    "Unity.Multiplayer.Tools.MetricTypes/0.0.0.0": {
-      "type": "reference",
-      "serviceable": false,
-      "sha512": ""
-    },
-    "Unity.Multiplayer.Tools.NetworkSolutionInterface/0.0.0.0": {
-      "type": "reference",
-      "serviceable": false,
-      "sha512": ""
-    },
-    "Unity.Networking.Transport/0.0.0.0": {
-      "type": "reference",
-      "serviceable": false,
-      "sha512": ""
-    },
-    "Unity.Burst/0.0.0.0": {
-      "type": "reference",
-      "serviceable": false,
-      "sha512": ""
-    },
-    "Unity.Multiplayer.Tools.NetStatsReporting/0.0.0.0": {
-      "type": "reference",
-      "serviceable": false,
-      "sha512": ""
-    },
     "Unity.Mathematics/1.0.0.0": {
       "type": "reference",
       "serviceable": false,
@@ -1326,17 +1348,17 @@
       "serviceable": false,
       "sha512": ""
     },
+    "Unity.Burst.Unsafe/4.0.5.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
     "Unity.Multiplayer.Tools.Common/0.0.0.0": {
       "type": "reference",
       "serviceable": false,
       "sha512": ""
     },
     "Unity.Services.Relay/0.0.0.0": {
-      "type": "reference",
-      "serviceable": false,
-      "sha512": ""
-    },
-    "Unity.Burst.Unsafe/4.0.5.0": {
       "type": "reference",
       "serviceable": false,
       "sha512": ""

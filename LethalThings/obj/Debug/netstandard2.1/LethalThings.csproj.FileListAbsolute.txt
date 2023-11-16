@@ -117,3 +117,4 @@ O:\github\LethalThings\LethalThings\obj\Debug\netstandard2.1\LethalThings.csproj
 O:\github\LethalThings\LethalThings\obj\Debug\netstandard2.1\LethalThings.csproj.CopyComplete
 O:\github\LethalThings\LethalThings\obj\Debug\netstandard2.1\LethalThings.dll
 O:\github\LethalThings\LethalThings\obj\Debug\netstandard2.1\LethalThings.pdb
+O:\github\LethalThings\LethalThings\bin\Debug\netstandard2.1\LethalLib.dll
