@@ -1,0 +1,12 @@
+{
+    "name": "LethalThings",
+    "author": "Evaisa",
+    "version_number": "0.1.2",
+    "website_url": "",
+    "description": "Adds new content to Lethal Company",
+    "dependencies": [
+		"BepInEx-BepInExPack-5.4.2100",
+        "Evaisa-HookGenPatcher-0.0.4",
+		"Evaisa-LethalLib-0.1.3"
+    ]
+}

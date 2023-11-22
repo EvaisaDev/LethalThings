@@ -15,7 +15,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyDescriptionAttribute("Mod for Lethal Company")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+6931a7daf2d58c5d50bb215bd5de89b341e927ef")]
 [assembly: System.Reflection.AssemblyProductAttribute("LethalThings")]
 [assembly: System.Reflection.AssemblyTitleAttribute("LethalThings")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

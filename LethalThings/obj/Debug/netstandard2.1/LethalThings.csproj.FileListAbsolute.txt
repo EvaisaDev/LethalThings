@@ -2,7 +2,6 @@ O:\github\LethalThings\LethalThings\bin\Debug\netstandard2.1\LethalThings.deps.j
 O:\github\LethalThings\LethalThings\bin\Debug\netstandard2.1\LethalThings.dll
 O:\github\LethalThings\LethalThings\bin\Debug\netstandard2.1\LethalThings.pdb
 O:\github\LethalThings\LethalThings\bin\Debug\netstandard2.1\0Harmony.dll
-O:\github\LethalThings\LethalThings\bin\Debug\netstandard2.1\Assembly-CSharp.dll
 O:\github\LethalThings\LethalThings\bin\Debug\netstandard2.1\BepInEx.dll
 O:\github\LethalThings\LethalThings\bin\Debug\netstandard2.1\BepInEx.Harmony.dll
 O:\github\LethalThings\LethalThings\bin\Debug\netstandard2.1\MMHOOK_Assembly-CSharp.dll
@@ -18,26 +17,15 @@ O:\github\LethalThings\LethalThings\bin\Debug\netstandard2.1\Unity.Netcode.Runti
 O:\github\LethalThings\LethalThings\bin\Debug\netstandard2.1\Unity.Animation.Rigging.dll
 O:\github\LethalThings\LethalThings\bin\Debug\netstandard2.1\UnityEngine.PhysicsModule.dll
 O:\github\LethalThings\LethalThings\bin\Debug\netstandard2.1\UnityEngine.ParticleSystemModule.dll
-O:\github\LethalThings\LethalThings\bin\Debug\netstandard2.1\Unity.TextMeshPro.dll
-O:\github\LethalThings\LethalThings\bin\Debug\netstandard2.1\Unity.InputSystem.dll
 O:\github\LethalThings\LethalThings\bin\Debug\netstandard2.1\UnityEngine.VFXModule.dll
 O:\github\LethalThings\LethalThings\bin\Debug\netstandard2.1\UnityEngine.AIModule.dll
-O:\github\LethalThings\LethalThings\bin\Debug\netstandard2.1\Unity.RenderPipelines.HighDefinition.Runtime.dll
 O:\github\LethalThings\LethalThings\bin\Debug\netstandard2.1\UnityEngine.TerrainModule.dll
-O:\github\LethalThings\LethalThings\bin\Debug\netstandard2.1\UnityEngine.UI.dll
-O:\github\LethalThings\LethalThings\bin\Debug\netstandard2.1\Unity.RenderPipelines.Core.Runtime.dll
 O:\github\LethalThings\LethalThings\bin\Debug\netstandard2.1\UnityEngine.UIModule.dll
-O:\github\LethalThings\LethalThings\bin\Debug\netstandard2.1\Facepunch.Steamworks.Win64.dll
-O:\github\LethalThings\LethalThings\bin\Debug\netstandard2.1\DissonanceVoip.dll
-O:\github\LethalThings\LethalThings\bin\Debug\netstandard2.1\Facepunch Transport for Netcode for GameObjects.dll
-O:\github\LethalThings\LethalThings\bin\Debug\netstandard2.1\Unity.Netcode.Components.dll
 O:\github\LethalThings\LethalThings\bin\Debug\netstandard2.1\UnityEngine.VideoModule.dll
 O:\github\LethalThings\LethalThings\bin\Debug\netstandard2.1\UnityEngine.Physics2DModule.dll
 O:\github\LethalThings\LethalThings\bin\Debug\netstandard2.1\UnityEngine.TilemapModule.dll
 O:\github\LethalThings\LethalThings\bin\Debug\netstandard2.1\Unity.AI.Navigation.dll
 O:\github\LethalThings\LethalThings\bin\Debug\netstandard2.1\Unity.Collections.dll
-O:\github\LethalThings\LethalThings\bin\Debug\netstandard2.1\Assembly-CSharp-firstpass.dll
-O:\github\LethalThings\LethalThings\bin\Debug\netstandard2.1\ClientNetworkTransform.dll
 O:\github\LethalThings\LethalThings\bin\Debug\netstandard2.1\UnityEngine.InputLegacyModule.dll
 O:\github\LethalThings\LethalThings\bin\Debug\netstandard2.1\UnityEngine.IMGUIModule.dll
 O:\github\LethalThings\LethalThings\bin\Debug\netstandard2.1\UnityEngine.GridModule.dll
@@ -92,14 +80,11 @@ O:\github\LethalThings\LethalThings\bin\Debug\netstandard2.1\Unity.Networking.Tr
 O:\github\LethalThings\LethalThings\bin\Debug\netstandard2.1\Unity.Burst.dll
 O:\github\LethalThings\LethalThings\bin\Debug\netstandard2.1\Unity.Multiplayer.Tools.NetStatsReporting.dll
 O:\github\LethalThings\LethalThings\bin\Debug\netstandard2.1\Unity.Mathematics.dll
-O:\github\LethalThings\LethalThings\bin\Debug\netstandard2.1\Unity.VisualEffectGraph.Runtime.dll
-O:\github\LethalThings\LethalThings\bin\Debug\netstandard2.1\Unity.RenderPipelines.HighDefinition.Config.Runtime.dll
 O:\github\LethalThings\LethalThings\bin\Debug\netstandard2.1\Unity.Collections.LowLevel.ILSupport.dll
 O:\github\LethalThings\LethalThings\bin\Debug\netstandard2.1\Unity.Multiplayer.Tools.Common.dll
 O:\github\LethalThings\LethalThings\bin\Debug\netstandard2.1\Unity.Services.Relay.dll
 O:\github\LethalThings\LethalThings\bin\Debug\netstandard2.1\Unity.Burst.Unsafe.dll
 O:\github\LethalThings\LethalThings\bin\Debug\netstandard2.1\Unity.Multiplayer.Tools.NetworkProfiler.Runtime.dll
-O:\github\LethalThings\LethalThings\bin\Debug\netstandard2.1\Unity.Timeline.dll
 O:\github\LethalThings\LethalThings\bin\Debug\netstandard2.1\Unity.Services.Core.Internal.dll
 O:\github\LethalThings\LethalThings\bin\Debug\netstandard2.1\Unity.Services.Core.dll
 O:\github\LethalThings\LethalThings\bin\Debug\netstandard2.1\Newtonsoft.Json.dll
@@ -118,3 +103,5 @@ O:\github\LethalThings\LethalThings\obj\Debug\netstandard2.1\LethalThings.csproj
 O:\github\LethalThings\LethalThings\obj\Debug\netstandard2.1\LethalThings.dll
 O:\github\LethalThings\LethalThings\obj\Debug\netstandard2.1\LethalThings.pdb
 O:\github\LethalThings\LethalThings\bin\Debug\netstandard2.1\LethalLib.dll
+O:\github\LethalThings\LethalThings\bin\Debug\netstandard2.1\Assembly-CSharp-nstrip.dll
+O:\github\LethalThings\LethalThings\obj\Debug\netstandard2.1\LethalThings.sourcelink.json
