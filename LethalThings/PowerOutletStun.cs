@@ -72,7 +72,7 @@ namespace LethalThings
         {
             var stormyWeather = Object.FindObjectOfType<StormyWeather>(true);
 
-            Utilities.CreateExplosion(position, false, 20, 0f, 5f, CauseOfDeath.Electrocution);
+            Utilities.CreateExplosion(position, false, 20, 0f, 5f, 3, CauseOfDeath.Electrocution);
 
             strikeParticle.Play();
             stormyWeather.PlayThunderEffects(position, strikeAudio);

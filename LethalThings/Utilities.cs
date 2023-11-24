@@ -8,12 +8,22 @@ namespace LethalThings
 {
     public class Utilities
     {
-        public static void CreateExplosion(Vector3 explosionPosition, bool spawnExplosionEffect = false, int damage = 20, float minDamageRange = 0f, float maxDamageRange = 1f, CauseOfDeath causeOfDeath = CauseOfDeath.Blast)
+        public static void CreateExplosion(Vector3 explosionPosition, bool spawnExplosionEffect = false, int damage = 20, float minDamageRange = 0f, float maxDamageRange = 1f, int enemyHitForce = 6, CauseOfDeath causeOfDeath = CauseOfDeath.Blast, PlayerControllerB attacker = null)
         {
             Debug.Log("Spawning explosion at pos: {explosionPosition}");
+
+            Transform holder = null;
+
+            if (RoundManager.Instance != null && RoundManager.Instance.mapPropsContainer != null && RoundManager.Instance.mapPropsContainer.transform != null)
+            {
+                holder = RoundManager.Instance.mapPropsContainer.transform;
+            }
+
             if (spawnExplosionEffect)
             {
-                UnityEngine.Object.Instantiate(StartOfRound.Instance.explosionPrefab, explosionPosition, Quaternion.Euler(-90f, 0f, 0f), RoundManager.Instance.mapPropsContainer.transform).SetActive(value: true);
+
+
+                UnityEngine.Object.Instantiate(StartOfRound.Instance.explosionPrefab, explosionPosition, Quaternion.Euler(-90f, 0f, 0f), holder).SetActive(value: true);
             }
 
             float num = Vector3.Distance(GameNetworkManager.Instance.localPlayerController.transform.position, explosionPosition);
@@ -26,7 +36,7 @@ namespace LethalThings
                 HUDManager.Instance.ShakeCamera(ScreenShakeType.Small);
             }
 
-            Collider[] array = Physics.OverlapSphere(explosionPosition, 6f, 2621448, QueryTriggerInteraction.Collide);
+            Collider[] array = Physics.OverlapSphere(explosionPosition, maxDamageRange, 2621448, QueryTriggerInteraction.Collide);
             PlayerControllerB playerControllerB = null;
             for (int i = 0; i < array.Length; i++)
             {
@@ -63,7 +73,7 @@ namespace LethalThings
                     EnemyAICollisionDetect componentInChildren2 = array[i].gameObject.GetComponentInChildren<EnemyAICollisionDetect>();
                     if (componentInChildren2 != null && componentInChildren2.mainScript.IsOwner && num2 < 4.5f)
                     {
-                        componentInChildren2.mainScript.HitEnemyOnLocalClient(6);
+                        componentInChildren2.mainScript.HitEnemyOnLocalClient(enemyHitForce, playerWhoHit: attacker);
                     }
                 }
             }

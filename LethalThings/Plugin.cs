@@ -11,8 +11,14 @@ using System.Linq;
 using System.Reflection;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using static LethalLib.Modules.Enemies;
+using System.Security;
+using System.Security.Permissions;
+using UnityEngine.InputSystem.HID;
+using BepInEx.Logging;
 
+[assembly: SecurityPermission(SecurityAction.RequestMinimum, SkipVerification = true)]
 namespace LethalThings
 {
     [BepInPlugin(ModGUID, ModName, ModVersion)]
@@ -23,9 +29,16 @@ namespace LethalThings
         public const string ModVersion = "0.1.0";
 
         public static AssetBundle MainAssets;
+        public static Dictionary<string, GameObject> Prefabs = new Dictionary<string, GameObject>();
+
+        public static List<string> batteryUsageFix = new List<string>();
+
+        public static ManualLogSource logger;
 
         private void Awake()
         {
+
+            logger = Logger;
 
 
             Logger.LogInfo("LethalThings loaded");
@@ -35,18 +48,57 @@ namespace LethalThings
             var arson = MainAssets.LoadAsset<Item>("Assets/Custom/LethalThings/Scrap/Arson/ArsonPlush.asset");
             var cookie = MainAssets.LoadAsset<Item>("Assets/Custom/LethalThings/Scrap/Cookie/CookieFumo.asset");
             var bilka = MainAssets.LoadAsset<Item>("Assets/Custom/LethalThings/Scrap/Toimari/ToimariPlush.asset");
+            var hamis = MainAssets.LoadAsset<Item>("Assets/Custom/LethalThings/Scrap/Hamis/HamisPlush.asset");
+            var arsonDirty = MainAssets.LoadAsset<Item>("Assets/Custom/LethalThings/Scrap/Arson/ArsonPlushDirty.asset");
+            var missileLauncher = MainAssets.LoadAsset<Item>("Assets/Custom/LethalThings/Items/RocketLauncher/RocketLauncher.asset");
+            var missileLauncherInfo = MainAssets.LoadAsset<TerminalNode>("Assets/Custom/LethalThings/Items/RocketLauncher/RocketLauncherInfo.asset");
+            var toyHammer = MainAssets.LoadAsset<Item>("Assets/Custom/LethalThings/Items/ToyHammer/ToyHammer.asset");
+            var toyHammerInfo = MainAssets.LoadAsset<TerminalNode>("Assets/Custom/LethalThings/Items/ToyHammer/ToyHammerInfo.asset");
+            var maxwell = MainAssets.LoadAsset<Item>("Assets/Custom/LethalThings/Scrap/Maxwell/Dingus.asset");
+            var pouchyBelt = MainAssets.LoadAsset<Item>("Assets/Custom/LethalThings/Items/Pouch/Pouch.asset");
+            var pouchyBeltInfo = MainAssets.LoadAsset<TerminalNode>("Assets/Custom/LethalThings/Items/Pouch/PouchInfo.asset");
+
+            Prefabs.Add("Arson", arson.spawnPrefab);
+            Prefabs.Add("ArsonDirty", arsonDirty.spawnPrefab);
+            Prefabs.Add("Cookie", cookie.spawnPrefab);
+            Prefabs.Add("Bilka", bilka.spawnPrefab);
+            Prefabs.Add("Hamis", hamis.spawnPrefab);
+            Prefabs.Add("RocketLauncher", missileLauncher.spawnPrefab);
+            Prefabs.Add("ToyHammer", toyHammer.spawnPrefab);
+            Prefabs.Add("Maxwell", maxwell.spawnPrefab);
+            Prefabs.Add("PouchyBelt", pouchyBelt.spawnPrefab);
+
+            batteryUsageFix.Add(arson.itemName);
+            batteryUsageFix.Add(arsonDirty.itemName);
+            batteryUsageFix.Add(cookie.itemName);
 
             // Register scraps
             LethalLib.Modules.NetworkPrefabs.RegisterNetworkPrefab(arson.spawnPrefab);
+            LethalLib.Modules.NetworkPrefabs.RegisterNetworkPrefab(arsonDirty.spawnPrefab);
             LethalLib.Modules.NetworkPrefabs.RegisterNetworkPrefab(cookie.spawnPrefab);
             LethalLib.Modules.NetworkPrefabs.RegisterNetworkPrefab(bilka.spawnPrefab);
+            LethalLib.Modules.NetworkPrefabs.RegisterNetworkPrefab(hamis.spawnPrefab);
+            LethalLib.Modules.NetworkPrefabs.RegisterNetworkPrefab(missileLauncher.spawnPrefab);
+            LethalLib.Modules.NetworkPrefabs.RegisterNetworkPrefab(missileLauncher.spawnPrefab.GetComponent<RocketLauncher>().missilePrefab);
+            LethalLib.Modules.NetworkPrefabs.RegisterNetworkPrefab(toyHammer.spawnPrefab);
+            LethalLib.Modules.NetworkPrefabs.RegisterNetworkPrefab(maxwell.spawnPrefab);
+            LethalLib.Modules.NetworkPrefabs.RegisterNetworkPrefab(pouchyBelt.spawnPrefab);
 
             Items.RegisterScrap(cookie, 40, Levels.LevelTypes.All);
-            Items.RegisterScrap(arson, 40, Levels.LevelTypes.All);
+            Items.RegisterScrap(arson, 20, Levels.LevelTypes.All);
+            Items.RegisterScrap(arsonDirty, 20, Levels.LevelTypes.All);
             Items.RegisterScrap(bilka, 40, Levels.LevelTypes.All);
+            Items.RegisterScrap(hamis, 40, Levels.LevelTypes.All);
+            Items.RegisterScrap(missileLauncher, 3, Levels.LevelTypes.All);
 
-            Items.RegisterShopItem(cookie, 0);
+            Items.RegisterShopItem(missileLauncher, itemInfo: missileLauncherInfo, price: 400);
+            Items.RegisterShopItem(toyHammer, itemInfo: toyHammerInfo, price: 80);
+            Items.RegisterShopItem(pouchyBelt, itemInfo: pouchyBeltInfo, price: 100);
 
+            // audio scrap battery patch guh
+            On.NoisemakerProp.ItemActivate += NoisemakerProp_ItemActivate;
+
+            
 
             // Register enemies
             /*var enemy = MainAssets.LoadAsset<EnemyType>("Assets/Custom/LethalThings/Enemies/Roomba/Boomba.asset");
@@ -60,9 +112,10 @@ namespace LethalThings
             Enemies.RegisterEnemy(enemy, 100, Levels.LevelTypes.All, SpawnType.Daytime);*/
 
             // Funny power socket stun
-            On.GrabbableObject.Start += GrabbableObject_Start;
+            //On.GrabbableObject.Start += GrabbableObject_Start;
             On.ItemCharger.ChargeItem += ItemCharger_ChargeItem;
             On.ItemCharger.Update += ItemCharger_Update;
+            On.GameNetworkManager.Start += GameNetworkManager_Start;
 
             // NetworkBehaviour patching
 
@@ -84,6 +137,88 @@ namespace LethalThings
             // debug
 
             //On.RoundManager.SpawnScrapInLevel += RoundManager_SpawnScrapInLevel;
+
+            On.StartOfRound.Update += StartOfRound_Update;
+        }
+
+        private void NoisemakerProp_ItemActivate(On.NoisemakerProp.orig_ItemActivate orig, NoisemakerProp self, bool used, bool buttonDown)
+        {
+            orig(self, used, buttonDown);
+            if(batteryUsageFix.Contains(self.itemProperties.itemName) && self.insertedBattery.charge >= 0)
+            {
+                self.insertedBattery.charge -= 5;
+            }
+        }
+
+        private void GameNetworkManager_Start(On.GameNetworkManager.orig_Start orig, GameNetworkManager self)
+        {
+            orig(self);
+
+            foreach(var prefab in self.GetComponent<NetworkManager>().NetworkConfig.Prefabs.m_Prefabs)
+            {
+                if(prefab.Prefab.GetComponent<GrabbableObject>() != null)
+                {
+                    if (prefab.Prefab.GetComponent<GrabbableObject>().itemProperties.isConductiveMetal)
+                    {
+                        var comp = prefab.Prefab.AddComponent<PowerOutletStun>();
+                    }
+                }
+            }
+        }
+
+        private void LoadPrefab(string name, Vector3 position)
+        {
+            if (Prefabs.ContainsKey(name))
+            {
+                var rocketLauncher = UnityEngine.Object.Instantiate(Prefabs[name], position, Quaternion.identity);
+                // set owner of rocket launcher
+                rocketLauncher.GetComponent<NetworkObject>().Spawn();
+            }
+            else
+            {
+                Logger.LogWarning($"Prefab {name} not found!");
+            }
+        }
+
+        private void StartOfRound_Update(On.StartOfRound.orig_Update orig, StartOfRound self)
+        {
+            if (Keyboard.current.f8Key.wasPressedThisFrame)
+            {
+                LoadPrefab("RocketLauncher", self.localPlayerController.gameplayCamera.transform.position);
+            }
+            else if (Keyboard.current.f9Key.wasPressedThisFrame)
+            { 
+                LoadPrefab("Arson", self.localPlayerController.gameplayCamera.transform.position);
+            }
+            else if (Keyboard.current.f10Key.wasPressedThisFrame)
+            {
+                LoadPrefab("Cookie", self.localPlayerController.gameplayCamera.transform.position);
+            }
+            else if (Keyboard.current.f11Key.wasPressedThisFrame)
+            {
+                LoadPrefab("Bilka", self.localPlayerController.gameplayCamera.transform.position);
+            }
+            else if (Keyboard.current.f1Key.wasPressedThisFrame)
+            {
+                LoadPrefab("Hamis", self.localPlayerController.gameplayCamera.transform.position);
+            }
+            else if (Keyboard.current.f2Key.wasPressedThisFrame)
+            {
+                LoadPrefab("ArsonDirty", self.localPlayerController.gameplayCamera.transform.position);
+            }
+            else if (Keyboard.current.f3Key.wasPressedThisFrame)
+            {
+                LoadPrefab("ToyHammer", self.localPlayerController.gameplayCamera.transform.position);
+            }
+            else if (Keyboard.current.f4Key.wasPressedThisFrame)
+            {
+                LoadPrefab("Maxwell", self.localPlayerController.gameplayCamera.transform.position);
+            }
+            else if (Keyboard.current.f5Key.wasPressedThisFrame)
+            {
+                LoadPrefab("PouchyBelt", self.localPlayerController.gameplayCamera.transform.position);
+            }
+            orig(self);
         }
 
 
@@ -175,14 +310,7 @@ namespace LethalThings
             }
         }
 
-        private void GrabbableObject_Start(On.GrabbableObject.orig_Start orig, GrabbableObject self)
-        {
-            orig(self);
-            if (self.itemProperties.isConductiveMetal)
-            {
-                var comp = self.gameObject.AddComponent<PowerOutletStun>();
-            }
-        }
+
 
         private void ItemCharger_ChargeItem(On.ItemCharger.orig_ChargeItem orig, ItemCharger self)
         {
