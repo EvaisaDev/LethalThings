@@ -117,10 +117,10 @@ namespace LethalThings
             GameObject missile = Instantiate(missilePrefab, aimDirection.position, aimDirection.rotation);
 
             // add force to missile
-           // missile.GetComponent<Rigidbody>().AddForce(aimDirection.forward * LobForce);
+            // missile.GetComponent<Rigidbody>().AddForce(aimDirection.forward * LobForce);
 
             // set owner of missile
-            missile.GetComponent<NetworkObject>().SpawnWithOwnership(OwnerClientId);    
+            missile.GetComponent<NetworkObject>().SpawnWithOwnership(OwnerClientId);
         }
 
         private void PlayRandomAudio(AudioSource audioSource, AudioClip[] audioClips)
@@ -149,7 +149,7 @@ namespace LethalThings
             }
         }
 
-     
+
 
         private void OnEnable()
         {
@@ -172,7 +172,7 @@ namespace LethalThings
             }
         }
 
-        
+
     }
 
 }

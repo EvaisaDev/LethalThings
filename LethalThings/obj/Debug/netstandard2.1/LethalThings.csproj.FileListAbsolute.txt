@@ -95,3 +95,4 @@ O:\github\LethalThings\LethalThings\bin\Debug\netstandard2.1\Assembly-CSharp-nst
 O:\github\LethalThings\LethalThings\obj\Debug\netstandard2.1\LethalThings.sourcelink.json
 O:\github\LethalThings\LethalThings\bin\Debug\netstandard2.1\Unity.InputSystem.dll
 O:\github\LethalThings\LethalThings\bin\Debug\netstandard2.1\UnityEngine.UI.dll
+O:\github\LethalThings\LethalThings\bin\Debug\netstandard2.1\Unity.TextMeshPro.dll

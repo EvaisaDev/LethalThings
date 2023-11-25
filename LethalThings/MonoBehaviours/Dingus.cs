@@ -40,7 +40,7 @@ namespace LethalThings
         int timesPlayedWithoutTurningOff = 0;
 
         private RoundManager roundManager;
-        
+
         private float noiseInterval = 1f;
 
         public Animator danceAnimator;
@@ -48,7 +48,7 @@ namespace LethalThings
         public override void Start()
         {
             base.Start();
-            roundManager = UnityEngine.Object.FindObjectOfType<RoundManager>();
+            roundManager = FindObjectOfType<RoundManager>();
             noisemakerRandom = new System.Random(StartOfRound.Instance.randomMapSeed + 85);
             danceAnimator.Play("dingusDance");
             Debug.Log("Making the dingus dance");
@@ -60,8 +60,8 @@ namespace LethalThings
             if (!(GameNetworkManager.Instance.localPlayerController == null))
             {
                 int num = noisemakerRandom.Next(0, noiseSFX.Length);
-                float num2 = (float)noisemakerRandom.Next((int)(minLoudness * 100f), (int)(maxLoudness * 100f)) / 100f;
-                float pitch = (float)noisemakerRandom.Next((int)(minPitch * 100f), (int)(maxPitch * 100f)) / 100f;
+                float num2 = noisemakerRandom.Next((int)(minLoudness * 100f), (int)(maxLoudness * 100f)) / 100f;
+                float pitch = noisemakerRandom.Next((int)(minPitch * 100f), (int)(maxPitch * 100f)) / 100f;
                 noiseAudio.pitch = pitch;
                 noiseAudio.PlayOneShot(noiseSFX[num], num2);
                 if (noiseAudioFar != null)
@@ -74,7 +74,7 @@ namespace LethalThings
                     triggerAnimator.SetTrigger("playAnim");
                 }
                 WalkieTalkie.TransmitOneShotAudio(noiseAudio, noiseSFX[num], num2);
-                RoundManager.Instance.PlayAudibleNoise(base.transform.position, noiseRange, num2, 0, isInElevator && StartOfRound.Instance.hangarDoorsClosed);
+                RoundManager.Instance.PlayAudibleNoise(transform.position, noiseRange, num2, 0, isInElevator && StartOfRound.Instance.hangarDoorsClosed);
             }
         }
 
@@ -86,7 +86,7 @@ namespace LethalThings
                 playerHeldBy.equippedUsableItemQE = false;
             }
             isBeingUsed = false;
-            if(musicAudio.isPlaying)
+            if (musicAudio.isPlaying)
             {
                 danceAnimator.Play("dingusDance");
                 Debug.Log("Making the dingus dance");
@@ -105,7 +105,7 @@ namespace LethalThings
             playerHeldBy.equippedUsableItemQE = true;
             danceAnimator.Play("dingusIdle");
             Debug.Log("Making the dingus idle");
-            if (base.IsOwner)
+            if (IsOwner)
             {
                 HUDManager.Instance.DisplayTip("Maxwell acquired", "Press E to toggle music.", isWarning: false, useSave: true, "LCTip_UseManual");
             }
@@ -141,7 +141,7 @@ namespace LethalThings
                 {
                     noiseInterval = 1f;
                     timesPlayedWithoutTurningOff++;
-                    roundManager.PlayAudibleNoise(base.transform.position, 16f, 0.9f, timesPlayedWithoutTurningOff, noiseIsInsideClosedShip: false, 5);
+                    roundManager.PlayAudibleNoise(transform.position, 16f, 0.9f, timesPlayedWithoutTurningOff, noiseIsInsideClosedShip: false, 5);
                 }
                 else
                 {

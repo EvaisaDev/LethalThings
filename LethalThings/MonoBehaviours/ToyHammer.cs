@@ -119,7 +119,7 @@ namespace LethalThings
                 previousPlayerHeldBy.twoHanded = false;
                 Debug.DrawRay(previousPlayerHeldBy.gameplayCamera.transform.position + previousPlayerHeldBy.gameplayCamera.transform.right * -0.35f, previousPlayerHeldBy.gameplayCamera.transform.forward * 1.85f, Color.blue, 5f);
                 objectsHitByHammer = Physics.SphereCastAll(previousPlayerHeldBy.gameplayCamera.transform.position + previousPlayerHeldBy.gameplayCamera.transform.right * -0.35f, 0.75f, previousPlayerHeldBy.gameplayCamera.transform.forward, 1.85f, hammerMask, QueryTriggerInteraction.Collide);
-                objectsHitByHammerList = objectsHitByHammer.OrderBy((RaycastHit x) => x.distance).ToList();
+                objectsHitByHammerList = objectsHitByHammer.OrderBy((x) => x.distance).ToList();
                 Vector3 start = previousPlayerHeldBy.gameplayCamera.transform.position;
                 for (int i = 0; i < objectsHitByHammerList.Count; i++)
                 {
@@ -141,7 +141,7 @@ namespace LethalThings
                             }
                         }
                     }
-                    else if (objectsHitByHammerList[i].transform.TryGetComponent<IHittable>(out component) && !(objectsHitByHammerList[i].transform == previousPlayerHeldBy.transform) && (objectsHitByHammerList[i].point == Vector3.zero || !Physics.Linecast(start, objectsHitByHammerList[i].point, out hitInfo, StartOfRound.Instance.collidersAndRoomMaskAndDefault)))
+                    else if (objectsHitByHammerList[i].transform.TryGetComponent(out component) && !(objectsHitByHammerList[i].transform == previousPlayerHeldBy.transform) && (objectsHitByHammerList[i].point == Vector3.zero || !Physics.Linecast(start, objectsHitByHammerList[i].point, out hitInfo, StartOfRound.Instance.collidersAndRoomMaskAndDefault)))
                     {
                         flag = true;
                         Vector3 forward = previousPlayerHeldBy.gameplayCamera.transform.forward;
@@ -157,7 +157,7 @@ namespace LethalThings
             if (flag)
             {
                 var soundID = RoundManager.PlayRandomClip(hammerAudio, hitSFX);
-                Object.FindObjectOfType<RoundManager>().PlayAudibleNoise(base.transform.position, 17f, 0.8f);
+                FindObjectOfType<RoundManager>().PlayAudibleNoise(transform.position, 17f, 0.8f);
                 playerHeldBy.playerBodyAnimator.SetTrigger("hammerHit");
                 HitHammerServerRpc(soundID);
             }
@@ -177,7 +177,8 @@ namespace LethalThings
 
         private void HitSurfaceWithHammer(int soundID)
         {
-            if (!IsOwner) { 
+            if (!IsOwner)
+            {
                 hammerAudio.PlayOneShot(hitSFX[soundID]);
             }
             WalkieTalkie.TransmitOneShotAudio(hammerAudio, hitSFX[soundID]);

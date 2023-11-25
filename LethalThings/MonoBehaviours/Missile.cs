@@ -29,7 +29,8 @@ namespace LethalThings
         {
             if (IsOwner)
             {
-                if (IsHost) { 
+                if (IsHost)
+                {
                     Boom();
                     BoomClientRpc();
                 }
@@ -73,7 +74,7 @@ namespace LethalThings
 
         public void Boom()
         {
-            if(particleSystem == null)
+            if (particleSystem == null)
             {
                 Debug.LogError("No particle system set on missile, destruction time!!");
                 CreateExplosion();
@@ -94,7 +95,7 @@ namespace LethalThings
 
             CreateExplosion();
 
-            if(IsHost)
+            if (IsHost)
             {
                 Destroy(gameObject);
             }

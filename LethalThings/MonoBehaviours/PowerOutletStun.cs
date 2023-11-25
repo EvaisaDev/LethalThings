@@ -14,7 +14,7 @@ namespace LethalThings
         public void Electrocute(ItemCharger socket)
         {
             Debug.Log("Attempting electrocution");
-            if (this.electrocutionCoroutine != null)
+            if (electrocutionCoroutine != null)
             {
                 StopCoroutine(electrocutionCoroutine);
             }
@@ -26,7 +26,7 @@ namespace LethalThings
 
         public void Awake()
         {
-            var stormyWeather = Object.FindObjectOfType<StormyWeather>(true);
+            var stormyWeather = FindObjectOfType<StormyWeather>(true);
             GameObject audioSource = stormyWeather.targetedStrikeAudio.gameObject;
             // copy gameobject and add to this object as a child
             strikeAudio = Instantiate(audioSource, transform).GetComponent<AudioSource>();
@@ -70,7 +70,7 @@ namespace LethalThings
 
         void Electrocuted(Vector3 position)
         {
-            var stormyWeather = Object.FindObjectOfType<StormyWeather>(true);
+            var stormyWeather = FindObjectOfType<StormyWeather>(true);
 
             Utilities.CreateExplosion(position, false, 20, 0f, 5f, 3, CauseOfDeath.Electrocution);
 

@@ -2,12 +2,28 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Unity.Netcode;
 using UnityEngine;
 
 namespace LethalThings
 {
     public class Utilities
     {
+
+        public static void LoadPrefab(string name, Vector3 position)
+        {
+            if (Content.Prefabs.ContainsKey(name))
+            {
+                var rocketLauncher = UnityEngine.Object.Instantiate(Content.Prefabs[name], position, Quaternion.identity);
+                // set owner of rocket launcher
+                rocketLauncher.GetComponent<NetworkObject>().Spawn();
+            }
+            else
+            {
+                Plugin.logger.LogWarning($"Prefab {name} not found!");
+            }
+        }
+
         public static void CreateExplosion(Vector3 explosionPosition, bool spawnExplosionEffect = false, int damage = 20, float minDamageRange = 0f, float maxDamageRange = 1f, int enemyHitForce = 6, CauseOfDeath causeOfDeath = CauseOfDeath.Blast, PlayerControllerB attacker = null)
         {
             Debug.Log("Spawning explosion at pos: {explosionPosition}");
