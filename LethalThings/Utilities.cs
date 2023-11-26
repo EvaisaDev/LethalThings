@@ -14,9 +14,10 @@ namespace LethalThings
         {
             if (Content.Prefabs.ContainsKey(name))
             {
-                var rocketLauncher = UnityEngine.Object.Instantiate(Content.Prefabs[name], position, Quaternion.identity);
+                Plugin.logger.LogInfo($"Loading prefab {name}");
+                var item = UnityEngine.Object.Instantiate(Content.Prefabs[name], position, Quaternion.identity);
                 // set owner of rocket launcher
-                rocketLauncher.GetComponent<NetworkObject>().Spawn();
+                item.GetComponent<NetworkObject>().Spawn();
             }
             else
             {

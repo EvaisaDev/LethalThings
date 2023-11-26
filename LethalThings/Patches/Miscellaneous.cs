@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BepInEx.Logging;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -20,6 +21,7 @@ namespace LethalThings.Patches
             }
             if (currentItem != null && currentItem.itemProperties.grabAnim == "none")
             {
+                Plugin.logger.LogInfo("Skipping grab animation because the item has no grab animation");
                 return;
             }
             orig(self, setTrue, currentItem);

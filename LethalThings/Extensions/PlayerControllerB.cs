@@ -55,63 +55,56 @@ namespace LethalThings.Extensions
                      self.disablingJetpackControls);
         }
 
-        public static void DiscardItem(this PlayerControllerB self, GrabbableObject item, bool placeObject = false, NetworkObject parentObjectTo = null, Vector3 placePosition = default(Vector3), bool matchRotationOfParent = true)
+        public static void DropItem(this PlayerControllerB self, GrabbableObject grabbableObject, int slotIndex = 0, bool itemsFall = true)
         {
-            self.SetSpecialGrabAnimationBool(setTrue: false, item);
-            self.playerBodyAnimator.SetBool("cancelHolding", value: true);
-            self.playerBodyAnimator.SetTrigger("Throw");
-            if (placeObject)
+            if (itemsFall)
             {
-                if (parentObjectTo == null)
+                grabbableObject.parentObject = null;
+                grabbableObject.heldByPlayerOnServer = false;
+                if (self.isInElevator)
                 {
-                    self.throwingObject = true;
-                    placePosition = ((!self.isInElevator) ? StartOfRound.Instance.propsContainer.InverseTransformPoint(placePosition) : StartOfRound.Instance.elevatorTransform.InverseTransformPoint(placePosition));
-                    int floorYRot = (int)self.transform.localEulerAngles.y;
-                    self.SetObjectAsNoLongerHeld(self.isInElevator, self.isInHangarShipRoom, placePosition, item, floorYRot);
-                    item.DiscardItemOnClient();
-                    self.ThrowObjectServerRpc(item.gameObject.GetComponent<NetworkObject>(), self.isInElevator, self.isInHangarShipRoom, placePosition, floorYRot);
+                    grabbableObject.transform.SetParent(self.playersManager.elevatorTransform, worldPositionStays: true);
                 }
                 else
                 {
-                    self.PlaceGrabbableObject(parentObjectTo.transform, placePosition, matchRotationOfParent, item);
-                    item.DiscardItemOnClient();
-                    self.PlaceObjectServerRpc(item.gameObject.GetComponent<NetworkObject>(), parentObjectTo, placePosition, matchRotationOfParent);
+                    grabbableObject.transform.SetParent(self.playersManager.propsContainer, worldPositionStays: true);
                 }
-                return;
+                self.SetItemInElevator(self.isInHangarShipRoom, self.isInElevator, grabbableObject);
+                grabbableObject.EnablePhysics(enable: true);
+                grabbableObject.EnableItemMeshes(enable: true);
+                grabbableObject.transform.localScale = grabbableObject.originalScale;
+                grabbableObject.isHeld = false;
+                grabbableObject.isPocketed = false;
+                grabbableObject.startFallingPosition = grabbableObject.transform.parent.InverseTransformPoint(grabbableObject.transform.position);
+                grabbableObject.FallToGround(randomizePosition: true);
+                grabbableObject.fallTime = UnityEngine.Random.Range(-0.3f, 0.05f);
+                if (self.IsOwner)
+                {
+                    grabbableObject.DiscardItemOnClient();
+                }
+                else if (!grabbableObject.itemProperties.syncDiscardFunction)
+                {
+                    grabbableObject.playerHeldBy = null;
+                }
+
+                self.SetObjectAsNoLongerHeld(self.isInElevator, self.isInHangarShipRoom, default(Vector3), grabbableObject);
             }
-            self.throwingObject = true;
-            bool droppedInElevator = self.isInElevator;
-            Vector3 targetFloorPosition;
-            if (!self.isInElevator)
+            if (self.IsOwner)
             {
-                Vector3 vector = ((!item.itemProperties.allowDroppingAheadOfPlayer) ? item.GetItemFloorPosition() : self.DropItemAheadOfPlayer());
-                if (!self.playersManager.shipBounds.bounds.Contains(vector))
+                // if player was holding this item in their hands
+                if(self.currentlyHeldObject != null && self.currentlyHeldObject == grabbableObject)
                 {
-                    targetFloorPosition = self.playersManager.propsContainer.InverseTransformPoint(vector);
+                    HUDManager.Instance.holdingTwoHandedItem.enabled = false;
+                    HUDManager.Instance.ClearControlTips();
+                    self.activatingItem = false;
                 }
-                else
-                {
-                    droppedInElevator = true;
-                    targetFloorPosition = self.playersManager.elevatorTransform.InverseTransformPoint(vector);
-                }
+
+                HUDManager.Instance.itemSlotIcons[slotIndex].enabled = false;
+
+
             }
-            else
-            {
-                Vector3 vector = item.GetItemFloorPosition();
-                if (!self.playersManager.shipBounds.bounds.Contains(vector))
-                {
-                    droppedInElevator = false;
-                    targetFloorPosition = self.playersManager.propsContainer.InverseTransformPoint(vector);
-                }
-                else
-                {
-                    targetFloorPosition = self.playersManager.elevatorTransform.InverseTransformPoint(vector);
-                }
-            }
-            int floorYRot2 = (int)self.transform.localEulerAngles.y;
-            self.SetObjectAsNoLongerHeld(droppedInElevator, self.isInHangarShipRoom, targetFloorPosition, item, floorYRot2);
-            item.DiscardItemOnClient();
-            self.ThrowObjectServerRpc(item.NetworkObject, droppedInElevator, self.isInHangarShipRoom, targetFloorPosition, floorYRot2);
+            self.ItemSlots[slotIndex] = null;
         }
+
     }
 }

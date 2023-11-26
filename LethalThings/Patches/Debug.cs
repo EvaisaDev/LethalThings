@@ -14,6 +14,7 @@ namespace LethalThings.Patches
 
         private static void StartOfRound_Update(On.StartOfRound.orig_Update orig, StartOfRound self)
         {
+            
             if (Keyboard.current.f8Key.wasPressedThisFrame)
             {
                 Utilities.LoadPrefab("RocketLauncher", self.localPlayerController.gameplayCamera.transform.position);
@@ -49,6 +50,10 @@ namespace LethalThings.Patches
             else if (Keyboard.current.f5Key.wasPressedThisFrame)
             {
                 Utilities.LoadPrefab("PouchyBelt", self.localPlayerController.gameplayCamera.transform.position);
+            }
+            else if (Keyboard.current.f6Key.wasPressedThisFrame)
+            {
+                Utilities.LoadPrefab("RemoteRadar", self.localPlayerController.gameplayCamera.transform.position);
             }
             orig(self);
         }

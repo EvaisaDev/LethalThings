@@ -104,24 +104,36 @@ namespace LethalThings
         public override void LateUpdate()
         {
             base.LateUpdate();
-            if (playerHeldBy != null)
+            if (previousPlayerHeldBy != null)
             {
                 // enable the belt
                 beltCosmetic.gameObject.SetActive(true);
-                var root = playerHeldBy.lowerSpine.parent;
-                beltCosmetic.position = root.position;
-                beltCosmetic.rotation = root.rotation;
-                transform.Rotate(beltCosmeticRotationOffset);
-                beltCosmetic.position = root.position;
-                Vector3 vector = beltCosmeticPositionOffset;
-                beltCosmetic.position += vector;
+                // remove from parent
+                beltCosmetic.SetParent(null);
+                beltCosmetic.GetComponent<MeshRenderer>().enabled = true;
+                var root = previousPlayerHeldBy.lowerSpine.parent;
+
+                // Set position and rotation
+                beltCosmetic.position = root.position + beltCosmeticPositionOffset;
+
+                // Convert the Vector3 offset to a Quaternion
+                Quaternion rotation = Quaternion.Euler(root.rotation.eulerAngles + beltCosmeticRotationOffset);
+
+                // Apply the rotation offset
+                beltCosmetic.rotation = rotation;
+
                 mainObjectRenderer.enabled = false;
+                gameObject.SetActive(true);
+                //Debug.Log("Showing belt!");
             }
             else
             {
                 // disable the belt
                 beltCosmetic.gameObject.SetActive(false);
                 mainObjectRenderer.enabled = true;
+                // add back to parent
+                beltCosmetic.SetParent(transform);
+                //Debug.Log("Hiding belt!");
             }
         }
 
@@ -168,7 +180,10 @@ namespace LethalThings
 
                     var icon = frame.transform.GetChild(0).GetComponent<Image>();
                     icon.name = "icon";
+                    icon.enabled = false;
                     icon.rectTransform.eulerAngles = iconAngles;
+                    // rotate 90 degrees because unity is goofy
+                    icon.rectTransform.Rotate(new Vector3(0.0f, 0.0f, -90.0f));
 
                     iconFrames.Add(frame);
                     icons.Add(icon);
@@ -228,7 +243,11 @@ namespace LethalThings
                     playerHeldBy.ItemSlots[i] = itemSlots[i];
                 }
 
-                UpdateHUD(true);
+                if (playerHeldBy == GameNetworkManager.Instance.localPlayerController)
+                {
+                    UpdateHUD(true);
+                }
+            
             }
         }
 
@@ -248,7 +267,8 @@ namespace LethalThings
                     var slot = playerHeldBy.ItemSlots[slotsAvailable + i];
                     if (slot != null)
                     {
-                        playerHeldBy.DiscardItem(slot);
+                        //playerHeldBy.DiscardItem(slot);
+                        playerHeldBy.DropItem(slot, slotsAvailable + i, true);
                     }
                 }
 
@@ -273,7 +293,11 @@ namespace LethalThings
                     playerHeldBy.ItemSlots[i] = itemSlots[i];
                 }
 
-                UpdateHUD(false);
+                if (playerHeldBy == GameNetworkManager.Instance.localPlayerController)
+                {
+                    UpdateHUD(false);
+                }
+
 
                 playerHeldBy.SwitchItemSlots(newSlot);
             }

@@ -27,25 +27,21 @@ namespace LethalThings
         public ParticleSystem particleSystem;
         void OnCollisionEnter(Collision collision)
         {
-            if (IsOwner)
+            if (IsHost)
             {
-                if (IsHost)
-                {
-                    Boom();
-                    BoomClientRpc();
-                }
-                else
-                {
-                    BoomServerRpc();
-                }
+                Boom();
+                BoomClientRpc();
             }
-
+            else
+            {
+                BoomServerRpc();
+            }
         }
 
         void Start()
         {
             GetComponent<Rigidbody>().useGravity = false;
-            if (IsOwner)
+            if (IsHost)
             {
                 GetComponent<Rigidbody>().AddForce(transform.forward * LobForce, ForceMode.Impulse);
             }
@@ -103,7 +99,7 @@ namespace LethalThings
 
         void FixedUpdate()
         {
-            if (IsOwner)
+            if (IsHost)
             {
                 GetComponent<Rigidbody>().useGravity = false;
                 // apply downwards force, gravity.
