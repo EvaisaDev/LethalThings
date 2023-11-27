@@ -63,7 +63,7 @@ namespace LethalThings
         public override void Start()
         {
             base.Start();
-            var root = transform.Find("boombaModel/Roomba/Cube");
+            var root = transform.Find("BoombaModel/Roomba/Cube");
 
             Plugin.logger.LogInfo(root);
 
@@ -399,7 +399,7 @@ namespace LethalThings
         {
             mineAudio.pitch = Random.Range(0.93f, 1.07f);
             mineAudio.PlayOneShot(mineDetonate, 1f);
-            Utilities.CreateExplosion(base.transform.position + Vector3.up, spawnExplosionEffect: false, 1, 5.7f, 6.4f);
+            Utilities.CreateExplosion(base.transform.position + Vector3.up, spawnExplosionEffect: true, 1, 5.7f, 6.4f);
         }
 
         public bool MineHasLineOfSight(Vector3 pos)

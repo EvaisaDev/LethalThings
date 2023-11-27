@@ -19,6 +19,7 @@ namespace LethalThings
             public string itemPath = "";
             public string infoPath = "";
             public Action<Item> itemAction = (item) => { };
+            public bool enabled = true;
 
             public CustomItem(string name, string itemPath, string infoPath, Action<Item> action = null)
             {
@@ -47,9 +48,10 @@ namespace LethalThings
                 this.itemPrice = itemPrice;
             }
 
-            public static CustomShopItem Add(string name, string itemPath, string infoPath = null, int itemPrice = 0, Action<Item> action = null)
+            public static CustomShopItem Add(string name, string itemPath, string infoPath = null, int itemPrice = 0, Action<Item> action = null, bool enabled = true)
             {
                 CustomShopItem item = new CustomShopItem(name, itemPath, infoPath, itemPrice, action);
+                item.enabled = enabled;
                 return item;
             }
         }
@@ -102,23 +104,23 @@ namespace LethalThings
 
         static List<CustomItem> customItems = new List<CustomItem>()
         {
-            CustomScrap.Add("Arson", "Assets/Custom/LethalThings/Scrap/Arson/ArsonPlush.asset", Levels.LevelTypes.All, 20),
-            CustomScrap.Add("Cookie", "Assets/Custom/LethalThings/Scrap/Cookie/CookieFumo.asset", Levels.LevelTypes.All, 40),
-            CustomScrap.Add("Bilka", "Assets/Custom/LethalThings/Scrap/Toimari/ToimariPlush.asset", Levels.LevelTypes.All, 40),
-            CustomScrap.Add("Hamis", "Assets/Custom/LethalThings/Scrap/Hamis/HamisPlush.asset", Levels.LevelTypes.All, 40),
-            CustomScrap.Add("ArsonDirty", "Assets/Custom/LethalThings/Scrap/Arson/ArsonPlushDirty.asset", Levels.LevelTypes.All, 20),
+            CustomScrap.Add("Arson", "Assets/Custom/LethalThings/Scrap/Arson/ArsonPlush.asset", Levels.LevelTypes.All, Config.arsonSpawnWeight.Value),
+            CustomScrap.Add("Cookie", "Assets/Custom/LethalThings/Scrap/Cookie/CookieFumo.asset", Levels.LevelTypes.All, Config.cookieSpawnWeight.Value),
+            CustomScrap.Add("Bilka", "Assets/Custom/LethalThings/Scrap/Toimari/ToimariPlush.asset", Levels.LevelTypes.All,  Config.toimariSpawnWeight.Value),
+            CustomScrap.Add("Hamis", "Assets/Custom/LethalThings/Scrap/Hamis/HamisPlush.asset", Levels.LevelTypes.All,  Config.hamisSpawnWeight.Value),
+            CustomScrap.Add("ArsonDirty", "Assets/Custom/LethalThings/Scrap/Arson/ArsonPlushDirty.asset", Levels.LevelTypes.All, Config.dirtyArsonSpawnWeight.Value),
+            CustomScrap.Add("Maxwell", "Assets/Custom/LethalThings/Scrap/Maxwell/Dingus.asset", Levels.LevelTypes.All, Config.maxwellSpawnWeight.Value),
             CustomShopItem.Add("RocketLauncher", "Assets/Custom/LethalThings/Items/RocketLauncher/RocketLauncher.asset", "Assets/Custom/LethalThings/Items/RocketLauncher/RocketLauncherInfo.asset", action: (item) => {
                 NetworkPrefabs.RegisterNetworkPrefab(item.spawnPrefab.GetComponent<RocketLauncher>().missilePrefab);
-            }, itemPrice: 400),
-            CustomShopItem.Add("ToyHammer", "Assets/Custom/LethalThings/Items/ToyHammer/ToyHammer.asset", "Assets/Custom/LethalThings/Items/ToyHammer/ToyHammerInfo.asset", 80),
-            CustomScrap.Add("Maxwell", "Assets/Custom/LethalThings/Scrap/Maxwell/Dingus.asset", Levels.LevelTypes.All, 3),
-            CustomShopItem.Add("RemoteRadar", "Assets/Custom/LethalThings/Items/Radar/HandheldRadar.asset", "Assets/Custom/LethalThings/Items/Radar/HandheldRadarInfo.asset", 240),
-            CustomShopItem.Add("PouchyBelt", "Assets/Custom/LethalThings/Items/Pouch/Pouch.asset", "Assets/Custom/LethalThings/Items/Pouch/PouchInfo.asset", 290),
+            }, itemPrice:  Config.rocketLauncherPrice.Value, enabled: Config.rocketLauncherEnabled.Value),
+            CustomShopItem.Add("ToyHammer", "Assets/Custom/LethalThings/Items/ToyHammer/ToyHammer.asset", "Assets/Custom/LethalThings/Items/ToyHammer/ToyHammerInfo.asset", Config.toyHammerPrice.Value, enabled: Config.toyHammerEnabled.Value),
+            CustomShopItem.Add("RemoteRadar", "Assets/Custom/LethalThings/Items/Radar/HandheldRadar.asset", "Assets/Custom/LethalThings/Items/Radar/HandheldRadarInfo.asset", Config.remoteRadarPrice.Value, enabled: Config.remoteRadarEnabled.Value),
+            CustomShopItem.Add("PouchyBelt", "Assets/Custom/LethalThings/Items/Pouch/Pouch.asset", "Assets/Custom/LethalThings/Items/Pouch/PouchInfo.asset", Config.pouchyBeltPrice.Value, enabled: Config.pouchyBeltEnabled.Value),
         };
 
         static List<CustomEnemy> customEnemies = new List<CustomEnemy>()
         {
-            CustomEnemy.Add("Boomba", "Assets/Custom/LethalThings/Enemies/Roomba/Boomba.asset", 1000, Levels.LevelTypes.All, Enemies.SpawnType.Daytime, "Assets/Custom/LethalThings/Enemies/Roomba/BoombaTerminal.asset", "Assets/Custom/LethalThings/Enemies/Roomba/BoombaFile.asset"),
+            //CustomEnemy.Add("Boomba", "Assets/Custom/LethalThings/Enemies/Roomba/Boomba.asset", 1000, Levels.LevelTypes.All, Enemies.SpawnType.Default, "Assets/Custom/LethalThings/Enemies/Roomba/BoombaTerminal.asset", "Assets/Custom/LethalThings/Enemies/Roomba/BoombaFile.asset"),
         };
 
         public static void Load()
@@ -127,6 +129,11 @@ namespace LethalThings
 
             foreach (var item in customItems)
             {
+                if(!item.enabled)
+                {
+                    continue;
+                }
+
                 var itemAsset = MainAssets.LoadAsset<Item>(item.itemPath);
 
                 Prefabs.Add(item.name, itemAsset.spawnPrefab);

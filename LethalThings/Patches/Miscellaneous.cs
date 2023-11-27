@@ -11,7 +11,10 @@ namespace LethalThings.Patches
         {
             // Allow item to have no grab animation because the game is dumb
             On.GameNetcodeStuff.PlayerControllerB.SetSpecialGrabAnimationBool += PlayerControllerB_SetSpecialGrabAnimationBool;
-            On.StartOfRound.Start += StartOfRound_Start;
+            if (Config.disableOverlappingModContent.Value)
+            {
+                On.StartOfRound.Start += StartOfRound_Start;
+            }
         }
 
         private static void StartOfRound_Start(On.StartOfRound.orig_Start orig, StartOfRound self)

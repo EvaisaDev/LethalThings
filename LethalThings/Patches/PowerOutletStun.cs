@@ -10,9 +10,12 @@ namespace LethalThings.Patches
         public static void Load()
         {
             // Funny power socket stun
-            On.ItemCharger.ChargeItem += ItemCharger_ChargeItem;
-            On.ItemCharger.Update += ItemCharger_Update;
-            On.GameNetworkManager.Start += GameNetworkManager_Start;
+            if (Config.enableItemChargerElectrocution.Value)
+            {
+                On.ItemCharger.ChargeItem += ItemCharger_ChargeItem;
+                On.ItemCharger.Update += ItemCharger_Update;
+                On.GameNetworkManager.Start += GameNetworkManager_Start;
+            }
         }
 
 

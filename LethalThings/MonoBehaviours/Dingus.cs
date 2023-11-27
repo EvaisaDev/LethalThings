@@ -50,7 +50,17 @@ namespace LethalThings
             base.Start();
             roundManager = FindObjectOfType<RoundManager>();
             noisemakerRandom = new System.Random(StartOfRound.Instance.randomMapSeed + 85);
-            danceAnimator.Play("dingusDance");
+            if (Config.maxwellPlayMusicDefault.Value)
+            {
+                danceAnimator.Play("dingusDance");
+            }
+            else
+            {
+                musicAudio.Pause();
+                musicAudioFar.Pause();
+            }
+
+
             Debug.Log("Making the dingus dance");
         }
 
