@@ -12,31 +12,28 @@ namespace LethalThings
     {
         public static AssetBundle MainAssets;
         public static Dictionary<string, GameObject> Prefabs = new Dictionary<string, GameObject>();
-        public static List<string> batteryUsageFix = new List<string>();
 
         public class CustomItem
         {
             public string name = "";
-            public bool batteryFix = false;
             public string itemPath = "";
             public string infoPath = "";
             public Action<Item> itemAction = (item) => { };
 
-            public CustomItem(string name, string itemPath, string infoPath, bool batteryFix = false, Action<Item> action = null)
+            public CustomItem(string name, string itemPath, string infoPath, Action<Item> action = null)
             {
                 this.name = name;
                 this.itemPath = itemPath;
                 this.infoPath = infoPath;
-                this.batteryFix = batteryFix;
                 if(action != null)
                 {
                     itemAction = action;
                 }
             }
 
-            public static CustomItem Add(string name, string itemPath, string infoPath = null, bool batteryFix = false, Action<Item> action = null)
+            public static CustomItem Add(string name, string itemPath, string infoPath = null, Action<Item> action = null)
             {
-                CustomItem item = new CustomItem(name, itemPath, infoPath, batteryFix, action);
+                CustomItem item = new CustomItem(name, itemPath, infoPath, action);
                 return item;
             }
         }
@@ -45,14 +42,14 @@ namespace LethalThings
         {
             public int itemPrice = 0;
 
-            public CustomShopItem(string name, string itemPath, string infoPath = null, int itemPrice = 0, bool batteryFix = false, Action<Item> action = null) : base(name, itemPath, infoPath, batteryFix, action)
+            public CustomShopItem(string name, string itemPath, string infoPath = null, int itemPrice = 0, Action<Item> action = null) : base(name, itemPath, infoPath, action)
             {
                 this.itemPrice = itemPrice;
             }
 
-            public static CustomShopItem Add(string name, string itemPath, string infoPath = null, int itemPrice = 0, bool batteryFix = false, Action<Item> action = null)
+            public static CustomShopItem Add(string name, string itemPath, string infoPath = null, int itemPrice = 0, Action<Item> action = null)
             {
-                CustomShopItem item = new CustomShopItem(name, itemPath, infoPath, itemPrice, batteryFix, action);
+                CustomShopItem item = new CustomShopItem(name, itemPath, infoPath, itemPrice, action);
                 return item;
             }
         }
@@ -62,27 +59,54 @@ namespace LethalThings
             public Levels.LevelTypes levelType = Levels.LevelTypes.All;
             public int rarity = 0;
 
-            public CustomScrap(string name, string itemPath, Levels.LevelTypes levelType, int rarity, bool batteryFix = false, int itemPrice = 0, Action<Item> action = null) : base(name, itemPath, null, batteryFix, action)
+            public CustomScrap(string name, string itemPath, Levels.LevelTypes levelType, int rarity, Action<Item> action = null) : base(name, itemPath, null, action)
             {
                 this.levelType = levelType;
                 this.rarity = rarity;
             }
 
-            public static CustomScrap Add(string name, string itemPath, Levels.LevelTypes levelType, int rarity, bool batteryFix = false, Action<Item> action = null)
+            public static CustomScrap Add(string name, string itemPath, Levels.LevelTypes levelType, int rarity, Action<Item> action = null)
             {
-                CustomScrap item = new CustomScrap(name, itemPath, levelType, rarity, batteryFix, 0, action);
+                CustomScrap item = new CustomScrap(name, itemPath, levelType, rarity, action);
                 return item;
             }
         }
 
+        public class CustomEnemy
+        {
+            public string name;
+            public string enemyPath;
+            public int rarity;
+            public Levels.LevelTypes levelFlags;
+            public Enemies.SpawnType spawnType;
+            public string infoKeyword;
+            public string infoNode;
+
+            public CustomEnemy(string name, string enemyPath, int rarity, Levels.LevelTypes levelFlags, Enemies.SpawnType spawnType, string infoKeyword, string infoNode)
+            {
+                this.name = name;
+                this.enemyPath = enemyPath;
+                this.rarity = rarity;
+                this.levelFlags = levelFlags;
+                this.spawnType = spawnType;
+                this.infoKeyword = infoKeyword;
+                this.infoNode = infoNode;
+            }
+
+            public static CustomEnemy Add(string name, string enemyPath, int rarity, Levels.LevelTypes levelFlags, Enemies.SpawnType spawnType, string infoKeyword, string infoNode)
+            {
+                CustomEnemy enemy = new CustomEnemy(name, enemyPath, rarity, levelFlags, spawnType, infoKeyword, infoNode);
+                return enemy;
+            }
+        }
 
         static List<CustomItem> customItems = new List<CustomItem>()
         {
-            CustomScrap.Add("Arson", "Assets/Custom/LethalThings/Scrap/Arson/ArsonPlush.asset", Levels.LevelTypes.All, 20, true),
-            CustomScrap.Add("Cookie", "Assets/Custom/LethalThings/Scrap/Cookie/CookieFumo.asset", Levels.LevelTypes.All, 40, true),
+            CustomScrap.Add("Arson", "Assets/Custom/LethalThings/Scrap/Arson/ArsonPlush.asset", Levels.LevelTypes.All, 20),
+            CustomScrap.Add("Cookie", "Assets/Custom/LethalThings/Scrap/Cookie/CookieFumo.asset", Levels.LevelTypes.All, 40),
             CustomScrap.Add("Bilka", "Assets/Custom/LethalThings/Scrap/Toimari/ToimariPlush.asset", Levels.LevelTypes.All, 40),
             CustomScrap.Add("Hamis", "Assets/Custom/LethalThings/Scrap/Hamis/HamisPlush.asset", Levels.LevelTypes.All, 40),
-            CustomScrap.Add("ArsonDirty", "Assets/Custom/LethalThings/Scrap/Arson/ArsonPlushDirty.asset", Levels.LevelTypes.All, 20, true),
+            CustomScrap.Add("ArsonDirty", "Assets/Custom/LethalThings/Scrap/Arson/ArsonPlushDirty.asset", Levels.LevelTypes.All, 20),
             CustomShopItem.Add("RocketLauncher", "Assets/Custom/LethalThings/Items/RocketLauncher/RocketLauncher.asset", "Assets/Custom/LethalThings/Items/RocketLauncher/RocketLauncherInfo.asset", action: (item) => {
                 NetworkPrefabs.RegisterNetworkPrefab(item.spawnPrefab.GetComponent<RocketLauncher>().missilePrefab);
             }, itemPrice: 400),
@@ -90,6 +114,11 @@ namespace LethalThings
             CustomScrap.Add("Maxwell", "Assets/Custom/LethalThings/Scrap/Maxwell/Dingus.asset", Levels.LevelTypes.All, 3),
             CustomShopItem.Add("RemoteRadar", "Assets/Custom/LethalThings/Items/Radar/HandheldRadar.asset", "Assets/Custom/LethalThings/Items/Radar/HandheldRadarInfo.asset", 240),
             CustomShopItem.Add("PouchyBelt", "Assets/Custom/LethalThings/Items/Pouch/Pouch.asset", "Assets/Custom/LethalThings/Items/Pouch/PouchInfo.asset", 290),
+        };
+
+        static List<CustomEnemy> customEnemies = new List<CustomEnemy>()
+        {
+            CustomEnemy.Add("Boomba", "Assets/Custom/LethalThings/Enemies/Roomba/Boomba.asset", 1000, Levels.LevelTypes.All, Enemies.SpawnType.Daytime, "Assets/Custom/LethalThings/Enemies/Roomba/BoombaTerminal.asset", "Assets/Custom/LethalThings/Enemies/Roomba/BoombaFile.asset"),
         };
 
         public static void Load()
@@ -104,10 +133,6 @@ namespace LethalThings
                 NetworkPrefabs.RegisterNetworkPrefab(itemAsset.spawnPrefab);
                 item.itemAction(itemAsset);
 
-                if (item.batteryFix)
-                {
-                    batteryUsageFix.Add(itemAsset.itemName);
-                }
 
                 if(item is CustomShopItem)
                 {
@@ -122,8 +147,17 @@ namespace LethalThings
                 }
             }
 
-            // audio scrap battery patch guh
-            On.NoisemakerProp.ItemActivate += NoisemakerProp_ItemActivate;
+            foreach (var enemy in customEnemies)
+            {
+                var enemyAsset = MainAssets.LoadAsset<EnemyType>(enemy.enemyPath);
+                var enemyInfo = MainAssets.LoadAsset<TerminalNode>(enemy.infoNode);
+                var enemyTerminal = MainAssets.LoadAsset<TerminalKeyword>(enemy.infoKeyword);
+
+                NetworkPrefabs.RegisterNetworkPrefab(enemyAsset.enemyPrefab);
+
+                Enemies.RegisterEnemy(enemyAsset, enemy.rarity, enemy.levelFlags, enemy.spawnType, enemyInfo);
+            }
+
 
             var types = Assembly.GetExecutingAssembly().GetTypes();
             foreach (var type in types)
@@ -144,13 +178,5 @@ namespace LethalThings
             Plugin.logger.LogInfo("Custom content loaded!");
         }
 
-        private static void NoisemakerProp_ItemActivate(On.NoisemakerProp.orig_ItemActivate orig, NoisemakerProp self, bool used, bool buttonDown)
-        {
-            orig(self, used, buttonDown);
-            if (batteryUsageFix.Contains(self.itemProperties.itemName) && self.insertedBattery.charge >= 0)
-            {
-                self.insertedBattery.charge -= 5;
-            }
-        }
     }
 }

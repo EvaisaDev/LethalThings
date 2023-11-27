@@ -21,7 +21,7 @@ namespace LethalThings
             Content.Load();
             Patches.Patches.Load();
 
-            Logger.LogInfo("LethalThings loaded");
+            Logger.LogInfo("LethalThings loaded guh");
         }
     }
 }
