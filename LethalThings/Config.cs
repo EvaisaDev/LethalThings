@@ -24,6 +24,12 @@ namespace LethalThings
         public static ConfigEntry<bool> rocketLauncherEnabled;
         public static ConfigEntry<int> rocketLauncherPrice;
 
+        public static ConfigEntry<int> boombaSpawnWeight;
+
+        public static ConfigEntry<bool> rugsEnabled;
+        public static ConfigEntry<int> smallRugPrice;
+        public static ConfigEntry<int> largeRugPrice;
+
         public static ConfigEntry<bool> enableItemChargerElectrocution;
         public static ConfigEntry<bool> disableOverlappingModContent;
 
@@ -46,6 +52,12 @@ namespace LethalThings
             remoteRadarPrice = Plugin.config.Bind<int>("Items", "RemoteRadarPrice", 240, "How much does Remote Radar cost?");
             rocketLauncherEnabled = Plugin.config.Bind<bool>("Items", "RocketLauncher", true, "Is Rocket Launcher enabled?");
             rocketLauncherPrice = Plugin.config.Bind<int>("Items", "RocketLauncherPrice", 500, "How much does Rocket Launcher cost?");
+
+            boombaSpawnWeight = Plugin.config.Bind<int>("Enemies", "Boomba", 20, "How much does Boomba spawn, higher = more common");
+
+            rugsEnabled = Plugin.config.Bind<bool>("Decor", "Rugs", true, "Are rugs enabled?");
+            smallRugPrice = Plugin.config.Bind<int>("Decor", "SmallRugPrice", 80, "How much does a small rug cost?");
+            largeRugPrice = Plugin.config.Bind<int>("Decor", "LargeRugPrice", 110, "How much does a large rug cost?");
 
             enableItemChargerElectrocution = Plugin.config.Bind<bool>("Misc", "EnableItemChargerElectrocution", true, "Do players get electrocuted when stuffing conductive objects in the item charger.");
             disableOverlappingModContent = Plugin.config.Bind<bool>("Misc", "DisableOverlappingModContent", true, "Disable content from other mods which exists in this one (e.g. maxwell).");

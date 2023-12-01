@@ -1,4 +1,6 @@
-﻿using LethalLib.Modules;
+﻿using LethalLib.Extras;
+using LethalLib.Modules;
+using LethalThings.MonoBehaviours;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -35,6 +37,37 @@ namespace LethalThings
             public static CustomItem Add(string name, string itemPath, string infoPath = null, Action<Item> action = null)
             {
                 CustomItem item = new CustomItem(name, itemPath, infoPath, action);
+                return item;
+            }
+        }
+
+        public class CustomUnlockable
+        {
+            public string name = "";
+            public string unlockablePath = "";
+            public string infoPath = "";
+            public Action<UnlockableItem> unlockableAction = (item) => { };
+            public bool enabled = true;
+            public int unlockCost = -1;
+            //public StoreType storeType = StoreType.None;
+
+            public CustomUnlockable(string name, string unlockablePath, string infoPath, Action<UnlockableItem> action = null, int unlockCost = -1)
+            {
+                this.name = name;
+                this.unlockablePath = unlockablePath;
+                this.infoPath = infoPath;
+                if (action != null)
+                {
+                    unlockableAction = action;
+                }
+                this.unlockCost = unlockCost;
+                //this.storeType = storeType;
+            }
+
+            public static CustomUnlockable Add(string name, string unlockablePath, string infoPath = null, Action<UnlockableItem> action = null, int unlockCost = -1, bool enabled = true)
+            {
+                CustomUnlockable item = new CustomUnlockable(name, unlockablePath, infoPath, action, unlockCost);
+                item.enabled = enabled;
                 return item;
             }
         }
@@ -83,6 +116,7 @@ namespace LethalThings
             public Enemies.SpawnType spawnType;
             public string infoKeyword;
             public string infoNode;
+            public bool enabled = true;
 
             public CustomEnemy(string name, string enemyPath, int rarity, Levels.LevelTypes levelFlags, Enemies.SpawnType spawnType, string infoKeyword, string infoNode)
             {
@@ -95,37 +129,62 @@ namespace LethalThings
                 this.infoNode = infoNode;
             }
 
-            public static CustomEnemy Add(string name, string enemyPath, int rarity, Levels.LevelTypes levelFlags, Enemies.SpawnType spawnType, string infoKeyword, string infoNode)
+            public static CustomEnemy Add(string name, string enemyPath, int rarity, Levels.LevelTypes levelFlags, Enemies.SpawnType spawnType, string infoKeyword, string infoNode, bool enabled = true)
             {
                 CustomEnemy enemy = new CustomEnemy(name, enemyPath, rarity, levelFlags, spawnType, infoKeyword, infoNode);
+                enemy.enabled = enabled;
                 return enemy;
             }
         }
 
-        static List<CustomItem> customItems = new List<CustomItem>()
-        {
-            CustomScrap.Add("Arson", "Assets/Custom/LethalThings/Scrap/Arson/ArsonPlush.asset", Levels.LevelTypes.All, Config.arsonSpawnWeight.Value),
-            CustomScrap.Add("Cookie", "Assets/Custom/LethalThings/Scrap/Cookie/CookieFumo.asset", Levels.LevelTypes.All, Config.cookieSpawnWeight.Value),
-            CustomScrap.Add("Bilka", "Assets/Custom/LethalThings/Scrap/Toimari/ToimariPlush.asset", Levels.LevelTypes.All,  Config.toimariSpawnWeight.Value),
-            CustomScrap.Add("Hamis", "Assets/Custom/LethalThings/Scrap/Hamis/HamisPlush.asset", Levels.LevelTypes.All,  Config.hamisSpawnWeight.Value),
-            CustomScrap.Add("ArsonDirty", "Assets/Custom/LethalThings/Scrap/Arson/ArsonPlushDirty.asset", Levels.LevelTypes.All, Config.dirtyArsonSpawnWeight.Value),
-            CustomScrap.Add("Maxwell", "Assets/Custom/LethalThings/Scrap/Maxwell/Dingus.asset", Levels.LevelTypes.All, Config.maxwellSpawnWeight.Value),
-            CustomShopItem.Add("RocketLauncher", "Assets/Custom/LethalThings/Items/RocketLauncher/RocketLauncher.asset", "Assets/Custom/LethalThings/Items/RocketLauncher/RocketLauncherInfo.asset", action: (item) => {
-                NetworkPrefabs.RegisterNetworkPrefab(item.spawnPrefab.GetComponent<RocketLauncher>().missilePrefab);
-            }, itemPrice:  Config.rocketLauncherPrice.Value, enabled: Config.rocketLauncherEnabled.Value),
-            CustomShopItem.Add("ToyHammer", "Assets/Custom/LethalThings/Items/ToyHammer/ToyHammer.asset", "Assets/Custom/LethalThings/Items/ToyHammer/ToyHammerInfo.asset", Config.toyHammerPrice.Value, enabled: Config.toyHammerEnabled.Value),
-            CustomShopItem.Add("RemoteRadar", "Assets/Custom/LethalThings/Items/Radar/HandheldRadar.asset", "Assets/Custom/LethalThings/Items/Radar/HandheldRadarInfo.asset", Config.remoteRadarPrice.Value, enabled: Config.remoteRadarEnabled.Value),
-            CustomShopItem.Add("PouchyBelt", "Assets/Custom/LethalThings/Items/Pouch/Pouch.asset", "Assets/Custom/LethalThings/Items/Pouch/PouchInfo.asset", Config.pouchyBeltPrice.Value, enabled: Config.pouchyBeltEnabled.Value),
-        };
 
-        static List<CustomEnemy> customEnemies = new List<CustomEnemy>()
-        {
-            //CustomEnemy.Add("Boomba", "Assets/Custom/LethalThings/Enemies/Roomba/Boomba.asset", 1000, Levels.LevelTypes.All, Enemies.SpawnType.Default, "Assets/Custom/LethalThings/Enemies/Roomba/BoombaTerminal.asset", "Assets/Custom/LethalThings/Enemies/Roomba/BoombaFile.asset"),
-        };
 
+        public static void TryLoadAssets()
+        {
+            if (MainAssets == null)
+            {
+                MainAssets = AssetBundle.LoadFromFile(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "lethalthings"));
+                Plugin.logger.LogInfo("Loaded asset bundle");
+            }
+        }
+
+        public static List<CustomUnlockable> customUnlockables;
+        public static List<CustomItem> customItems;
+        public static List<CustomEnemy> customEnemies;
+        public static GameObject ConfigManagerPrefab;
         public static void Load()
         {
-            MainAssets = AssetBundle.LoadFromFile(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "lethalthings"));
+            TryLoadAssets();
+
+            customItems = new List<CustomItem>()
+            {
+                CustomScrap.Add("Arson", "Assets/Custom/LethalThings/Scrap/Arson/ArsonPlush.asset", Levels.LevelTypes.All, Config.arsonSpawnWeight.Value),
+                CustomScrap.Add("Cookie", "Assets/Custom/LethalThings/Scrap/Cookie/CookieFumo.asset", Levels.LevelTypes.All, Config.cookieSpawnWeight.Value),
+                CustomScrap.Add("Bilka", "Assets/Custom/LethalThings/Scrap/Toimari/ToimariPlush.asset", Levels.LevelTypes.All,  Config.toimariSpawnWeight.Value),
+                CustomScrap.Add("Hamis", "Assets/Custom/LethalThings/Scrap/Hamis/HamisPlush.asset", Levels.LevelTypes.All,  Config.hamisSpawnWeight.Value),
+                CustomScrap.Add("ArsonDirty", "Assets/Custom/LethalThings/Scrap/Arson/ArsonPlushDirty.asset", Levels.LevelTypes.All, Config.dirtyArsonSpawnWeight.Value),
+                CustomScrap.Add("Maxwell", "Assets/Custom/LethalThings/Scrap/Maxwell/Dingus.asset", Levels.LevelTypes.All, Config.maxwellSpawnWeight.Value),
+                CustomShopItem.Add("RocketLauncher", "Assets/Custom/LethalThings/Items/RocketLauncher/RocketLauncher.asset", "Assets/Custom/LethalThings/Items/RocketLauncher/RocketLauncherInfo.asset", action: (item) => {
+                    NetworkPrefabs.RegisterNetworkPrefab(item.spawnPrefab.GetComponent<RocketLauncher>().missilePrefab);
+                }, itemPrice:  Config.rocketLauncherPrice.Value, enabled: Config.rocketLauncherEnabled.Value),
+                CustomShopItem.Add("ToyHammer", "Assets/Custom/LethalThings/Items/ToyHammer/ToyHammer.asset", "Assets/Custom/LethalThings/Items/ToyHammer/ToyHammerInfo.asset", Config.toyHammerPrice.Value, enabled: Config.toyHammerEnabled.Value),
+                CustomShopItem.Add("RemoteRadar", "Assets/Custom/LethalThings/Items/Radar/HandheldRadar.asset", "Assets/Custom/LethalThings/Items/Radar/HandheldRadarInfo.asset", Config.remoteRadarPrice.Value, enabled: Config.remoteRadarEnabled.Value),
+                CustomShopItem.Add("PouchyBelt", "Assets/Custom/LethalThings/Items/Pouch/Pouch.asset", "Assets/Custom/LethalThings/Items/Pouch/PouchInfo.asset", Config.pouchyBeltPrice.Value, enabled: Config.pouchyBeltEnabled.Value),
+            };
+
+            customEnemies = new List<CustomEnemy>()
+            {
+                CustomEnemy.Add("Boomba", "Assets/Custom/LethalThings/Enemies/Roomba/Boomba.asset", Config.boombaSpawnWeight.Value, Levels.LevelTypes.All, Enemies.SpawnType.Default, null, "Assets/Custom/LethalThings/Enemies/Roomba/BoombaFile.asset", enabled: true),
+            };
+
+            customUnlockables = new List<CustomUnlockable>
+            {
+                CustomUnlockable.Add("SmallRug", "Assets/Custom/LethalThings/Unlockables/Rug/SmallRug.asset", "Assets/Custom/LethalThings/Unlockables/Rug/RugInfo.asset", null, Config.smallRugPrice.Value, enabled: Config.rugsEnabled.Value),
+                CustomUnlockable.Add("LargeRug", "Assets/Custom/LethalThings/Unlockables/Rug/LargeRug.asset", "Assets/Custom/LethalThings/Unlockables/Rug/RugInfo.asset", null, Config.largeRugPrice.Value, enabled: Config.rugsEnabled.Value),
+            };
+
+
+
 
             foreach (var item in customItems)
             {
@@ -154,15 +213,46 @@ namespace LethalThings
                 }
             }
 
+            foreach (var unlockableItem in customUnlockables)
+            {
+                if (!unlockableItem.enabled)
+                {
+                    continue;
+                }
+
+                var unlockable = MainAssets.LoadAsset<UnlockableItemDef>(unlockableItem.unlockablePath).unlockable;
+                if(unlockable.prefabObject != null)
+                {
+                    // register
+                    NetworkPrefabs.RegisterNetworkPrefab(unlockable.prefabObject);
+                }
+
+                TerminalNode info = null;
+                if(unlockableItem.infoPath != null) { 
+                    info = MainAssets.LoadAsset<TerminalNode>(unlockableItem.infoPath);
+                }
+
+                Unlockables.RegisterUnlockable(unlockable, StoreType.Decor, null, null, info, price: unlockableItem.unlockCost);
+            }
+
             foreach (var enemy in customEnemies)
             {
+                if (!enemy.enabled)
+                {
+                    continue;
+                }
+
                 var enemyAsset = MainAssets.LoadAsset<EnemyType>(enemy.enemyPath);
                 var enemyInfo = MainAssets.LoadAsset<TerminalNode>(enemy.infoNode);
-                var enemyTerminal = MainAssets.LoadAsset<TerminalKeyword>(enemy.infoKeyword);
+                TerminalKeyword enemyTerminal = null;
+                if (enemy.infoKeyword != null)
+                {
+                    enemyTerminal = MainAssets.LoadAsset<TerminalKeyword>(enemy.infoKeyword);
+                }
 
                 NetworkPrefabs.RegisterNetworkPrefab(enemyAsset.enemyPrefab);
 
-                Enemies.RegisterEnemy(enemyAsset, enemy.rarity, enemy.levelFlags, enemy.spawnType, enemyInfo);
+                Enemies.RegisterEnemy(enemyAsset, enemy.rarity, enemy.levelFlags, enemy.spawnType, enemyInfo, enemyTerminal);
             }
 
 

@@ -65,10 +65,16 @@ namespace LethalThings
             base.Start();
             var root = transform.Find("BoombaModel/Roomba/Cube");
 
-            Plugin.logger.LogInfo(root);
-
             meshRenderer = root.GetComponent<MeshRenderer>();
-            lights = root.GetComponentsInChildren<Light>().ToList();
+            lights = root.parent.GetComponentsInChildren<Light>().ToList();
+
+
+
+            // print out the names of all the lights
+            /*foreach (var light in lights)
+            {
+                Plugin.logger.LogInfo("[Boomba] found light, Light name: " + light.name);
+            }*/
         }
 
         public override void DoAIInterval()
@@ -125,7 +131,7 @@ namespace LethalThings
             {
                 light.enabled = false;
             }
-            Plugin.logger.LogInfo("Light off");
+            //Plugin.logger.LogInfo("Light off");
         }
 
         public override void Update()
@@ -142,7 +148,7 @@ namespace LethalThings
                     {
                         light.enabled = true;
                     }
-                    Plugin.logger.LogInfo("Light on");
+                    //Plugin.logger.LogInfo("Light on");
                     StartCoroutine(disableLights(lightOnDuration));
                     // play audio and walkie
                     mineAudio.PlayOneShot(beepNoise);
@@ -395,11 +401,11 @@ namespace LethalThings
             Destroy(gameObject);
         }
 
-        public void Detonate()
+        public void Detonate()  
         {
             mineAudio.pitch = Random.Range(0.93f, 1.07f);
             mineAudio.PlayOneShot(mineDetonate, 1f);
-            Utilities.CreateExplosion(base.transform.position + Vector3.up, spawnExplosionEffect: true, 1, 5.7f, 6.4f);
+            Utilities.CreateExplosion(base.transform.position + Vector3.up, spawnExplosionEffect: true, 100, 5.7f, 6.4f);
         }
 
         public bool MineHasLineOfSight(Vector3 pos)

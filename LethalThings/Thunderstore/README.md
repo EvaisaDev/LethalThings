@@ -1,5 +1,5 @@
 # LethalThings
-**A content mod for Lethal Company, currently only adds 6 scrap items, 4 store items, and 1 game mechanic.**  
+**A content mod for Lethal Company**  
 *List of included content below*  
 
 ## Scrap items
@@ -55,6 +55,17 @@
 	- May piss off anyone actively watching the radar terminal.  
 ![RemoteRadar](https://i.imgur.com/7cdQeNm.png)
 
+## Decor  
+- Small/Large Rug  
+	- Improve your living space!  
+![Rugs](https://i.imgur.com/JXXXeoW.png)
+
+## Enemies
+- Boomba  
+	- A cute little robot.  
+![Boomba](https://i.imgur.com/HbKHfJU.png)
+	
+
 ## Miscelaneous
 - Improved Item Charger.  
 	- Stuffing conductive items in the charger will now electrocute you.  
@@ -68,9 +79,11 @@
 - Antlers  
 	- Models  
 	- Cookie  
+- LocalHyena  
+	- Models  
+	- Textures  
 
 # Latest Changes  
    
-- Added 5 scrap
-- Added 4 store items
-- Added 1 game mechanic
+- Added decor: Rugs   
+- Added enemy: Boomba  

@@ -2,6 +2,7 @@
 using System.Security.Permissions;
 using BepInEx.Logging;
 using BepInEx.Configuration;
+using LethalThings.MonoBehaviours;
 
 [assembly: SecurityPermission(SecurityAction.RequestMinimum, SkipVerification = true)]
 namespace LethalThings
@@ -12,7 +13,7 @@ namespace LethalThings
     {
         public const string ModGUID = "evaisa.lethalthings";
         public const string ModName = "LethalThings";
-        public const string ModVersion = "0.2.4";
+        public const string ModVersion = "0.3.0";
 
         public static ManualLogSource logger;
         public static ConfigFile config;
@@ -21,7 +22,7 @@ namespace LethalThings
         {
             logger = Logger;
             config = Config;
-            LethalThings.Config.Load();
+
             Content.Load();
             Patches.Patches.Load();
 

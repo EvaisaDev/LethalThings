@@ -16,7 +16,6 @@ namespace LethalThings
             {
                 Plugin.logger.LogInfo($"Loading prefab {name}");
                 var item = UnityEngine.Object.Instantiate(Content.Prefabs[name], position, Quaternion.identity);
-                // set owner of rocket launcher
                 item.GetComponent<NetworkObject>().Spawn();
             }
             else

@@ -1,0 +1,167 @@
+﻿using BepInEx.Configuration;
+using System;
+using System.Collections.Generic;
+using System.Text;
+using Unity.Netcode;
+using UnityEngine;
+
+namespace LethalThings.MonoBehaviours
+{
+    // THIS IS THE WORST FUCKING THING I HAVE EVER WRITTEN AND I WANT TO CRY
+    // I TRIED TO MAKE IT GENERIC BUT I FAILED MISERABLY.
+    // IF SOMEONE KNOWS HOW TO REWRITE IT IN A WAY WHERE I DO NOT HAVE TO HAVE THE SAME VARIABLE IN 3 DIFFERENT PLACES PLEASE DO TELL.
+    public class ConfigManager : NetworkBehaviour
+    {
+
+        public static ConfigManager Instance;
+
+        public class Config
+        {
+            public static ConfigEntry<int> arsonSpawnWeight;
+            public static ConfigEntry<int> dirtyArsonSpawnWeight;
+            public static ConfigEntry<int> toimariSpawnWeight;
+            public static ConfigEntry<int> hamisSpawnWeight;
+            public static ConfigEntry<int> cookieSpawnWeight;
+            public static ConfigEntry<int> maxwellSpawnWeight;
+            public static ConfigEntry<bool> maxwellPlayMusicDefault;
+
+            public static ConfigEntry<bool> toyHammerEnabled;
+            public static ConfigEntry<int> toyHammerPrice;
+            public static ConfigEntry<bool> pouchyBeltEnabled;
+            public static ConfigEntry<int> pouchyBeltPrice;
+            public static ConfigEntry<bool> remoteRadarEnabled;
+            public static ConfigEntry<int> remoteRadarPrice;
+            public static ConfigEntry<bool> rocketLauncherEnabled;
+            public static ConfigEntry<int> rocketLauncherPrice;
+
+            public static ConfigEntry<bool> boombaEnabled;
+            public static ConfigEntry<int> boombaSpawnWeight;
+
+            public static ConfigEntry<bool> rugsEnabled;
+
+            public static ConfigEntry<bool> enableItemChargerElectrocution;
+            public static ConfigEntry<bool> disableOverlappingModContent;
+
+            public static void Load()
+            {
+                arsonSpawnWeight = Plugin.config.Bind<int>("Scrap", "Arson", 10, "How much does Arson spawn, higher = more common");
+                dirtyArsonSpawnWeight = Plugin.config.Bind<int>("Scrap", "DirtyArson", 10, "How much does Arson (Dirty) spawn, higher = more common");
+                toimariSpawnWeight = Plugin.config.Bind<int>("Scrap", "Toimari", 20, "How much does Toimari spawn, higher = more common");
+                hamisSpawnWeight = Plugin.config.Bind<int>("Scrap", "Hamis", 20, "How much does Hamis spawn, higher = more common");
+                cookieSpawnWeight = Plugin.config.Bind<int>("Scrap", "Cookie", 20, "How much does Cookie spawn, higher = more common");
+                maxwellSpawnWeight = Plugin.config.Bind<int>("Scrap", "Maxwell", 3, "How much does Maxwell spawn, higher = more common");
+                maxwellPlayMusicDefault = Plugin.config.Bind<bool>("Scrap", "MaxwellPlayMusicDefault", true, "Does Maxwell play music by default?");
+
+
+                toyHammerEnabled = Plugin.config.Bind<bool>("Items", "ToyHammer", true, "Is Toy Hammer enabled?");
+                toyHammerPrice = Plugin.config.Bind<int>("Items", "ToyHammerPrice", 80, "How much does Toy Hammer cost?");
+                pouchyBeltEnabled = Plugin.config.Bind<bool>("Items", "PouchyBelt", true, "Is Pouchy Belt enabled?");
+                pouchyBeltPrice = Plugin.config.Bind<int>("Items", "PouchyBeltPrice", 290, "How much does Pouchy Belt cost?");
+                remoteRadarEnabled = Plugin.config.Bind<bool>("Items", "RemoteRadar", true, "Is Remote Radar enabled?");
+                remoteRadarPrice = Plugin.config.Bind<int>("Items", "RemoteRadarPrice", 240, "How much does Remote Radar cost?");
+                rocketLauncherEnabled = Plugin.config.Bind<bool>("Items", "RocketLauncher", true, "Is Rocket Launcher enabled?");
+                rocketLauncherPrice = Plugin.config.Bind<int>("Items", "RocketLauncherPrice", 500, "How much does Rocket Launcher cost?");
+
+                boombaEnabled = Plugin.config.Bind<bool>("Enemies", "Boomba", true, "Is Boomba allowed to spawn?");
+                boombaSpawnWeight = Plugin.config.Bind<int>("Enemies", "BoombaSpawnWeight", 20, "How much do Boombas spawn, higher = more common");
+
+                rugsEnabled = Plugin.config.Bind<bool>("Decor", "Rugs", true, "Are rugs enabled?");
+
+                enableItemChargerElectrocution = Plugin.config.Bind<bool>("Misc", "EnableItemChargerElectrocution", true, "Do players get electrocuted when stuffing conductive objects in the item charger.");
+                disableOverlappingModContent = Plugin.config.Bind<bool>("Misc", "DisableOverlappingModContent", true, "Disable content from other mods which exists in this one (e.g. maxwell).");
+
+
+
+            }
+        }
+
+
+        public NetworkVariable<int> arsonSpawnWeight = new NetworkVariable<int>(default, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+        public NetworkVariable<int> dirtyArsonSpawnWeight = new NetworkVariable<int>(default, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+        public NetworkVariable<int> toimariSpawnWeight = new NetworkVariable<int>(default, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+        public NetworkVariable<int> hamisSpawnWeight = new NetworkVariable<int>(default, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+        public NetworkVariable<int> cookieSpawnWeight = new NetworkVariable<int>(default, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+        public NetworkVariable<int> maxwellSpawnWeight = new NetworkVariable<int>(default, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+        public NetworkVariable<bool> maxwellPlayMusicDefault = new NetworkVariable<bool>(default, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+
+        public NetworkVariable<bool> toyHammerEnabled = new NetworkVariable<bool>(default, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+        public NetworkVariable<int> toyHammerPrice = new NetworkVariable<int>(default, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+        public NetworkVariable<bool> pouchyBeltEnabled = new NetworkVariable<bool>(default, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+        public NetworkVariable<int> pouchyBeltPrice = new NetworkVariable<int>(default, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+        public NetworkVariable<bool> remoteRadarEnabled = new NetworkVariable<bool>(default, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+        public NetworkVariable<int> remoteRadarPrice = new NetworkVariable<int>(default, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+        public NetworkVariable<bool> rocketLauncherEnabled = new NetworkVariable<bool>(default, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+        public NetworkVariable<int> rocketLauncherPrice = new NetworkVariable<int>(default, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+
+        public NetworkVariable<bool> boombaEnabled = new NetworkVariable<bool>(default, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+        public NetworkVariable<int> boombaSpawnWeight = new NetworkVariable<int>(default, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+
+        public NetworkVariable<bool> rugsEnabled = new NetworkVariable<bool>(default, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+
+        public NetworkVariable<bool> enableItemChargerElectrocution = new NetworkVariable<bool>(default, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+        public NetworkVariable<bool> disableOverlappingModContent = new NetworkVariable<bool>(default, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+
+        public static void Load()
+        {
+            Config.Load();
+            On.GameNetworkManager.Awake += GameNetworkManager_Awake;
+            On.GameNetworkManager.Start += GameNetworkManager_Start;
+        }
+
+
+
+        public void WriteVariables()
+        {
+            arsonSpawnWeight.Value = Config.arsonSpawnWeight.Value;
+            dirtyArsonSpawnWeight.Value = Config.dirtyArsonSpawnWeight.Value;
+            toimariSpawnWeight.Value = Config.toimariSpawnWeight.Value;
+            hamisSpawnWeight.Value = Config.hamisSpawnWeight.Value;
+            cookieSpawnWeight.Value = Config.cookieSpawnWeight.Value;
+            maxwellSpawnWeight.Value = Config.maxwellSpawnWeight.Value;
+            maxwellPlayMusicDefault.Value = Config.maxwellPlayMusicDefault.Value;
+
+            toyHammerEnabled.Value = Config.toyHammerEnabled.Value;
+            toyHammerPrice.Value = Config.toyHammerPrice.Value;
+            pouchyBeltEnabled.Value = Config.pouchyBeltEnabled.Value;
+            pouchyBeltPrice.Value = Config.pouchyBeltPrice.Value;
+            remoteRadarEnabled.Value = Config.remoteRadarEnabled.Value;
+            remoteRadarPrice.Value = Config.remoteRadarPrice.Value;
+            rocketLauncherEnabled.Value = Config.rocketLauncherEnabled.Value;
+            rocketLauncherPrice.Value = Config.rocketLauncherPrice.Value;
+
+            boombaEnabled.Value = Config.boombaEnabled.Value;
+            boombaSpawnWeight.Value = Config.boombaSpawnWeight.Value;
+
+            rugsEnabled.Value = Config.rugsEnabled.Value;
+
+            enableItemChargerElectrocution.Value = Config.enableItemChargerElectrocution.Value;
+            disableOverlappingModContent.Value = Config.disableOverlappingModContent.Value;
+        }
+
+        private static void GameNetworkManager_Awake(On.GameNetworkManager.orig_Awake orig, GameNetworkManager self)
+        {
+            orig(self);
+            Debug.Log("ConfigManager Awake WAAAAH");
+            var prefab = Content.ConfigManagerPrefab;
+            if(prefab == null)
+            {
+                self.GetComponent<NetworkManager>().AddNetworkPrefab(prefab);
+            }
+
+        }
+
+        private static void GameNetworkManager_Start(On.GameNetworkManager.orig_Start orig, GameNetworkManager self)
+        {
+            orig(self);
+            var prefab = Content.ConfigManagerPrefab;
+            if (Instance == null)
+            {
+                // instantiate
+                var obj = UnityEngine.Object.Instantiate(prefab);
+                obj.GetComponent<NetworkObject>().Spawn(false);
+                obj.GetComponent<ConfigManager>().WriteVariables();
+                Instance = obj.GetComponent<ConfigManager>();
+            }
+        }
+    }
+}

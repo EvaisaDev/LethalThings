@@ -1,9 +1,9 @@
 {
     "name": "LethalThings",
     "author": "Evaisa",
-    "version_number": "0.2.2",
+    "version_number": "0.3.1",
     "website_url": "",
-    "description": "Adds new content to Lethal Company",
+    "description": "Adds 6 scrap, 4 store items, 1 enemy, 2 decor, and 1 game mechanic.",
     "dependencies": [
 		"BepInEx-BepInExPack-5.4.2100",
         "Evaisa-HookGenPatcher-0.0.4",
