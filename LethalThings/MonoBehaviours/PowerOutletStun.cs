@@ -23,6 +23,7 @@ namespace LethalThings
 
         public AudioSource strikeAudio;
         public ParticleSystem strikeParticle;
+        private NetworkVariable<int> damage = new NetworkVariable<int>(20, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
 
         public void Awake()
         {
@@ -35,6 +36,10 @@ namespace LethalThings
             strikeParticle = Instantiate(stormyWeather.explosionEffectParticle.gameObject, transform).GetComponent<ParticleSystem>();
             strikeParticle.transform.localPosition = Vector3.zero;
             strikeParticle.gameObject.SetActive(true);
+
+            if (IsHost) {
+                damage.Set(Config.itemChargerElectrocutionDamage.Value);
+            }
         }
 
         private IEnumerator electrocutionDelayed(ItemCharger socket)

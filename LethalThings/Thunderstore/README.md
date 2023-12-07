@@ -47,31 +47,45 @@
 - Utility Belt  
 	- Additional storage for scrap.  
 	- +10 charisma.  
-![Belt](https://i.imgur.com/Jlt0Hmi.png)
+![Belt](https://i.imgur.com/Jlt0Hmi.png)  
   
 - Remote Radar
 	- Access the ship radar system remotely.  
-	- Very limited battery life.  
-	- May piss off anyone actively watching the radar terminal.  
-![RemoteRadar](https://i.imgur.com/7cdQeNm.png)
+	- Very limited battery life.   
+	- May piss off anyone actively watching the radar terminal.    
+![RemoteRadar](https://i.imgur.com/7cdQeNm.png)  
+  
+- Hacking Tool  
+	- Unlock gates, disable turrets and mines, from up close.  
+	- Requires basic math skills.  
+![HackingTool](https://cdn.discordapp.com/attachments/511206402493251586/1180890040990171186/g-3dUIk1R.png)  
 
 ## Decor  
 - Small/Large Rug  
 	- Improve your living space!  
 ![Rugs](https://i.imgur.com/JXXXeoW.png)
+   
+- Fatalities Sign
+	- A sign which reflects the efficacity of your crew.  
+	- Automatically updates.  
+![FatalitiesSign](https://cdn.discordapp.com/attachments/511206402493251586/1180888999951355985/sSk78gIYS.png)  
 
 ## Enemies
 - Boomba  
 	- A cute little robot.  
 ![Boomba](https://i.imgur.com/HbKHfJU.png)
 	
+## Map Hazards
+- Teleporter Trap  
+	- Teleports you to a random place in the facility when you step on it.  
+![TeleporterTrap](https://i.imgur.com/BWPRBwW.png)
 
 ## Miscelaneous
 - Improved Item Charger.  
 	- Stuffing conductive items in the charger will now electrocute you.  
 
 ## Credits:
-- Bobilka   
+- [Bobilka](https://bsky.app/profile/bobilka.bsky.social)   
 	- Models  
 	- Ideas  
 	- Textures  
@@ -85,5 +99,5 @@
 
 # Latest Changes  
    
-- Added decor: Rugs   
-- Added enemy: Boomba  
+- Added decor: Fatalities Sign
+- Added item: Hacking Tool

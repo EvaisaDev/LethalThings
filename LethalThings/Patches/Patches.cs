@@ -13,6 +13,7 @@ namespace LethalThings.Patches
             Miscellaneous.Load();
             PouchyBelt.Initialize();
             HandheldRadar.Load();
+            HackingTool.Load();
 
             // i will surely not forget to remove this when i release.
             //Debug.Load();

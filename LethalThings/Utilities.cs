@@ -1,9 +1,11 @@
 ﻿using GameNetcodeStuff;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace LethalThings
 {
@@ -22,6 +24,63 @@ namespace LethalThings
             {
                 Plugin.logger.LogWarning($"Prefab {name} not found!");
             }
+        }
+
+
+        public static void TeleportPlayer(int playerObj, Vector3 teleportPos)
+        {
+            PlayerControllerB playerControllerB = StartOfRound.Instance.allPlayerScripts[playerObj];
+            // no item dropping woooo
+            //playerControllerB.DropAllHeldItems();
+            if ((bool)UnityEngine.Object.FindObjectOfType<AudioReverbPresets>())
+            {
+                UnityEngine.Object.FindObjectOfType<AudioReverbPresets>().audioPresets[2].ChangeAudioReverbForPlayer(playerControllerB);
+            }
+            playerControllerB.isInElevator = false;
+            playerControllerB.isInHangarShipRoom = false;
+            playerControllerB.isInsideFactory = true;
+            playerControllerB.averageVelocity = 0f;
+            playerControllerB.velocityLastFrame = Vector3.zero;
+            StartOfRound.Instance.allPlayerScripts[playerObj].TeleportPlayer(teleportPos);
+            StartOfRound.Instance.allPlayerScripts[playerObj].beamOutParticle.Play();
+            if (playerControllerB == GameNetworkManager.Instance.localPlayerController)
+            {
+                HUDManager.Instance.ShakeCamera(ScreenShakeType.Big);
+            }
+        }
+
+        public static IEnumerator TeleportPlayerBody(int playerObj, Vector3 teleportPosition)
+        {
+            float startTime = Time.realtimeSinceStartup;
+            yield return new WaitUntil(() => StartOfRound.Instance.allPlayerScripts[playerObj].deadBody != null || Time.realtimeSinceStartup - startTime > 2f);
+            if (StartOfRound.Instance.inShipPhase || SceneManager.sceneCount <= 1)
+            {
+                yield break;
+            }
+            DeadBodyInfo deadBody = StartOfRound.Instance.allPlayerScripts[playerObj].deadBody;
+            if (deadBody != null)
+            {
+                deadBody.attachedTo = null;
+                deadBody.attachedLimb = null;
+                deadBody.secondaryAttachedLimb = null;
+                deadBody.secondaryAttachedTo = null;
+                if (deadBody.grabBodyObject != null && deadBody.grabBodyObject.isHeld && deadBody.grabBodyObject.playerHeldBy != null)
+                {
+                    deadBody.grabBodyObject.playerHeldBy.DropAllHeldItems();
+                }
+                deadBody.isInShip = false;
+                deadBody.parentedToShip = false;
+                deadBody.transform.SetParent(null, worldPositionStays: true);
+                deadBody.SetRagdollPositionSafely(teleportPosition, disableSpecialEffects: true);
+            }
+        }
+
+        public static void TeleportEnemy(EnemyAI enemy, Vector3 teleportPos)
+        {
+            enemy.serverPosition = teleportPos;
+            enemy.transform.position = teleportPos;
+            enemy.agent.Warp(teleportPos);
+            enemy.SyncPositionToClients();
         }
 
         public static void CreateExplosion(Vector3 explosionPosition, bool spawnExplosionEffect = false, int damage = 20, float minDamageRange = 0f, float maxDamageRange = 1f, int enemyHitForce = 6, CauseOfDeath causeOfDeath = CauseOfDeath.Blast, PlayerControllerB attacker = null)

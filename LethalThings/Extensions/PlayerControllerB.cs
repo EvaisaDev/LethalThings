@@ -57,6 +57,8 @@ namespace LethalThings.Extensions
 
         public static void DropItem(this PlayerControllerB self, GrabbableObject grabbableObject, int slotIndex = 0, bool itemsFall = true)
         {
+
+
             if (itemsFall)
             {
                 grabbableObject.parentObject = null;
@@ -75,8 +77,26 @@ namespace LethalThings.Extensions
                 grabbableObject.transform.localScale = grabbableObject.originalScale;
                 grabbableObject.isHeld = false;
                 grabbableObject.isPocketed = false;
-                grabbableObject.startFallingPosition = grabbableObject.transform.parent.InverseTransformPoint(grabbableObject.transform.position);
-                grabbableObject.FallToGround(randomizePosition: true);
+
+                grabbableObject.transform.position = self.serverItemHolder.position;
+
+                grabbableObject.startFallingPosition = grabbableObject.transform.parent.InverseTransformPoint(self.serverItemHolder.position);
+
+                /*
+                // spawn a debug sphere at startFallingPosition
+                GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+                sphere.transform.parent = grabbableObject.transform.parent;
+                sphere.transform.localPosition = grabbableObject.startFallingPosition;
+                sphere.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
+
+                // spawn another debug sphere at the grabbableObject's position
+                GameObject sphere2 = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+                sphere2.transform.parent = grabbableObject.transform.parent;
+                sphere2.transform.localPosition = grabbableObject.transform.localPosition;
+                sphere2.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
+                */
+
+                grabbableObject.FallToGround(true);
                 grabbableObject.fallTime = UnityEngine.Random.Range(-0.3f, 0.05f);
                 if (self.IsOwner)
                 {
@@ -87,7 +107,7 @@ namespace LethalThings.Extensions
                     grabbableObject.playerHeldBy = null;
                 }
 
-                self.SetObjectAsNoLongerHeld(self.isInElevator, self.isInHangarShipRoom, default(Vector3), grabbableObject);
+                self.SetObjectAsNoLongerHeld(self.isInElevator, self.isInHangarShipRoom, grabbableObject.targetFloorPosition, grabbableObject);
             }
             if (self.IsOwner)
             {

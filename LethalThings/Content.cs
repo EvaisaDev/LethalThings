@@ -4,6 +4,7 @@ using LethalThings.MonoBehaviours;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 using UnityEngine;
@@ -137,6 +138,29 @@ namespace LethalThings
             }
         }
 
+        public class CustomMapObject
+        {
+            public string name;
+            public string objectPath;
+            public Levels.LevelTypes levelFlags;
+            public Func<SelectableLevel, AnimationCurve> spawnRateFunction;
+            public bool enabled = true;
+
+            public CustomMapObject(string name, string objectPath, Levels.LevelTypes levelFlags, Func<SelectableLevel, AnimationCurve> spawnRateFunction = null, bool enabled = false)
+            {
+                this.name = name;
+                this.objectPath = objectPath;
+                this.levelFlags = levelFlags;
+                this.spawnRateFunction = spawnRateFunction;
+                this.enabled = enabled;
+            }
+
+            public static CustomMapObject Add(string name, string objectPath, Levels.LevelTypes levelFlags, Func<SelectableLevel, AnimationCurve> spawnRateFunction = null, bool enabled = false)
+            {
+                CustomMapObject mapObject = new CustomMapObject(name, objectPath, levelFlags, spawnRateFunction, enabled);
+                return mapObject;
+            }
+        }
 
 
         public static void TryLoadAssets()
@@ -151,6 +175,7 @@ namespace LethalThings
         public static List<CustomUnlockable> customUnlockables;
         public static List<CustomItem> customItems;
         public static List<CustomEnemy> customEnemies;
+        public static List<CustomMapObject> customMapObjects;
         public static GameObject ConfigManagerPrefab;
         public static void Load()
         {
@@ -170,6 +195,7 @@ namespace LethalThings
                 CustomShopItem.Add("ToyHammer", "Assets/Custom/LethalThings/Items/ToyHammer/ToyHammer.asset", "Assets/Custom/LethalThings/Items/ToyHammer/ToyHammerInfo.asset", Config.toyHammerPrice.Value, enabled: Config.toyHammerEnabled.Value),
                 CustomShopItem.Add("RemoteRadar", "Assets/Custom/LethalThings/Items/Radar/HandheldRadar.asset", "Assets/Custom/LethalThings/Items/Radar/HandheldRadarInfo.asset", Config.remoteRadarPrice.Value, enabled: Config.remoteRadarEnabled.Value),
                 CustomShopItem.Add("PouchyBelt", "Assets/Custom/LethalThings/Items/Pouch/Pouch.asset", "Assets/Custom/LethalThings/Items/Pouch/PouchInfo.asset", Config.pouchyBeltPrice.Value, enabled: Config.pouchyBeltEnabled.Value),
+                CustomShopItem.Add("HackingTool", "Assets/Custom/LethalThings/Items/HackingTool/HackingTool.asset", "Assets/Custom/LethalThings/Items/HackingTool/HackingToolInfo.asset", Config.hackingToolPrice.Value, enabled: Config.hackingToolEnabled.Value)
             };
 
             customEnemies = new List<CustomEnemy>()
@@ -181,8 +207,32 @@ namespace LethalThings
             {
                 CustomUnlockable.Add("SmallRug", "Assets/Custom/LethalThings/Unlockables/Rug/SmallRug.asset", "Assets/Custom/LethalThings/Unlockables/Rug/RugInfo.asset", null, Config.smallRugPrice.Value, enabled: Config.rugsEnabled.Value),
                 CustomUnlockable.Add("LargeRug", "Assets/Custom/LethalThings/Unlockables/Rug/LargeRug.asset", "Assets/Custom/LethalThings/Unlockables/Rug/RugInfo.asset", null, Config.largeRugPrice.Value, enabled: Config.rugsEnabled.Value),
+                CustomUnlockable.Add("FatalitiesSign", "Assets/Custom/LethalThings/Unlockables/Sign/Sign.asset", "Assets/Custom/LethalThings/Unlockables/Sign/SignInfo.asset", null, Config.fatalitiesSignPrice.Value, enabled: Config.fatalitiesSignEnabled.Value)
             };
 
+            customMapObjects = new List<CustomMapObject>()
+            {
+                CustomMapObject.Add("TeleporterTrap", "Assets/Custom/LethalThings/hazards/TeleporterTrap/TeleporterTrap.asset", Levels.LevelTypes.All, (level) => { 
+                    // debug
+                    return new AnimationCurve(new Keyframe(0, 0), new Keyframe(1, 4));
+                    /*
+                    if(!level.spawnableMapObjects.Any(x => x.prefabToSpawn.name == "Landmine"))
+                    {
+                        // no landmines, no teleporter traps
+                        return new AnimationCurve(new Keyframe(0, 0), new Keyframe(1, 0));
+                    }
+
+                    AnimationCurve spawnRate = level.spawnableMapObjects.First(x => x.prefabToSpawn.name == "Landmine").numberToSpawn;
+                    // cut the value of each keyframe in half
+
+                    for (int i = 0; i < spawnRate.keys.Length; i++)
+                    {
+                        spawnRate.MoveKey(i, new Keyframe(spawnRate.keys[i].time, spawnRate.keys[i].value / 2));
+                    }
+
+                    return spawnRate;*/
+                }, Config.teleporterTrapsEnabled.Value)
+            };
 
 
 
@@ -227,6 +277,8 @@ namespace LethalThings
                     NetworkPrefabs.RegisterNetworkPrefab(unlockable.prefabObject);
                 }
 
+                Prefabs.Add(unlockableItem.name, unlockable.prefabObject);
+
                 TerminalNode info = null;
                 if(unlockableItem.infoPath != null) { 
                     info = MainAssets.LoadAsset<TerminalNode>(unlockableItem.infoPath);
@@ -252,7 +304,23 @@ namespace LethalThings
 
                 NetworkPrefabs.RegisterNetworkPrefab(enemyAsset.enemyPrefab);
 
+                Prefabs.Add(enemy.name, enemyAsset.enemyPrefab);
+
                 Enemies.RegisterEnemy(enemyAsset, enemy.rarity, enemy.levelFlags, enemy.spawnType, enemyInfo, enemyTerminal);
+            }
+
+            foreach (var mapObject in customMapObjects)
+            {
+                if (!mapObject.enabled)
+                {
+                    continue;
+                }
+                var mapObjectAsset = MainAssets.LoadAsset<SpawnableMapObjectDef>(mapObject.objectPath);
+                NetworkPrefabs.RegisterNetworkPrefab(mapObjectAsset.spawnableMapObject.prefabToSpawn);
+
+                Prefabs.Add(mapObject.name, mapObjectAsset.spawnableMapObject.prefabToSpawn);
+
+                MapObjects.RegisterMapObject(mapObjectAsset, mapObject.levelFlags, mapObject.spawnRateFunction);
             }
 
 

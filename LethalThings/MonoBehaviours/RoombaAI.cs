@@ -29,6 +29,8 @@ namespace LethalThings
 
         public AudioSource mineFarAudio;
 
+        public AudioSource idleSound;
+
         public AudioClip mineDetonate;
 
         public AudioClip mineTrigger;
@@ -47,11 +49,13 @@ namespace LethalThings
 
         private RoundManager roundManager;
 
-        private float pressMineDebounceTimer;
+        //private float pressMineDebounceTimer;
 
         private bool localPlayerOnMine;
 
         private MeshRenderer meshRenderer;
+
+        public Rigidbody Rigidbody;
 
         // blinking lights
         private List<Light> lights = new List<Light>();
@@ -84,6 +88,10 @@ namespace LethalThings
             {
                 return;
             }
+
+
+            var speed = Rigidbody.velocity.magnitude;
+            idleSound.pitch = Mathf.Lerp(0.8f, 1.2f, speed / 2f);
 
             if (TargetClosestPlayer(4f, true, 70f))
             {
@@ -122,6 +130,7 @@ namespace LethalThings
             {
                 return;
             }
+
         }
 
         public IEnumerator disableLights(float timer)
@@ -173,15 +182,10 @@ namespace LethalThings
 
             Vector3 serverPosition = this.serverPosition;
 
-            if (pressMineDebounceTimer > 0f)
+            /*if (pressMineDebounceTimer > 0f)
             {
                 pressMineDebounceTimer -= Time.deltaTime;
-            }
-            if (localPlayerOnMine && GameNetworkManager.Instance.localPlayerController.teleportedLastFrame)
-            {
-                localPlayerOnMine = false;
-                TriggerMineOnLocalClientByExiting();
-            }
+            }*/
 
             if (stunNormalizedTimer > 0f)
             {
@@ -266,7 +270,7 @@ namespace LethalThings
 
         private void OnTriggerEnter(Collider other)
         {
-            if (hasExploded || pressMineDebounceTimer > 0f)
+            if (hasExploded)
             {
                 return;
             }
@@ -276,8 +280,9 @@ namespace LethalThings
                 if (!(component != GameNetworkManager.Instance.localPlayerController) && component != null && !component.isPlayerDead)
                 {
                     localPlayerOnMine = true;
-                    pressMineDebounceTimer = 0.5f;
+                    //pressMineDebounceTimer = 0.5f;
                     PressMineServerRpc();
+                    StartCoroutine(TriggerMine(other));
                 }
             }
             else
@@ -297,8 +302,9 @@ namespace LethalThings
                 {
                     return;
                 }
-                pressMineDebounceTimer = 0.5f;
+                //pressMineDebounceTimer = 0.5f;
                 PressMineServerRpc();
+                StartCoroutine(TriggerMine(other));
             }
         }
 
@@ -311,45 +317,54 @@ namespace LethalThings
         [ClientRpc]
         public void PressMineClientRpc()
         {
-            pressMineDebounceTimer = 0.5f;
+            //pressMineDebounceTimer = 0.3f;
             mineAudio.PlayOneShot(minePress);
             WalkieTalkie.TransmitOneShotAudio(mineAudio, minePress);
+
+
         }
 
-        private void OnTriggerExit(Collider other)
+
+        public IEnumerator TriggerMine(Collider other)
         {
-            if (hasExploded || !mineActivated)
+            Debug.Log("Object entering mine trigger, gameobject name: " + other.gameObject.name);
+            yield return new WaitForSeconds(0.5f);
+            MineGoesBoom(other);
+        }
+
+        public void MineGoesBoom(Collider other)
+        {
+            if (!hasExploded)
             {
-                return;
-            }
-            Debug.Log("Object leaving mine trigger, gameobject name: " + other.gameObject.name);
-            if (other.CompareTag("Player"))
-            {
-                PlayerControllerB component = other.gameObject.GetComponent<PlayerControllerB>();
-                if (component != null && !component.isPlayerDead && !(component != GameNetworkManager.Instance.localPlayerController))
+                Debug.Log("Object leaving mine trigger, gameobject name: " + other.gameObject.name);
+                if (other.CompareTag("Player"))
                 {
-                    localPlayerOnMine = false;
-                    TriggerMineOnLocalClientByExiting();
+                    PlayerControllerB component = other.gameObject.GetComponent<PlayerControllerB>();
+                    if (component != null && !component.isPlayerDead && !(component != GameNetworkManager.Instance.localPlayerController))
+                    {
+                        localPlayerOnMine = false;
+                        TriggerMineOnLocalClientByExiting();
+                    }
                 }
-            }
-            else
-            {
-                if (!other.CompareTag("PlayerRagdoll") && !other.CompareTag("PhysicsProp"))
+                else
                 {
-                    return;
-                }
-                if ((bool)other.GetComponent<DeadBodyInfo>())
-                {
-                    if (other.GetComponent<DeadBodyInfo>().playerScript != GameNetworkManager.Instance.localPlayerController)
+                    if (!other.CompareTag("PlayerRagdoll") && !other.CompareTag("PhysicsProp"))
                     {
                         return;
                     }
+                    if ((bool)other.GetComponent<DeadBodyInfo>())
+                    {
+                        if (other.GetComponent<DeadBodyInfo>().playerScript != GameNetworkManager.Instance.localPlayerController)
+                        {
+                            return;
+                        }
+                    }
+                    else if ((bool)other.GetComponent<GrabbableObject>() && !other.GetComponent<GrabbableObject>().NetworkObject.IsOwner)
+                    {
+                        return;
+                    }
+                    TriggerMineOnLocalClientByExiting();
                 }
-                else if ((bool)other.GetComponent<GrabbableObject>() && !other.GetComponent<GrabbableObject>().NetworkObject.IsOwner)
-                {
-                    return;
-                }
-                TriggerMineOnLocalClientByExiting();
             }
         }
 

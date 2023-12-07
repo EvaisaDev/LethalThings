@@ -268,6 +268,7 @@ namespace LethalThings
                     if (slot != null)
                     {
                         //playerHeldBy.DiscardItem(slot);
+                        
                         playerHeldBy.DropItem(slot, slotsAvailable + i, true);
                     }
                 }

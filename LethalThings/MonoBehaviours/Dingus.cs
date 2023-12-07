@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.PlayerLoop;
 
@@ -46,21 +47,18 @@ namespace LethalThings
 
         public Animator danceAnimator;
 
+        public NetworkVariable<bool> isPlayingMusic = new NetworkVariable<bool>(Config.maxwellPlayMusicDefault.Value, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
+
         public override void Start()
         {
             base.Start();
             roundManager = FindObjectOfType<RoundManager>();
             noisemakerRandom = new System.Random(StartOfRound.Instance.randomMapSeed + 85);
-            if (Config.maxwellPlayMusicDefault.Value)
-            {
-                danceAnimator.Play("dingusDance");
-            }
-            else
-            {
-                musicAudio.Pause();
-                musicAudioFar.Pause();
-            }
 
+            if(IsOwner)
+            {
+                isPlayingMusic.Value = Config.maxwellPlayMusicDefault.Value;
+            }
 
             Debug.Log("Making the dingus dance");
         }
@@ -97,16 +95,6 @@ namespace LethalThings
                 playerHeldBy.equippedUsableItemQE = false;
             }
             isBeingUsed = false;
-            if (musicAudio.isPlaying)
-            {
-                danceAnimator.Play("dingusDance");
-                Debug.Log("Making the dingus dance");
-            }
-            else
-            {
-                danceAnimator.Play("dingusIdle");
-                Debug.Log("Making the dingus idle");
-            }
             base.DiscardItem();
         }
 
@@ -129,15 +117,9 @@ namespace LethalThings
             // toggle music
             if (right)
             {
-                if (musicAudio.isPlaying)
+                if (IsOwner)
                 {
-                    musicAudio.Pause();
-                    musicAudioFar.Pause();
-                }
-                else
-                {
-                    musicAudio.Play();
-                    musicAudioFar.Play();
+                    isPlayingMusic.Set(!isPlayingMusic.Value);
                 }
             }
 
@@ -146,8 +128,22 @@ namespace LethalThings
         public override void Update()
         {
             base.Update();
-            if (musicAudio.isPlaying)
+            if (isPlayingMusic.Value)
             {
+                if (!musicAudio.isPlaying)
+                {
+                    musicAudio.Play();
+                    musicAudioFar.Play();
+                }
+
+                if (!isHeld)
+                {
+                    danceAnimator.Play("dingusDance");
+                }
+                else
+                {
+                    danceAnimator.Play("dingusIdle");
+                }
                 if (noiseInterval <= 0f)
                 {
                     noiseInterval = 1f;
@@ -162,6 +158,12 @@ namespace LethalThings
             else
             {
                 timesPlayedWithoutTurningOff = 0;
+                danceAnimator.Play("dingusIdle");
+                if (musicAudio.isPlaying)
+                {
+                    musicAudio.Pause();
+                    musicAudioFar.Pause();
+                }
             }
 
         }
