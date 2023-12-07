@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using Unity.Netcode.Components;
 using UnityEngine;
 
 namespace LethalThings
@@ -244,7 +245,10 @@ namespace LethalThings
                 }
 
                 var itemAsset = MainAssets.LoadAsset<Item>(item.itemPath);
-
+                if(itemAsset.spawnPrefab.GetComponent<NetworkTransform>() == null)
+                {
+                    itemAsset.spawnPrefab.AddComponent<NetworkTransform>();
+                }
                 Prefabs.Add(item.name, itemAsset.spawnPrefab);
                 NetworkPrefabs.RegisterNetworkPrefab(itemAsset.spawnPrefab);
                 item.itemAction(itemAsset);

@@ -61,7 +61,7 @@ namespace LethalThings.Patches
             }
             if (Keyboard.current[Key.F2].wasPressedThisFrame)
             {
-                Utilities.LoadPrefab("PouchyBelt", self.localPlayerController.gameplayCamera.transform.position);
+                Utilities.LoadPrefab("Arson", self.localPlayerController.gameplayCamera.transform.position);
             }   
             orig(self);
         }

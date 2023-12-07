@@ -13,7 +13,7 @@ namespace LethalThings
     {
         public const string ModGUID = "evaisa.lethalthings";
         public const string ModName = "LethalThings";
-        public const string ModVersion = "0.5.2";
+        public const string ModVersion = "0.5.4";
 
         public static ManualLogSource logger;
         public static ConfigFile config;

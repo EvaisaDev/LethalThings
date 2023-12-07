@@ -98,6 +98,18 @@
 	- Textures  
 
 # Latest Changes  
-   
-- Added decor: Fatalities Sign
-- Added item: Hacking Tool
+- Hacking Tool audio now cuts out when connection lost / turned off   
+- Item rotations are now synchronized when items are dropped.  
+	- So things such as plushies face the same way for all players.  
+- Switched maxwell music toggle key to Q  
+- Hacking tool no longer breaks when more than 1 exists.  
+- Maxwell music/dance is now synchronized properly.  
+- Boomba now has a movement sound.  
+- Teleporter trap now has a passive sound effect.  
+- Teleporter trap now has a small light attached.  
+- Toimari plush hold position was moved slightly.  
+- Boomba now blows up immediately on touch.  
+- Teleporter Trap now has a different spawn curve.  
+	- Only up to 4 teleporters will spawn per map  
+- Belt now drops items properly when dropped.  
+	

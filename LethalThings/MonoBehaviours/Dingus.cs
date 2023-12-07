@@ -106,7 +106,7 @@ namespace LethalThings
             Debug.Log("Making the dingus idle");
             if (IsOwner)
             {
-                HUDManager.Instance.DisplayTip("Maxwell acquired", "Press E to toggle music.", isWarning: false, useSave: true, "LCTip_UseManual");
+                HUDManager.Instance.DisplayTip("Maxwell acquired", "Press Q to toggle music.", isWarning: false, useSave: true, "LCTip_UseManual");
             }
         }
 
@@ -115,7 +115,7 @@ namespace LethalThings
             base.ItemInteractLeftRight(right);
 
             // toggle music
-            if (right)
+            if (!right)
             {
                 if (IsOwner)
                 {

@@ -232,6 +232,12 @@ namespace LethalThings.MonoBehaviours
                         PlaySoundByID("connecting");
                         break;
                     }
+                case HackState.Off:
+                    {
+                        audioSource.Stop();
+                        audioSourceFar.Stop();
+                        break;
+                    }
             }
         }
 
@@ -240,7 +246,7 @@ namespace LethalThings.MonoBehaviours
             yield return new WaitForSeconds(resetTime);
             if (IsOwner && hackState.Value != HackState.Off)
             {
-                hackState.Set(HackState.Selection);
+                SwitchHackState(HackState.Selection);
             }
         }
 
@@ -320,8 +326,10 @@ namespace LethalThings.MonoBehaviours
             {
                 if (IsOwner)
                 {
-                    hackState.Set(HackState.Off);
+                    SwitchHackState(HackState.Off);
                 }
+                audioSource.Stop();
+                audioSourceFar.Stop();
             }
 
             backLight.enabled = turnedOn;
@@ -336,8 +344,10 @@ namespace LethalThings.MonoBehaviours
                 {
                     if (IsOwner)
                     {
-                        hackState.Set(HackState.Selection);
+                        SwitchHackState(HackState.Selection);
                     }
+                    audioSource.Stop();
+                    audioSourceFar.Stop();
                 }
 
             }
@@ -412,7 +422,7 @@ namespace LethalThings.MonoBehaviours
                         {
                             if (IsOwner)
                             {
-                                hackState.Set(HackState.Selection);
+                                SwitchHackState(HackState.Selection);
                             }
                             break;
                         }
@@ -421,7 +431,7 @@ namespace LethalThings.MonoBehaviours
                         {
                             if (IsOwner)
                             {
-                                hackState.Set(HackState.Hacking);
+                                SwitchHackState(HackState.Hacking);
                                 PlaySoundByID("buttonAccept");
                             }
                             break;
@@ -490,7 +500,7 @@ namespace LethalThings.MonoBehaviours
                                     // success
                                     if (IsOwner)
                                     {
-                                        hackState.Set(HackState.Success);
+                                        SwitchHackState(HackState.Success);
                                         selectedTarget.CallFunctionFromTerminal();
                                         PlaySoundByID("hackingSuccess");
                                     }
@@ -509,7 +519,7 @@ namespace LethalThings.MonoBehaviours
                                 // fail
                                 if (IsOwner)
                                 {
-                                    hackState.Set(HackState.Failed);
+                                    SwitchHackState(HackState.Failed);
                                     PlaySoundByID("hackingFailed");
                                 }
                                 StartCoroutine(Reset());
@@ -604,7 +614,7 @@ namespace LethalThings.MonoBehaviours
                 // switch to connecting state
                 if (hackState.Value == HackState.Selection)
                 {
-                    hackState.Set(HackState.Connecting);
+                    SwitchHackState(HackState.Connecting);
                     PlaySoundByID("buttonAccept");
                 }
             }
@@ -624,14 +634,14 @@ namespace LethalThings.MonoBehaviours
             {
                 if(hackState.Value != HackState.Off)
                 {
-                    hackState.Set(HackState.Off);
+                    SwitchHackState(HackState.Off);
                     selectedTarget = null;
                     PlaySoundByID("turnOff");
                     backLight.enabled = false;
                 }
                 else
                 {
-                    hackState.Set(HackState.Selection);
+                    SwitchHackState(HackState.Selection);
                     UnityEngine.Debug.Log("Switching to selection");
                     PlaySoundByID("turnOn");
                     backLight.enabled = true;
