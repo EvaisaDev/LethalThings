@@ -3,6 +3,7 @@ using System.Security.Permissions;
 using BepInEx.Logging;
 using BepInEx.Configuration;
 using LethalThings.MonoBehaviours;
+using UnityEngine;
 
 [assembly: SecurityPermission(SecurityAction.RequestMinimum, SkipVerification = true)]
 namespace LethalThings
@@ -28,6 +29,29 @@ namespace LethalThings
             Patches.Patches.Load();
 
             Logger.LogInfo("LethalThings loaded guh");
+
+            //On.RoundManager.Awake += RoundManager_Awake;
         }
+
+        /*
+        static bool first = true;
+
+        private void RoundManager_Awake(On.RoundManager.orig_Awake orig, RoundManager self)
+        {
+            if (first)
+            {
+                var dungeon = self.dungeonFlowTypes[0];
+
+                // clone the dungeon flow
+                var newDungeon = Instantiate(dungeon);
+
+                newDungeon.name = "LethalThingsDungeon";
+
+                AudioClip audioClip = Content.MainAssets.LoadAsset<AudioClip>("Assets/Custom/LethalThings/brap.mp3");
+
+                LethalLib.Modules.Dungeon.AddDungeon(newDungeon, 600, LethalLib.Modules.Levels.LevelTypes.All, audioClip);
+            }
+            orig(self);
+        }*/     
     }
 }
