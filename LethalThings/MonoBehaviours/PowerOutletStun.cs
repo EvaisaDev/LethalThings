@@ -38,7 +38,7 @@ namespace LethalThings
             strikeParticle.gameObject.SetActive(true);
 
             if (IsHost) {
-                damage.Set(Config.itemChargerElectrocutionDamage.Value);
+                damage.Value = (Config.itemChargerElectrocutionDamage.Value);
             }
         }
 

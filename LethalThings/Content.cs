@@ -328,6 +328,33 @@ namespace LethalThings
             }
 
 
+            // loop through prefabs
+            foreach (var prefabSet in Prefabs)
+            {
+                var prefab = prefabSet.Value;
+
+                // get prefab name
+                var prefabName = prefabSet.Key;
+
+
+                // get all AudioSources
+                var audioSources = prefab.GetComponentsInChildren<AudioSource>();
+
+                // if has any AudioSources
+
+                if( audioSources.Length > 0)
+                {
+                    var configValue = Config.VolumeConfig.Bind<float>("Volume", $"{prefabName}", 100f, $"Audio volume for {prefabName} (0 - 100)");
+
+                    // loop through AudioSources, adjust volume by multiplier
+                    foreach (var audioSource in audioSources)
+                    {
+                        audioSource.volume *= (configValue.Value / 100);
+                    }
+                }
+            }
+
+
             var types = Assembly.GetExecutingAssembly().GetTypes();
             foreach (var type in types)
             {

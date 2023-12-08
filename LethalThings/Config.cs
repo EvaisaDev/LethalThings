@@ -1,4 +1,5 @@
-﻿using BepInEx.Configuration;
+﻿using BepInEx;
+using BepInEx.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -13,6 +14,7 @@ namespace LethalThings
         public static ConfigEntry<int> hamisSpawnWeight;
         public static ConfigEntry<int> cookieSpawnWeight;
         public static ConfigEntry<int> maxwellSpawnWeight;
+        public static ConfigEntry<float> evilMaxwellChance;
         public static ConfigEntry<bool> maxwellPlayMusicDefault;
 
         public static ConfigEntry<bool> toyHammerEnabled;
@@ -40,6 +42,8 @@ namespace LethalThings
         public static ConfigEntry<int> itemChargerElectrocutionDamage;
         public static ConfigEntry<bool> disableOverlappingModContent;
 
+        public static ConfigFile VolumeConfig;
+
         public static void Load()
         {
             arsonSpawnWeight = Plugin.config.Bind<int>("Scrap", "Arson", 10, "How much does Arson spawn, higher = more common");
@@ -48,6 +52,7 @@ namespace LethalThings
             hamisSpawnWeight = Plugin.config.Bind<int>("Scrap", "Hamis", 20, "How much does Hamis spawn, higher = more common");
             cookieSpawnWeight = Plugin.config.Bind<int>("Scrap", "Cookie", 20, "How much does Cookie spawn, higher = more common");
             maxwellSpawnWeight = Plugin.config.Bind<int>("Scrap", "Maxwell", 3, "How much does Maxwell spawn, higher = more common");
+            evilMaxwellChance = Plugin.config.Bind<float>("Scrap", "MaxwellEvilChance", 10, "Chance for maxwell to be evil, percentage.");
             maxwellPlayMusicDefault = Plugin.config.Bind<bool>("Scrap", "MaxwellPlayMusicDefault", true, "Does Maxwell play music by default?");
 
 
@@ -75,6 +80,9 @@ namespace LethalThings
             enableItemChargerElectrocution = Plugin.config.Bind<bool>("Misc", "EnableItemChargerElectrocution", true, "Do players get electrocuted when stuffing conductive objects in the item charger.");
             itemChargerElectrocutionDamage = Plugin.config.Bind<int>("Misc", "ItemChargerElectrocutionDamage", 20, "How much damage does the item charger electrocution do.");
             disableOverlappingModContent = Plugin.config.Bind<bool>("Misc", "DisableOverlappingModContent", true, "Disable content from other mods which exists in this one (e.g. maxwell).");
+
+
+            VolumeConfig = new ConfigFile(Paths.ConfigPath + "\\LethalThings.AudioVolume.cfg", true);
 
         }
     }

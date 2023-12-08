@@ -195,7 +195,7 @@ namespace LethalThings.MonoBehaviours
         {
             if (IsOwner)
             {
-                hackState.Set(state);
+                hackState.Value = (state);
             }
             var index = 0;
             foreach (var entry in hackGuiElements)

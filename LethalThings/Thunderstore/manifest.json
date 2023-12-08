@@ -1,7 +1,7 @@
 {
     "name": "LethalThings",
     "author": "Evaisa",
-    "version_number": "0.5.4",
+    "version_number": "0.6.0",
     "website_url": "",
     "description": "Adds 6 scrap, 5 store items, 1 enemy, 3 decor, 1 map hazard, and 1 game mechanic.",
     "dependencies": [

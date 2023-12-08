@@ -17,8 +17,8 @@ namespace LethalThings.Patches
         private static void RoundManager_Update(On.RoundManager.orig_Update orig, RoundManager self)
         {
             orig(self);
-            /*
-            if (Keyboard.current.f2Key.wasPressedThisFrame)
+            
+            if (Keyboard.current.f8Key.wasPressedThisFrame)
             {
                 UnityEngine.Debug.Log("Attempting to spawn enemy from vent.");
                 var vents = UnityEngine.Object.FindObjectsOfType<EnemyVent>();
@@ -49,7 +49,7 @@ namespace LethalThings.Patches
 
                 self.SpawnEnemyFromVent(vent);
     
-            }*/
+            }
         }
 
         private static void StartOfRound_Update(On.StartOfRound.orig_Update orig, StartOfRound self)
@@ -61,7 +61,7 @@ namespace LethalThings.Patches
             }
             if (Keyboard.current[Key.F2].wasPressedThisFrame)
             {
-                Utilities.LoadPrefab("Arson", self.localPlayerController.gameplayCamera.transform.position);
+                Utilities.LoadPrefab("Maxwell", self.localPlayerController.gameplayCamera.transform.position);
             }   
             orig(self);
         }

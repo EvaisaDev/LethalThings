@@ -1,5 +1,6 @@
 ﻿using LethalThings.MonoBehaviours;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using Unity.Netcode;
@@ -24,6 +25,8 @@ namespace LethalThings
 
         public AudioClip[] noiseSFXFar;
 
+        public AudioClip evilNoise;
+
         [Space(3f)]
         public float noiseRange;
 
@@ -47,6 +50,11 @@ namespace LethalThings
 
         public Animator danceAnimator;
 
+        private NetworkVariable<bool> isEvil = new NetworkVariable<bool>(false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+
+        public GameObject evilObject;
+
+
         public NetworkVariable<bool> isPlayingMusic = new NetworkVariable<bool>(Config.maxwellPlayMusicDefault.Value, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
 
         public override void Start()
@@ -58,6 +66,11 @@ namespace LethalThings
             if(IsOwner)
             {
                 isPlayingMusic.Value = Config.maxwellPlayMusicDefault.Value;
+            }
+
+            if (IsHost)
+            {
+                isEvil.Value = (UnityEngine.Random.Range(0f, 100f) <= Config.evilMaxwellChance.Value);
             }
 
             Debug.Log("Making the dingus dance");
@@ -119,15 +132,87 @@ namespace LethalThings
             {
                 if (IsOwner)
                 {
-                    isPlayingMusic.Set(!isPlayingMusic.Value);
+                    isPlayingMusic.Value = (!isPlayingMusic.Value);
                 }
             }
 
         }
 
+        public override void InteractItem()
+        {
+            base.InteractItem();
+
+            // disable music and animation
+
+            if (isEvil.Value) 
+            { 
+                if (IsOwner)
+                {
+                    isPlayingMusic.Value = (false);
+                }
+                danceAnimator.Play("dingusIdle");
+                if (musicAudio.isPlaying)
+                {
+                    musicAudio.Pause();
+                    musicAudioFar.Pause();
+                }
+
+                // evil maxwell moment
+                StartCoroutine(evilMaxwellMoment());
+            }
+
+
+        }
+
+        public IEnumerator evilMaxwellMoment()
+        {
+            yield return new WaitForSeconds(1f);
+            noiseAudio.PlayOneShot(evilNoise, 1);
+
+            evilObject.SetActive(true);
+            mainObjectRenderer.enabled = false;
+
+            if (noiseAudioFar != null)
+            {
+                noiseAudioFar.PlayOneShot(evilNoise, 1);
+            }
+            if (triggerAnimator != null)
+            {
+                triggerAnimator.SetTrigger("playAnim");
+            }
+            WalkieTalkie.TransmitOneShotAudio(noiseAudio, evilNoise, 1);
+            RoundManager.Instance.PlayAudibleNoise(transform.position, noiseRange, 1, 0, isInElevator && StartOfRound.Instance.hangarDoorsClosed);
+
+            yield return new WaitForSeconds(1.5f);
+
+
+            // explode
+            Utilities.CreateExplosion(transform.position, true, 100, 0f, 6.4f);
+
+            // set rigidbodies to non kinematic
+            foreach (var rb in evilObject.GetComponentsInChildren<Rigidbody>())
+            {
+                rb.isKinematic = false;
+                // apply force outwards from center
+                rb.AddExplosionForce(1000f, evilObject.transform.position, 100f);
+            }
+
+
+            yield return new WaitForSeconds(2f);
+            // destroy
+            Destroy(gameObject);
+        }
+
         public override void Update()
         {
             base.Update();
+
+            if (isEvil.Value)
+            {
+                grabbable = false;
+                grabbableToEnemies = false;
+            }
+
             if (isPlayingMusic.Value)
             {
                 if (!musicAudio.isPlaying)

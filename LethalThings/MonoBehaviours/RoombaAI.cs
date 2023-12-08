@@ -274,9 +274,17 @@ namespace LethalThings
             {
                 return;
             }
-            if (other.CompareTag("Player"))
+            // log tag and name
+            Plugin.logger.LogInfo("[Boomba] Trigger enter, tag: " + other.tag + ", name: " + other.name);
+            if (other.CompareTag("Player") || other.transform.parent.CompareTag("Player"))
             {
                 PlayerControllerB component = other.gameObject.GetComponent<PlayerControllerB>();
+
+                if(!other.CompareTag("Player"))
+                {
+                    component = other.transform.parent.GetComponent<PlayerControllerB>();
+                }
+
                 if (!(component != GameNetworkManager.Instance.localPlayerController) && component != null && !component.isPlayerDead)
                 {
                     localPlayerOnMine = true;
@@ -287,7 +295,7 @@ namespace LethalThings
             }
             else
             {
-                if (!other.CompareTag("PlayerRagdoll") && !other.CompareTag("PhysicsProp"))
+                if (!other.CompareTag("PlayerRagdoll") /*&& !other.CompareTag("PhysicsProp")*/)
                 {
                     return;
                 }
@@ -337,9 +345,15 @@ namespace LethalThings
             if (!hasExploded)
             {
                 Debug.Log("Object leaving mine trigger, gameobject name: " + other.gameObject.name);
-                if (other.CompareTag("Player"))
+                if (other.CompareTag("Player") || other.transform.parent.CompareTag("Player"))
                 {
                     PlayerControllerB component = other.gameObject.GetComponent<PlayerControllerB>();
+
+                    if (!other.CompareTag("Player"))
+                    {
+                        component = other.transform.parent.GetComponent<PlayerControllerB>();
+                    }
+
                     if (component != null && !component.isPlayerDead && !(component != GameNetworkManager.Instance.localPlayerController))
                     {
                         localPlayerOnMine = false;
@@ -348,7 +362,7 @@ namespace LethalThings
                 }
                 else
                 {
-                    if (!other.CompareTag("PlayerRagdoll") && !other.CompareTag("PhysicsProp"))
+                    if (!other.CompareTag("PlayerRagdoll") /*&& !other.CompareTag("PhysicsProp")*/)
                     {
                         return;
                     }
