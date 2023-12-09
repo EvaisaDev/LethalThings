@@ -16,6 +16,7 @@ namespace LethalThings
         public static ConfigEntry<int> maxwellSpawnWeight;
         public static ConfigEntry<float> evilMaxwellChance;
         public static ConfigEntry<bool> maxwellPlayMusicDefault;
+        public static ConfigEntry<int> glizzySpawnChance;
 
         public static ConfigEntry<bool> toyHammerEnabled;
         public static ConfigEntry<int> toyHammerPrice;
@@ -54,6 +55,7 @@ namespace LethalThings
             maxwellSpawnWeight = Plugin.config.Bind<int>("Scrap", "Maxwell", 3, "How much does Maxwell spawn, higher = more common");
             evilMaxwellChance = Plugin.config.Bind<float>("Scrap", "MaxwellEvilChance", 10, "Chance for maxwell to be evil, percentage.");
             maxwellPlayMusicDefault = Plugin.config.Bind<bool>("Scrap", "MaxwellPlayMusicDefault", true, "Does Maxwell play music by default?");
+            glizzySpawnChance = Plugin.config.Bind<int>("Scrap", "GlizzySpawnChance", 5, "How much do glizzies spawn, higher = more common");
 
 
             toyHammerEnabled = Plugin.config.Bind<bool>("Items", "ToyHammer", true, "Is Toy Hammer enabled?");

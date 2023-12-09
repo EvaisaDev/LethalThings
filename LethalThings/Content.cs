@@ -190,7 +190,7 @@ namespace LethalThings
                 CustomScrap.Add("Hamis", "Assets/Custom/LethalThings/Scrap/Hamis/HamisPlush.asset", Levels.LevelTypes.All,  Config.hamisSpawnWeight.Value),
                 CustomScrap.Add("ArsonDirty", "Assets/Custom/LethalThings/Scrap/Arson/ArsonPlushDirty.asset", Levels.LevelTypes.All, Config.dirtyArsonSpawnWeight.Value),
                 CustomScrap.Add("Maxwell", "Assets/Custom/LethalThings/Scrap/Maxwell/Dingus.asset", Levels.LevelTypes.All, Config.maxwellSpawnWeight.Value),
-                CustomScrap.Add("Glizzy", "Assets/Custom/LethalThings/Scrap/glizzy/glizzy.asset", Levels.LevelTypes.All, 1000),
+                CustomScrap.Add("Glizzy", "Assets/Custom/LethalThings/Scrap/glizzy/glizzy.asset", Levels.LevelTypes.All, Config.glizzySpawnChance.Value),
                 CustomShopItem.Add("RocketLauncher", "Assets/Custom/LethalThings/Items/RocketLauncher/RocketLauncher.asset", "Assets/Custom/LethalThings/Items/RocketLauncher/RocketLauncherInfo.asset", action: (item) => {
                     NetworkPrefabs.RegisterNetworkPrefab(item.spawnPrefab.GetComponent<RocketLauncher>().missilePrefab);
                 }, itemPrice:  Config.rocketLauncherPrice.Value, enabled: Config.rocketLauncherEnabled.Value),
