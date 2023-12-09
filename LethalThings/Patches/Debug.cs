@@ -57,12 +57,52 @@ namespace LethalThings.Patches
             
             if (Keyboard.current[Key.F1].wasPressedThisFrame)
             {
-                Utilities.LoadPrefab("HackingTool", self.localPlayerController.gameplayCamera.transform.position);
+                Utilities.LoadPrefab("Arson", self.localPlayerController.gameplayCamera.transform.position);
             }
             if (Keyboard.current[Key.F2].wasPressedThisFrame)
             {
-                Utilities.LoadPrefab("Maxwell", self.localPlayerController.gameplayCamera.transform.position);
+                Utilities.LoadPrefab("Cookie", self.localPlayerController.gameplayCamera.transform.position);
             }   
+            if (Keyboard.current[Key.F3].wasPressedThisFrame)
+            {
+                Utilities.LoadPrefab("Bilka", self.localPlayerController.gameplayCamera.transform.position);
+            }
+            if (Keyboard.current[Key.F4].wasPressedThisFrame)
+            {
+                Utilities.LoadPrefab("Hamis", self.localPlayerController.gameplayCamera.transform.position);
+            }
+            if (Keyboard.current[Key.F5].wasPressedThisFrame)
+            {
+                Utilities.LoadPrefab("ArsonDirty", self.localPlayerController.gameplayCamera.transform.position);
+            }
+            if (Keyboard.current[Key.F6].wasPressedThisFrame)
+            {
+                Utilities.LoadPrefab("Maxwell", self.localPlayerController.gameplayCamera.transform.position);
+            }
+            if (Keyboard.current[Key.F8].wasPressedThisFrame)
+            {
+                Utilities.LoadPrefab("Glizzy", self.localPlayerController.gameplayCamera.transform.position);
+            }
+            if (Keyboard.current[Key.F9].wasPressedThisFrame)
+            {
+                Utilities.LoadPrefab("RocketLauncher", self.localPlayerController.gameplayCamera.transform.position);
+            }
+            if (Keyboard.current[Key.F10].wasPressedThisFrame)
+            {
+                Utilities.LoadPrefab("ToyHammer", self.localPlayerController.gameplayCamera.transform.position);
+            }
+            if (Keyboard.current[Key.F11].wasPressedThisFrame)
+            {
+                Utilities.LoadPrefab("RemoteRadar", self.localPlayerController.gameplayCamera.transform.position);
+            }
+            if (Keyboard.current[Key.F12].wasPressedThisFrame)
+            {
+                Utilities.LoadPrefab("PouchyBelt", self.localPlayerController.gameplayCamera.transform.position);
+            }
+            if (Keyboard.current[Key.Numpad0].wasPressedThisFrame)
+            {
+                Utilities.LoadPrefab("HackingTool", self.localPlayerController.gameplayCamera.transform.position);
+            }
             orig(self);
         }
     }

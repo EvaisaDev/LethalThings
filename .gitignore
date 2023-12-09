@@ -73,4 +73,5 @@ crashlytics-build.properties
 
 /LethalThings/bin
 /LethalThings/obj
-/LethalThings/bin
+
+/LethalThings/DynamicBone/*

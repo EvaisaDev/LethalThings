@@ -17,7 +17,7 @@ namespace LethalThings.Patches
             HackingTool.Load();
 
             // i will surely not forget to remove this when i release.
-            //Debug.Load();
+            Debug.Load();
         }
     }
 }
