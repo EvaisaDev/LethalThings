@@ -34,7 +34,7 @@ namespace LethalThings
                 return;
             }
             self.currentlyGrabbingObject = self.hit.collider.transform.gameObject.GetComponent<GrabbableObject>();
-            if (!GameNetworkManager.Instance.gameHasStarted && !self.currentlyGrabbingObject.itemProperties.canBeGrabbedBeforeGameStart && !StartOfRound.Instance.testRoom.activeSelf)
+            if (!GameNetworkManager.Instance.gameHasStarted && !self.currentlyGrabbingObject.itemProperties.canBeGrabbedBeforeGameStart && (StartOfRound.Instance.testRoom == null || !StartOfRound.Instance.testRoom.activeSelf))
             {
                 return;
             }

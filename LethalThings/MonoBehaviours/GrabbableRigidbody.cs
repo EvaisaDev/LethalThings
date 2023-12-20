@@ -12,7 +12,7 @@ namespace LethalThings.MonoBehaviours
     [RequireComponent(typeof(NetworkTransform))]
     public class GrabbableRigidbody : GrabbableObject
     {
-        public float gravity = 5f;
+        public float gravity = 9.8f;
         internal Rigidbody rb;
         public override void Start()
         {
@@ -40,23 +40,33 @@ namespace LethalThings.MonoBehaviours
 
         public override void Update()
         {
+            // hax
             fallTime = 1.0f;
             reachedFloorTarget = true;
             var wasHeld = isHeld;
+            // hella hax
             isHeld = true;
             base.Update();
             isHeld = wasHeld;
+
         }
+
 
         public void FixedUpdate()
         {
             // handle gravity if rigidbody is enabled
             if (IsHost) { 
-                if (!rb.isKinematic)
+                if (!rb.isKinematic && !isHeld)
                 {
                     rb.useGravity = false;
 
                     rb.AddForce(Vector3.down * gravity, ForceMode.Acceleration);
+
+                    Plugin.logger.LogMessage("Velocity: " + rb.velocity.ToString());
+                }
+                else
+                {
+                    rb.AddForce(Vector3.zero, ForceMode.VelocityChange);
                 }
             }
         }
@@ -65,7 +75,7 @@ namespace LethalThings.MonoBehaviours
         {
             if (parentObject != null && !rb.isKinematic)
             {
-                Plugin.logger.LogMessage("Position being controlled by lateupdate!!");
+                //Plugin.logger.LogMessage("Position being controlled by lateupdate!!");
                 base.transform.rotation = parentObject.rotation;
                 base.transform.Rotate(itemProperties.rotationOffset);
                 base.transform.position = parentObject.position;

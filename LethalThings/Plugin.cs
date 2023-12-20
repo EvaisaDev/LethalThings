@@ -26,6 +26,7 @@ namespace LethalThings
             logger = Logger;
             config = Config;
 
+            Utilities.Init();
             LethalThings.Config.Load();
             Content.Load();
             Patches.Patches.Load();

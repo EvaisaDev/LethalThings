@@ -18,9 +18,6 @@ namespace LethalThings.MonoBehaviours
     public class Dart : GrabbableRigidbody
     {
 
-
-        public LayerMask hitLayerMask;
-
         private PlayerControllerB playerThrownBy;
 
         public Transform dartTip;
@@ -37,20 +34,29 @@ namespace LethalThings.MonoBehaviours
         {
             base.Start();
             
-            if (IsHost && !isThrown)
+            if (IsHost)
             {
                 rb.isKinematic = false;
                 rb.AddForce(dartTip.forward * throwForce, ForceMode.Impulse);
                 t = 0f;
+                isThrown = true;
             }
-            isThrown = true;
+
+        }
+
+        public override void EquipItem()
+        {
+            base.EquipItem();
+            isThrown = false;
+            rb.isKinematic = false;
+            t = 0f;
         }
 
         public override void ItemActivate(bool used, bool buttonDown = true)
         {
             base.ItemActivate(used, buttonDown);
             playerThrownBy = playerHeldBy;
-            if (IsOwner && !isThrown)
+            if (IsOwner)
             {
                 
                 playerHeldBy.DiscardHeldObject();
@@ -59,17 +65,29 @@ namespace LethalThings.MonoBehaviours
 
                 // cast ray forward for 100 units, if it hit something, we take the direction from the dart tip to the hit point
                 RaycastHit hit;
-                if (Physics.Raycast(playerThrownBy.gameplayCamera.transform.position, playerThrownBy.gameplayCamera.transform.forward, out hit, 100f, hitLayerMask))
+                if (Physics.Raycast(playerThrownBy.gameplayCamera.transform.position, playerThrownBy.gameplayCamera.transform.forward, out hit, 100f, Utilities.MaskForLayer(gameObject.layer), QueryTriggerInteraction.Ignore))
                 {
                     throwDir.Value = (hit.point - dartTip.position).normalized;
                 }
 
-                rb.AddForce(throwDir.Value * throwForce, ForceMode.Impulse);
-
-                t = 0f;
+                ThrowDartServerRpc(throwDir.Value);
+                
             }
-            isThrown = true;
+           
         }
+
+        [ServerRpc(RequireOwnership = false)]
+        public void ThrowDartServerRpc(Vector3 throwDir)
+        {
+            t = 0f;
+            rb.isKinematic = false;
+            isThrown = true;
+
+            Plugin.logger.LogMessage($"Throwing dart with velocity: {throwDir * throwForce}");
+
+            rb.AddForce(throwDir * throwForce, ForceMode.Impulse);
+        }
+
 
         [ServerRpc(RequireOwnership = false)]
         public void PlayDartHitSoundServerRpc()
@@ -115,7 +133,7 @@ namespace LethalThings.MonoBehaviours
                     RaycastHit hit;
                     // do spherecast at dart tip to see if we hit anything
                     
-                    if (Physics.SphereCast(dartTip.position, 0.01f, transform.forward, out hit, 0.01f, hitLayerMask))
+                    if (Physics.SphereCast(dartTip.position, 0.01f, transform.forward, out hit, 0.01f, Utilities.MaskForLayer(gameObject.layer), QueryTriggerInteraction.Ignore))
                     {
                         // if we hit something, parent ourselves to the closest child of the hit object
                         var closestChild = hit.transform;
@@ -125,9 +143,9 @@ namespace LethalThings.MonoBehaviours
                             return;
                         }
 
-                        transform.parent = closestChild;
+                        TryParent(hit.collider);
 
-                        //Plugin.logger.LogMessage($"Hit target ({closestChild}) wawa!!! Layer: ({closestChild.gameObject.layer})");
+                        Plugin.logger.LogMessage($"(1) Hit target ({closestChild}) wawa!!! Layer: ({closestChild.gameObject.layer})");
 
                         PlayDartHitSoundServerRpc();
 
@@ -140,18 +158,92 @@ namespace LethalThings.MonoBehaviours
             base.Update();
         }
 
+        public void TryParent(Collider collider)
+        {
+            var rootMarker = collider.GetComponent<RootMarker>();
+            if(rootMarker != null)
+            {
+                // get root
+                var root = rootMarker.root;
+
+                // find closest child in terms of distance
+                var closestChild = root;
+                var closestDistance = Vector3.Distance(transform.position, closestChild.position);
+                foreach (Transform child in root)
+                {
+                    var distance = Vector3.Distance(transform.position, child.position);
+                    if (distance < closestDistance)
+                    {
+                        closestChild = child;
+                        closestDistance = distance;
+                    }
+                }
+
+                // parent to closest child
+                transform.parent = closestChild;
+            }
+            else
+            {
+                // recurse up the parent chain until we find PlayerControllerB
+                var found = false;
+                var parent = collider.transform;
+                while (!found)
+                {
+                    // if parent is null, return
+                    if (parent == null)
+                    {
+                        break;
+                    }
+                    if (parent.GetComponent<PlayerControllerB>())
+                    {
+                        found = true;
+                    }
+                    else
+                    {
+                        parent = parent.parent;
+                    }
+                }
+
+                if (!found)
+                {
+                    transform.parent = collider.transform;
+                }
+                else
+                {
+                    // find closest child in terms of distance
+                    var closestChild = parent;
+                    var closestDistance = Vector3.Distance(transform.position, closestChild.position);
+                    foreach (Transform child in parent)
+                    {
+                        var distance = Vector3.Distance(transform.position, child.position);
+                        if (distance < closestDistance)
+                        {
+                            closestChild = child;
+                            closestDistance = distance;
+                        }
+                    }
+
+                    // parent to closest child
+                    transform.parent = closestChild;
+                }
+            }
+
+            Plugin.logger.LogMessage($"Parented to: {transform.parent}");
+        }
 
         public void OnTriggerEnter(Collider collision)
         {
 
-            if (IsHost)
+            if (IsHost && !collision.isTrigger)
             {
                 if (isThrown)
                 {
                     var closestChild = collision.transform;
 
+                    Plugin.logger.LogMessage($"(2) Hit target ({closestChild}) wawa!!! Layer: ({closestChild.gameObject.layer})");
+
                     // if hit layer is not in mask, return
-                    if ((hitLayerMask.value & 1 << closestChild.gameObject.layer) == 0)
+                    if ((Utilities.MaskForLayer(gameObject.layer) & 1 << closestChild.gameObject.layer) == 0)
                     {
                         return;
                     }
@@ -163,7 +255,7 @@ namespace LethalThings.MonoBehaviours
                     }
 
 
-                    transform.parent = closestChild;
+                    TryParent(collision);
 
                     //Plugin.logger.LogMessage($"Hit target ({closestChild}) wawa!!! Layer: ({closestChild.gameObject.layer})");
 
@@ -181,14 +273,16 @@ namespace LethalThings.MonoBehaviours
         public void OnCollisionEnter(Collision collision)
         {
 
-            if (IsHost)
+            if (IsHost && !collision.collider.isTrigger)
             {
                 if (isThrown)
                 {
                     var closestChild = collision.transform;
 
+                    Plugin.logger.LogMessage($"(3) Hit target ({closestChild}) wawa!!! Layer: ({closestChild.gameObject.layer})");
+
                     // if hit layer is not in mask, return
-                    if ((hitLayerMask.value & 1 << closestChild.gameObject.layer) == 0)
+                    if ((Utilities.MaskForLayer(gameObject.layer) & 1 << closestChild.gameObject.layer) == 0)
                     {
                         return;
                     }
@@ -200,7 +294,7 @@ namespace LethalThings.MonoBehaviours
                     }
 
 
-                    transform.parent = closestChild;
+                    TryParent(collision.collider);
 
                     //Plugin.logger.LogMessage($"Hit target ({closestChild}) wawa!!! Layer: ({closestChild.gameObject.layer})");
 
