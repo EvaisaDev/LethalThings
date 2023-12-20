@@ -54,11 +54,9 @@ namespace LethalThings.MonoBehaviours
             if (IsHost) { 
                 if (!rb.isKinematic)
                 {
-                    //rb.AddForce(Vector3.down * gravity, ForceMode.Acceleration);
-                    //Plugin.logger.LogMessage("Adding gravity to rigidbody!! wawa");
                     rb.useGravity = false;
-                    // apply downwards force, gravity.
-                    rb.AddForce(Vector3.down * gravity);
+
+                    rb.AddForce(Vector3.down * gravity, ForceMode.Acceleration);
                 }
             }
         }

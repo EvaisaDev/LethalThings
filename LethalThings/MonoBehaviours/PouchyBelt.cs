@@ -22,7 +22,7 @@ namespace LethalThings
 
         public static void Initialize()
         {
-            On.GameNetcodeStuff.PlayerControllerB.SetHoverTipAndCurrentInteractTrigger += PlayerControllerB_SetHoverTipAndCurrentInteractTrigger;
+            //On.GameNetcodeStuff.PlayerControllerB.SetHoverTipAndCurrentInteractTrigger += PlayerControllerB_SetHoverTipAndCurrentInteractTrigger;
             On.GameNetcodeStuff.PlayerControllerB.BeginGrabObject += PlayerControllerB_BeginGrabObject;
         }
 
