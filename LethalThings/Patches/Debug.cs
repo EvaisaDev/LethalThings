@@ -1,6 +1,8 @@
-﻿using System;
+﻿using LethalThings.MonoBehaviours;
+using System;
 using System.Collections.Generic;
 using System.Text;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -10,15 +12,28 @@ namespace LethalThings.Patches
     {
         public static void Load()
         {
-            On.StartOfRound.Update += StartOfRound_Update;
-            On.RoundManager.Update += RoundManager_Update;
+            //On.StartOfRound.Update += StartOfRound_Update;
+            //On.RoundManager.Update += RoundManager_Update;
+            On.StartOfRound.Start += StartOfRound_Start;
+        }
+
+        private static void StartOfRound_Start(On.StartOfRound.orig_Start orig, StartOfRound self)
+        {
+            orig(self);
+
+            if(Plugin.devMode && DevMenu.Instance == null)
+            {
+                var gameObject = GameObject.Instantiate(Content.devMenuPrefab);
+                // spawn network object
+                gameObject.GetComponent<NetworkObject>().Spawn();
+            }
         }
 
         private static void RoundManager_Update(On.RoundManager.orig_Update orig, RoundManager self)
         {
             orig(self);
             
-            if (Keyboard.current.f8Key.wasPressedThisFrame)
+            /*if (Keyboard.current.f8Key.wasPressedThisFrame)
             {
                 UnityEngine.Debug.Log("Attempting to spawn enemy from vent.");
                 var vents = UnityEngine.Object.FindObjectsOfType<EnemyVent>();
@@ -49,7 +64,7 @@ namespace LethalThings.Patches
 
                 self.SpawnEnemyFromVent(vent);
     
-            }
+            }*/
         }
 
         private static void StartOfRound_Update(On.StartOfRound.orig_Update orig, StartOfRound self)
@@ -57,51 +72,28 @@ namespace LethalThings.Patches
             
             if (Keyboard.current[Key.F1].wasPressedThisFrame)
             {
-                Utilities.LoadPrefab("Arson", self.localPlayerController.gameplayCamera.transform.position);
+                Utilities.LoadPrefab("Flaregun", self.localPlayerController.gameplayCamera.transform.position);
             }
             if (Keyboard.current[Key.F2].wasPressedThisFrame)
             {
-                Utilities.LoadPrefab("Cookie", self.localPlayerController.gameplayCamera.transform.position);
+                Utilities.LoadPrefab("FlaregunAmmo", self.localPlayerController.gameplayCamera.transform.position);
             }   
             if (Keyboard.current[Key.F3].wasPressedThisFrame)
             {
-                Utilities.LoadPrefab("Bilka", self.localPlayerController.gameplayCamera.transform.position);
+                Utilities.LoadPrefab("RocketLauncher", self.localPlayerController.gameplayCamera.transform.position);
             }
             if (Keyboard.current[Key.F4].wasPressedThisFrame)
             {
-                Utilities.LoadPrefab("Hamis", self.localPlayerController.gameplayCamera.transform.position);
-            }
-            if (Keyboard.current[Key.F5].wasPressedThisFrame)
-            {
-                Utilities.LoadPrefab("ArsonDirty", self.localPlayerController.gameplayCamera.transform.position);
-            }
-            if (Keyboard.current[Key.F6].wasPressedThisFrame)
-            {
                 Utilities.LoadPrefab("Maxwell", self.localPlayerController.gameplayCamera.transform.position);
             }
-            if (Keyboard.current[Key.F8].wasPressedThisFrame)
-            {
-                Utilities.LoadPrefab("Glizzy", self.localPlayerController.gameplayCamera.transform.position);
-            }
-            if (Keyboard.current[Key.F9].wasPressedThisFrame)
-            {
-                Utilities.LoadPrefab("RocketLauncher", self.localPlayerController.gameplayCamera.transform.position);
-            }
-            if (Keyboard.current[Key.F10].wasPressedThisFrame)
-            {
-                Utilities.LoadPrefab("ToyHammer", self.localPlayerController.gameplayCamera.transform.position);
-            }
-            if (Keyboard.current[Key.F11].wasPressedThisFrame)
-            {
-                Utilities.LoadPrefab("RemoteRadar", self.localPlayerController.gameplayCamera.transform.position);
-            }
-            if (Keyboard.current[Key.F12].wasPressedThisFrame)
+            if (Keyboard.current[Key.F5].wasPressedThisFrame)
             {
                 Utilities.LoadPrefab("PouchyBelt", self.localPlayerController.gameplayCamera.transform.position);
             }
             if (Keyboard.current[Key.Numpad0].wasPressedThisFrame)
             {
-                Utilities.LoadPrefab("HackingTool", self.localPlayerController.gameplayCamera.transform.position);
+                // goofy ahh player kill
+                HUDManager.Instance.localPlayer.KillPlayer(Vector3.zero, spawnBody: false, CauseOfDeath.Crushing);
             }
             orig(self);
         }

@@ -309,11 +309,23 @@ namespace LethalThings
 
         public override void DiscardItem()
         {
+
+
             RemoveItemSlots();
 
             previousPlayerHeldBy = null;
 
             base.DiscardItem();
+        }
+
+        public override void OnNetworkDespawn()
+        {
+            RemoveItemSlots();
+
+            previousPlayerHeldBy = null;
+
+            base.OnNetworkDespawn();
+
         }
 
         new public void GrabItemOnClient()

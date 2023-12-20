@@ -1,4 +1,5 @@
-﻿using LethalThings.MonoBehaviours;
+﻿using LethalLib.Modules;
+using LethalThings.MonoBehaviours;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -9,7 +10,7 @@ using UnityEngine.PlayerLoop;
 
 namespace LethalThings
 {
-    public class Dingus : GrabbableObject
+    public class Dingus : SaveableObject
     {
 
         public AudioSource noiseAudio;
@@ -50,6 +51,10 @@ namespace LethalThings
 
         public Animator danceAnimator;
 
+        public bool wasLoadedFromSave = false;
+
+        public bool exploding = false;
+
         private NetworkVariable<bool> isEvil = new NetworkVariable<bool>(false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
 
         public GameObject evilObject;
@@ -57,13 +62,58 @@ namespace LethalThings
 
         public NetworkVariable<bool> isPlayingMusic = new NetworkVariable<bool>(Config.maxwellPlayMusicDefault.Value, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
 
+        /*
+        public override object SaveObjectData()
+        {
+            Plugin.logger.LogInfo("Saving object save data");
+            return isEvil.Value;
+        }
+
+        public override void LoadObjectData(object saveData)
+        {
+            Plugin.logger.LogInfo("Loading object save data");
+            wasLoadedFromSave = true;
+
+            if (IsHost)
+            {
+                isEvil.Value = (bool)saveData;
+            }
+        }
+        */
+
+        public override void SaveObjectData()
+        {
+            SaveData.SaveObjectData<bool>("dingusBeEvil", isEvil.Value, uniqueId);
+        }
+
+        public override void LoadObjectData()
+        {
+            if (IsHost)
+            {
+                isEvil.Value = SaveData.LoadObjectData<bool>("dingusBeEvil", uniqueId);
+            }
+        }
+
+
         public override void Start()
         {
             base.Start();
             roundManager = FindObjectOfType<RoundManager>();
             noisemakerRandom = new System.Random(StartOfRound.Instance.randomMapSeed + 85);
 
-            if(IsOwner)
+            Debug.Log("Making the dingus dance");
+        }
+
+        public override void OnNetworkSpawn()
+        {
+            base.OnNetworkSpawn();
+
+            Plugin.logger.LogInfo("Networkspawn");
+
+            Plugin.logger.LogInfo($"{isPlayingMusic}, {isPlayingMusic.Value}, {Config.maxwellPlayMusicDefault}, {Config.maxwellPlayMusicDefault.Value}");
+
+
+            if (IsOwner)
             {
                 isPlayingMusic.Value = Config.maxwellPlayMusicDefault.Value;
             }
@@ -72,8 +122,6 @@ namespace LethalThings
             {
                 isEvil.Value = (UnityEngine.Random.Range(0f, 100f) <= Config.evilMaxwellChance.Value);
             }
-
-            Debug.Log("Making the dingus dance");
         }
 
         public override void ItemActivate(bool used, bool buttonDown = true)
@@ -117,10 +165,10 @@ namespace LethalThings
             playerHeldBy.equippedUsableItemQE = true;
             danceAnimator.Play("dingusIdle");
             Debug.Log("Making the dingus idle");
-            if (IsOwner)
+            /*if (IsOwner)
             {
-                HUDManager.Instance.DisplayTip("Maxwell acquired", "Press Q to toggle music.", isWarning: false, useSave: true, "LCTip_UseManual");
-            }
+                HUDManager.Instance.DisplayTip("Maxwell acquired", "Press Q to toggle music.");
+            }*/
         }
 
         public override void ItemInteractLeftRight(bool right)
@@ -144,24 +192,59 @@ namespace LethalThings
 
             // disable music and animation
 
-            if (isEvil.Value) 
-            { 
+            if (isEvil.Value && !exploding) 
+            {
+                exploding = true;
                 if (IsOwner)
                 {
                     isPlayingMusic.Value = (false);
-                }
-                danceAnimator.Play("dingusIdle");
-                if (musicAudio.isPlaying)
-                {
-                    musicAudio.Pause();
-                    musicAudioFar.Pause();
-                }
 
-                // evil maxwell moment
-                StartCoroutine(evilMaxwellMoment());
+
+                    if (IsHost)
+                    {
+                       // EvilMaxwellTruly();
+                        EvilMaxwellClientRpc();
+                    }
+                    else
+                    {
+                        EvilMaxwellServerRpc();
+                    }
+                }
+                
             }
 
 
+        }
+
+        public void EvilMaxwellTruly()
+        {
+            danceAnimator.Play("dingusIdle");
+            if (musicAudio.isPlaying)
+            {
+                musicAudio.Pause();
+                musicAudioFar.Pause();
+            }
+
+            // evil maxwell moment
+            StartCoroutine(evilMaxwellMoment());
+        }
+
+        [ServerRpc(RequireOwnership = false)]
+        public void EvilMaxwellServerRpc()
+        {
+            //EvilMaxwellTruly();
+
+            EvilMaxwellClientRpc();
+
+            //Plugin.logger.LogInfo("Evil maxwell moment Server");
+        }
+
+        [ClientRpc]
+        public void EvilMaxwellClientRpc()
+        {
+            EvilMaxwellTruly();
+
+            Plugin.logger.LogInfo("Evil maxwell moment");
         }
 
         public IEnumerator evilMaxwellMoment()

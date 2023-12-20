@@ -16,7 +16,9 @@ namespace LethalThings.Patches
             {
                 On.StartOfRound.Start += StartOfRound_Start;
             }
+
         }
+
 
         private static void StartOfRound_Start(On.StartOfRound.orig_Start orig, StartOfRound self)
         {

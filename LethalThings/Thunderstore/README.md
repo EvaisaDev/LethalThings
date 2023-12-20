@@ -20,8 +20,9 @@
 	- May nibble you a little.  
 ![Hämis](https://i.imgur.com/rM41HbK.png)
   
-- Cookie Fumo  
+- Cookie Fumo 
 	- Says strange things when you squeeze her.  
+	- (Nikki) the character by Jek Korpen  
 ![Cookie](https://i.imgur.com/aMiji2H.png)
   
 - Maxwell
@@ -29,7 +30,11 @@
 	- Meows.  
 	- Plays a silly little song.  
 	- Does a silly little dance.  
-![Maxwell](https://i.imgur.com/nccQTQy.png)
+![Maxwell](https://i.imgur.com/nccQTQy.png)  
+
+- Glizzy  
+	- Can be thrown at colleagues.  
+![Glizzy](https://i.imgur.com/OQUi2hq.png)  
   
 ## Store items
 - Toy Hammer
@@ -85,20 +90,22 @@
 	- Stuffing conductive items in the charger will now electrocute you.  
 
 ## Credits:
-- [Bobilka](https://bsky.app/profile/bobilka.bsky.social)   
+- [Bobilka](https://www.artstation.com/bobilka)   
 	- Models  
 	- Ideas  
 	- Textures  
 	- Testing  
 - Antlers  
 	- Models  
-	- Cookie  
+	- Cookie model 
 - LocalHyena  
 	- Models  
 	- Textures  
+- [Jek Korpen](https://twitter.com/Jek_Korpen)  
+	- Nikki (Cookie) character design.  
 
 # Latest Changes  
-- Updated maxwell (funny)  
-- Added audio volume config file.  
-- Fixed Boomba map dot  
-	
+- Glizzy gobbler update.  
+- Arson go chompy  
+- Recompiled assets against latest update.   
+- Fixed glizzy scan name.

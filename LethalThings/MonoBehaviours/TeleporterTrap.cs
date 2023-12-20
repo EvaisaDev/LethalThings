@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Unity.Netcode;
 using UnityEngine;
@@ -19,6 +20,9 @@ namespace LethalThings.MonoBehaviours
         public AudioClip teleporterBeamUpSFX;
         public AudioClip startTeleportingSFX;
         public AudioClip teleporterPrimeSFX;
+
+        private List<PlayerControllerB> teleportingPlayers = new List<PlayerControllerB>();
+        private List<EnemyAI> teleportingAI = new List<EnemyAI>();
 
         public void Update()
         {
@@ -38,10 +42,11 @@ namespace LethalThings.MonoBehaviours
             if (other.CompareTag("Player"))
             {
                 PlayerControllerB playerControllerB = other.gameObject.GetComponent<PlayerControllerB>();
-                if (!(playerControllerB != GameNetworkManager.Instance.localPlayerController) && playerControllerB != null && !playerControllerB.isPlayerDead)
+                if (!(playerControllerB != GameNetworkManager.Instance.localPlayerController) && playerControllerB != null && !playerControllerB.isPlayerDead && !teleportingPlayers.Contains(playerControllerB))
                 {
                     if (RoundManager.Instance.insideAINodes.Length != 0)
                     {
+                        teleportingPlayers.Add(playerControllerB);
                         Vector3 position3 = RoundManager.Instance.insideAINodes[UnityEngine.Random.Range(0, RoundManager.Instance.insideAINodes.Length)].transform.position;
                         position3 = RoundManager.Instance.GetRandomNavMeshPositionInRadiusSpherical(position3);
                         // call teleport coroutine
@@ -71,8 +76,9 @@ namespace LethalThings.MonoBehaviours
                 if (enemyAICollision != null)
                 {
                     var enemyAI = enemyAICollision.mainScript;
-                    if (RoundManager.Instance.insideAINodes.Length != 0)
+                    if (RoundManager.Instance.insideAINodes.Length != 0 && !teleportingAI.Contains(enemyAI))
                     {
+                        teleportingAI.Add(enemyAI);
                         Vector3 position3 = RoundManager.Instance.insideAINodes[UnityEngine.Random.Range(0, RoundManager.Instance.insideAINodes.Length)].transform.position;
                         position3 = RoundManager.Instance.GetRandomNavMeshPositionInRadiusSpherical(position3);
                         // call teleport coroutine
@@ -99,6 +105,8 @@ namespace LethalThings.MonoBehaviours
         {
             yield return new WaitForSeconds(teleporterChargeUp);
             Utilities.TeleportPlayer(playerObj, teleportPos);
+            // remove player from list
+            teleportingPlayers.Remove(StartOfRound.Instance.allPlayerScripts[playerObj]);
             TeleportPlayerServerRpc(playerObj, teleportPos);
         }
 
@@ -106,6 +114,8 @@ namespace LethalThings.MonoBehaviours
         {
             yield return new WaitForSeconds(teleporterChargeUp);
             Utilities.TeleportEnemy(enemy, teleportPos);
+            // remove AI from list
+            teleportingAI.Remove(enemy);
             // call server rpc with enemy object reference
             TeleportEnemyServerRpc(enemy.NetworkObject, teleportPos);
         }
@@ -114,6 +124,8 @@ namespace LethalThings.MonoBehaviours
         {
             yield return new WaitForSeconds(teleporterChargeUp);
             TeleportPlayerBodyServerRpc(playerObj, teleportPos);
+            // remove player from list
+            teleportingPlayers.Remove(StartOfRound.Instance.allPlayerScripts[playerObj]);
             StartCoroutine(Utilities.TeleportPlayerBody(playerObj, teleportPos));
         }
 
