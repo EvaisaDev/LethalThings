@@ -4,12 +4,15 @@ using BepInEx.Logging;
 using BepInEx.Configuration;
 using LethalThings.MonoBehaviours;
 using UnityEngine;
+using System.Reflection;
+using System;
 
 [assembly: SecurityPermission(SecurityAction.RequestMinimum, SkipVerification = true)]
 namespace LethalThings
 {
     [BepInPlugin(ModGUID, ModName, ModVersion)]
     [BepInDependency(LethalLib.Plugin.ModGUID)]
+    [BepInDependency(LethalCompanyInputUtils.LethalCompanyInputUtilsPlugin.ModId, BepInDependency.DependencyFlags.SoftDependency)]
     public class Plugin : BaseUnityPlugin
     {
         public const string ModGUID = "evaisa.lethalthings";
@@ -26,12 +29,18 @@ namespace LethalThings
             logger = Logger;
             config = Config;
 
+           
+
             Utilities.Init();
             LethalThings.Config.Load();
             Content.Load();
             Patches.Patches.Load();
 
-            Logger.LogInfo("LethalThings loaded guh");
+            if (BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("com.rune580.LethalCompanyInputUtils"))
+            {
+                InputCompat.Init();
+            }
+            //Logger.LogInfo("LethalThings loaded guh");
 
             //On.RoundManager.Awake += RoundManager_Awake;
         }

@@ -190,15 +190,7 @@ namespace LethalThings
                         }
                         else
                         {
-                            if (!IsHost)
-                            {
-                                ReloadAmmoServerRpc();
-                            }
-                            else
-                            {
-                                currentAmmo.Value = maxAmmo;
-                                ReloadAmmoSoundClientRpc();
-                            }
+                            ReloadAmmoServerRpc();
 
                             //var lastWeight = playerHeldBy.carryWeight;
                             //playerHeldBy.DestroyItemInSlotAndSync(ammoSlotToUse);
@@ -243,8 +235,8 @@ namespace LethalThings
         private void ReloadAmmoServerRpc()
         {
             currentAmmo.Value = maxAmmo;
+            //Plugin.logger.LogInfo("Client attempted to reload gun!!");
             ReloadAmmoSoundClientRpc();
-            Plugin.logger.LogInfo("Client attempted to reload gun!!");
         }
 
         [ClientRpc]
@@ -252,7 +244,7 @@ namespace LethalThings
         {
             PlayRandomAudio(mainAudio, reloadSounds);
             Animator.Play("reload");
-            Plugin.logger.LogInfo("Reload successful!!");
+            //Plugin.logger.LogInfo("Reload successful!!");
         }
 
         // server rpc for spawning projectile
@@ -341,7 +333,6 @@ namespace LethalThings
                 {
                     Debug.LogError($"Destroy item in slot called for a slot (slot {itemSlot}) which is empty or incorrect");
                 }
-                DestroyItemInSlot(itemSlot);
                 DestroyItemInSlotServerRpc(itemSlot);
             }
         }
@@ -365,6 +356,13 @@ namespace LethalThings
                 return;
             }
             GrabbableObject grabbableObject = playerHeldBy.ItemSlots[itemSlot];
+
+            if(grabbableObject == null || grabbableObject.itemProperties == null)
+            {
+                Plugin.logger.LogError("Item properties are null, cannot destroy item in slot");
+                return;
+            }
+
             playerHeldBy.carryWeight -= Mathf.Clamp(grabbableObject.itemProperties.weight - 1f, 0f, 10f);
             if (playerHeldBy.currentItemSlot == itemSlot)
             {

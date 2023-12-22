@@ -8,7 +8,7 @@ namespace LethalThings.MonoBehaviours
     [ExecuteAlways]
     public class DecorPlacementDebug : MonoBehaviour
     {
-        private int placementMaskAndBlockers = 134220033;
+        private int placementMaskAndBlockers = 524296;
 
         public PlaceableShipObject placeableShipObject;
 

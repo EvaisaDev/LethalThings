@@ -111,6 +111,13 @@ namespace LethalThings
                 // remove from parent
                 beltCosmetic.SetParent(null);
                 beltCosmetic.GetComponent<MeshRenderer>().enabled = true;
+
+                if (IsOwner)
+                {
+                    // prevent belt from showing up for owner.
+                    beltCosmetic.GetComponent<MeshRenderer>().enabled = false;
+                }
+
                 var root = previousPlayerHeldBy.lowerSpine.parent;
 
                 // Set position and rotation
@@ -168,12 +175,40 @@ namespace LethalThings
                 var iconFrames = hud.itemSlotIconFrames.ToList();
                 var icons = hud.itemSlotIcons.ToList();
 
+                // find index of last slot named `slot\d` regex
+                var index = iconFrames.FindLastIndex(x => {
+                    var match = System.Text.RegularExpressions.Regex.IsMatch(x.gameObject.name.ToLowerInvariant(), @"\bslot\d\b");
+                    /*
+                    if (match)
+                    {
+                        Debug.Log($"Found match: {x.gameObject.name}");
+                    }
+                    else
+                    {
+                        Debug.Log($"No match: {x.gameObject.name}");
+                    }*/
+                    
+                    return match;
+                 });
+
+
+                var totalWidth = (beltCapacity * slotSizeX) + ((beltCapacity - 1) * 15f);
+
+
                 Debug.Log($"Adding {beltCapacity} item slots! Surely this will go well..");
+                Debug.Log($"Adding after index: {index}");
 
                 for (int i = 0; i < beltCapacity; i++)
                 {
-                    var xPosition = referenceFrame.rectTransform.anchoredPosition.x + (i + 1) * slotSizeX;
-                    var frame = Instantiate(iconFrames[lastInventorySize - 1], referenceFrame.transform.parent);
+                    // calculate xPosition to center belt using TotalWidth
+                    var anchor = -(referenceFrame.rectTransform.parent.GetComponent<RectTransform>().sizeDelta.x / 2) - (15 / 4);
+
+                    var xPosition = anchor + (i * slotSizeX) + (i * 15f);
+
+
+                    var prefab = iconFrames[0];
+
+                    var frame = Instantiate(prefab, referenceFrame.transform.parent);
                     frame.name = $"Slot{lastInventorySize + i}[LethalThingsBelt]";
                     frame.rectTransform.anchoredPosition = new Vector2(xPosition, yPosition);
                     frame.rectTransform.eulerAngles = frameAngles;
@@ -185,8 +220,14 @@ namespace LethalThings
                     // rotate 90 degrees because unity is goofy
                     icon.rectTransform.Rotate(new Vector3(0.0f, 0.0f, -90.0f));
 
-                    iconFrames.Add(frame);
-                    icons.Add(icon);
+                    // insert at index
+                    iconFrames.Insert(index + i + 1, frame);
+                    icons.Insert(index + i + 1, icon);
+
+                    // move up in parent to match index
+                    frame.transform.SetSiblingIndex(index + i + 1);
+
+                    
                 }
 
                 hud.itemSlotIconFrames = iconFrames.ToArray();

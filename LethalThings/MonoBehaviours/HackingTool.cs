@@ -263,7 +263,7 @@ namespace LethalThings.MonoBehaviours
                 var hackingToolScript = (HackingTool)self.currentlyHeldObjectServer;
                 if (hackingToolScript.isHacking)
                 {
-                    Plugin.logger.LogInfo("Hacking tool equipped, not emoting");
+                    //Plugin.logger.LogInfo("Hacking tool equipped, not emoting");
                     return;
                 }
             }

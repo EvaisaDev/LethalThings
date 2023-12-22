@@ -38,7 +38,8 @@ namespace LethalThings.MonoBehaviours
         public AudioClip flarePopSound;
         public AudioSource popAudioSource;
         private int timesPlayed = 0;
-
+        private float updateRate = 2f;
+        private float lastUpdateTime = 0f;
 
         public static void Init()
         {
@@ -257,7 +258,7 @@ namespace LethalThings.MonoBehaviours
 
                     // kill system once all particles are dead
                     Destroy(particleSystem.gameObject, particleSystem.main.duration + particleSystem.main.startLifetime.constant);
-                    Plugin.logger.LogInfo("Flare burnt out");
+                    //Plugin.logger.LogInfo("Flare burnt out");
                     StartCoroutine(KillFlare());
 
                 }
@@ -275,6 +276,20 @@ namespace LethalThings.MonoBehaviours
 
             if(!burntOut)
             {
+                var canAttract = true;
+                // check if update rate has passed
+                if (Time.time - lastUpdateTime < updateRate)
+                {
+                    canAttract = false;
+                }
+
+                //Plugin.logger.LogInfo($"Can attract: {canAttract} ({Time.time - lastUpdateTime} / {updateRate})");
+
+                if (canAttract)
+                {
+                    lastUpdateTime = Time.time;
+                }
+
                 // get gameobjects with EnemyAI component in radius
                 Collider[] colliders = Physics.OverlapSphere(transform.position, attractRadius);
                 foreach (var collider in colliders)
@@ -283,24 +298,77 @@ namespace LethalThings.MonoBehaviours
                     {
 
                         var enemyAI = collider.gameObject.GetComponent<EnemyAI>();
-                        if(AccessTools.Method(enemyAI.GetType(), "DetectNoise").DeclaringType == typeof(EnemyAI))
+
+            
+                       
+                        if (enemyAI is ForestGiantAI)
                         {
+                            if (canAttract)
+                            {
+                                var forestGiant = ((ForestGiantAI)enemyAI);
+
+                                if (IsServer)
+                                {
+                                    ForestGiantPingServerRpc(forestGiant.GetComponent<NetworkObject>());
+                                }
+                            }
+                        }
+                        else if(AccessTools.Method(enemyAI.GetType(), "DetectNoise").DeclaringType == typeof(EnemyAI))
+                        {
+
+                            
+
                             enemyAI.StopSearch(enemyAI.currentSearch);
                             enemyAI.SetDestinationToPosition(transform.position);
+        
+                            
                         }
                         else
                         {
-                            enemyAI.DetectNoise(transform.position, 10000, 1, 24234);
-                            Plugin.logger.LogInfo($"Playing noise for {enemyAI.name}");
-                            timesPlayed++;
-                        }
+                            if (canAttract)
+                            {
 
-                        enemyAI.SetDestinationToPosition(transform.position);
+                                enemyAI.DetectNoise(transform.position, 10000, 1, 24234);
+
+                                if (!(enemyAI is BaboonBirdAI))
+                                {
+                                    enemyAI.SetDestinationToPosition(transform.position);
+                                }
+                            }
+                        }
+                        
+
                     }
                 }
 
             }
 
+        }
+
+        [ServerRpc (RequireOwnership = false)]
+        public void ForestGiantPingServerRpc(NetworkObjectReference reference)
+        {
+
+            // resolve reference
+            if (reference.TryGet(out NetworkObject target))
+            {
+                var ai = target.GetComponent<ForestGiantAI>();
+
+                var noisePosition = transform.position;
+                if (!ai.investigating)
+                {
+                    ai.stopAndLookTimer = 1.5f;
+                    ai.turnCompass.LookAt(noisePosition);
+                    ai.investigating = true;
+                    ai.hasBegunInvestigating = false;
+                }
+                ai.targetYRot = ai.turnCompass.eulerAngles.y;
+
+                ai.investigatePosition = RoundManager.Instance.GetNavMeshPosition(noisePosition);
+                ai.currentBehaviourStateIndex = 0;
+
+                //Plugin.logger.LogInfo($"Ping forest giant");
+            }
         }
 
         public IEnumerator KillFlare()

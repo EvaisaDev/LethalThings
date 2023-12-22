@@ -108,9 +108,9 @@ namespace LethalThings
         {
             base.OnNetworkSpawn();
 
-            Plugin.logger.LogInfo("Networkspawn");
+            //Plugin.logger.LogInfo("Networkspawn");
 
-            Plugin.logger.LogInfo($"{isPlayingMusic}, {isPlayingMusic.Value}, {Config.maxwellPlayMusicDefault}, {Config.maxwellPlayMusicDefault.Value}");
+            //Plugin.logger.LogInfo($"{isPlayingMusic}, {isPlayingMusic.Value}, {Config.maxwellPlayMusicDefault}, {Config.maxwellPlayMusicDefault.Value}");
 
 
             if (IsOwner)
@@ -192,25 +192,11 @@ namespace LethalThings
 
             // disable music and animation
 
+            //Plugin.logger.LogInfo($"Interacting with maxwell, evil? {isEvil.Value} && exploding? {exploding}");
+
             if (isEvil.Value && !exploding) 
             {
-                exploding = true;
-                if (IsOwner)
-                {
-                    isPlayingMusic.Value = (false);
-
-
-                    if (IsHost)
-                    {
-                       // EvilMaxwellTruly();
-                        EvilMaxwellClientRpc();
-                    }
-                    else
-                    {
-                        EvilMaxwellServerRpc();
-                    }
-                }
-                
+                EvilMaxwellServerRpc();
             }
 
 
@@ -243,12 +229,27 @@ namespace LethalThings
         public void EvilMaxwellClientRpc()
         {
             EvilMaxwellTruly();
+            exploding = true;
+            if (IsOwner)
+            {
+                isPlayingMusic.Value = (false);
+            }
+            timesPlayedWithoutTurningOff = 0;
+            danceAnimator.Play("dingusIdle");
+            if (musicAudio.isPlaying)
+            {
+                musicAudio.Pause();
+                musicAudioFar.Pause();
+            }
 
             Plugin.logger.LogInfo("Evil maxwell moment");
         }
 
         public IEnumerator evilMaxwellMoment()
         {
+
+
+
             yield return new WaitForSeconds(1f);
             noiseAudio.PlayOneShot(evilNoise, 1);
 
@@ -283,7 +284,10 @@ namespace LethalThings
 
             yield return new WaitForSeconds(2f);
             // destroy
-            Destroy(gameObject);
+            if(IsServer)
+            {
+                GetComponent<NetworkObject>().Despawn();
+            }
         }
 
         public override void Update()
@@ -296,7 +300,7 @@ namespace LethalThings
                 grabbableToEnemies = false;
             }
 
-            if (isPlayingMusic.Value)
+            if (isPlayingMusic.Value && !exploding)
             {
                 if (!musicAudio.isPlaying)
                 {

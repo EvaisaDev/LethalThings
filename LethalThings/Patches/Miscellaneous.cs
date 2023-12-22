@@ -55,7 +55,7 @@ namespace LethalThings.Patches
         {
             var obj = orig(original, parent, instantiateInWorldSpace);
             if (obj != null && obj is GameObject)
-            {
+            {   
                 var go = (GameObject)obj;
                 // find all colliders, and add root markers to them
                 foreach (Collider collider in go.GetComponentsInChildren<Collider>())
@@ -184,7 +184,7 @@ namespace LethalThings.Patches
             }
             if (currentItem != null && currentItem.itemProperties.grabAnim == "none")
             {
-                Plugin.logger.LogInfo("Skipping grab animation because the item has no grab animation");
+                //Plugin.logger.LogInfo("Skipping grab animation because the item has no grab animation");
                 return;
             }
             orig(self, setTrue, currentItem);

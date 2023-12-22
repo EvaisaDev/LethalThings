@@ -63,7 +63,7 @@ namespace LethalThings
         public override void OnNetworkSpawn()
         {
             base.OnNetworkSpawn();
-            Plugin.logger.LogInfo("OnNetworkSpawn");
+            //Plugin.logger.LogInfo("OnNetworkSpawn");
             if (IsServer)
             {
                 currentAmmo.Value = maxAmmo;

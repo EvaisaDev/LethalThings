@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LethalLib.Modules;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -28,6 +29,9 @@ namespace LethalThings.MonoBehaviours
 
         public Button ItemListButtonTemplate;
         public Button ClearItemsInShipButton;
+
+        public Button UnlockableListButtonTemplate;
+        public Button ClearDecorInShipButton;
 
         public Button EnemyListButtonTemplate;
 
@@ -75,6 +79,7 @@ namespace LethalThings.MonoBehaviours
                 itemListGenerated = true;
                 GenerateItemList();
                 GenerateEnemyList();
+                GenerateUnlockableList();
                 // setup clear items in ship button
                 ClearItemsInShipButton.onClick.AddListener(() =>
                 {
@@ -86,6 +91,11 @@ namespace LethalThings.MonoBehaviours
                     {
                         ClearItemsInShipServerRpc();
                     }
+                });
+
+                ClearDecorInShipButton.onClick.AddListener(() =>
+                {
+                    ClearDecorInShipServerRpc();
                 });
             }
 
@@ -127,6 +137,42 @@ namespace LethalThings.MonoBehaviours
             ClearItemsInShip();
         }
 
+        [ServerRpc(RequireOwnership = false)]
+        public void ClearDecorInShipServerRpc()
+        {
+            ClearDecorInShipClientRpc();
+            for (int i = 0; i < StartOfRound.Instance.unlockablesList.unlockables.Count; i++)
+            {
+                if (StartOfRound.Instance.unlockablesList.unlockables[i].alreadyUnlocked || !StartOfRound.Instance.unlockablesList.unlockables[i].spawnPrefab)
+                {
+                    continue;
+                }
+                if (!StartOfRound.Instance.SpawnedShipUnlockables.TryGetValue(i, out var value))
+                {
+                    StartOfRound.Instance.SpawnedShipUnlockables.Remove(i);
+                    continue;
+                }
+                if (value == null)
+                {
+                    StartOfRound.Instance.SpawnedShipUnlockables.Remove(i);
+                    continue;
+                }
+                StartOfRound.Instance.SpawnedShipUnlockables.Remove(i);
+                NetworkObject component = value.GetComponent<NetworkObject>();
+                if (component != null && component.IsSpawned)
+                {
+                    component.Despawn();
+                }
+            }
+        }
+
+        [ClientRpc]
+        public void ClearDecorInShipClientRpc()
+        {
+            GameNetworkManager.Instance.ResetUnlockablesListValues();
+        }
+
+
         public void ClearItemsInShip()
         {
             if (StartOfRound.Instance != null)
@@ -157,18 +203,12 @@ namespace LethalThings.MonoBehaviours
                 for (int i = 0; i < allItems.Count; i++)
                 {
                     var item = allItems[i];
+                    var index = i;
                     var button = Instantiate(ItemListButtonTemplate, ItemListButtonTemplate.transform.parent);
                     button.gameObject.SetActive(true);
                     button.GetComponentInChildren<TextMeshProUGUI>().text = item.itemName;
                     button.onClick.AddListener(() => {
-                        if (IsHost)
-                        {
-                            spawnItem(item.spawnPrefab, StartOfRound.Instance.localPlayerController.gameplayCamera.transform.position);
-                        }
-                        else
-                        {
-                            spawnItemServerRpc(itemPrefabList.Count, StartOfRound.Instance.localPlayerController.gameplayCamera.transform.position);
-                        }
+                        spawnItemServerRpc(index, StartOfRound.Instance.localPlayerController.gameplayCamera.transform.position);
                     });
 
                     itemPrefabList.Add(item.spawnPrefab);
@@ -188,6 +228,57 @@ namespace LethalThings.MonoBehaviours
                     rectTransform.anchoredPosition = new Vector2(rectTransform.anchoredPosition.x, -cumulativeHeight);
                 }
             }
+        }
+
+        public void GenerateUnlockableList()
+        {
+            if (StartOfRound.Instance != null)
+            {
+                // generate item list
+                var allItems = StartOfRound.Instance.unlockablesList.unlockables;
+
+                for (int i = 0; i < allItems.Count; i++)
+                {
+                    var item = allItems[i];
+                    var index = i;
+
+                    var button = Instantiate(UnlockableListButtonTemplate, UnlockableListButtonTemplate.transform.parent);
+                    button.gameObject.SetActive(true);
+                    button.GetComponentInChildren<TextMeshProUGUI>().text = item.unlockableName;
+                    button.onClick.AddListener(() => {
+                        spawnUnlockableServerRpc(index);
+                    });
+
+                    var rectTransform = button.GetComponent<RectTransform>();
+                    var contentRectTransform = UnlockableListButtonTemplate.transform.parent.GetComponent<RectTransform>();
+
+                    float cumulativeHeight = ((rectTransform.rect.height / 2) + 5) + i * (rectTransform.rect.height + 5);
+
+                    // set position, and update content size to contain the new button
+                    contentRectTransform.sizeDelta = new Vector2(contentRectTransform.sizeDelta.x, cumulativeHeight + ((rectTransform.rect.height / 2) + 5));
+
+                    // calculate the cumulative height of buttons above the current one
+
+
+                    // set position so that we start from the top of the scroll container
+                    rectTransform.anchoredPosition = new Vector2(rectTransform.anchoredPosition.x, -cumulativeHeight);
+                }
+            }
+        }
+
+
+        [ServerRpc(RequireOwnership = false)]
+        public void spawnUnlockableServerRpc(int unlockableIndex)
+        {
+            Debug.Log($"Index: {unlockableIndex}/{StartOfRound.Instance.unlockablesList.unlockables.Count}");
+            StartOfRound.Instance.UnlockShipObject(unlockableIndex);
+            UnlockShipObjectClientRpc(unlockableIndex);
+        }
+
+        [ClientRpc]
+        public void UnlockShipObjectClientRpc(int unlockableIndex, bool didUnlock = true)
+        {
+            StartOfRound.Instance.unlockablesList.unlockables[unlockableIndex].hasBeenUnlockedByPlayer = didUnlock;
         }
 
         public void GenerateEnemyList()
@@ -226,23 +317,17 @@ namespace LethalThings.MonoBehaviours
                 }
 
                 // print enemy count
-                Plugin.logger.LogInfo($"Found {allEnemies.Count} enemies.");
+                //Plugin.logger.LogInfo($"Found {allEnemies.Count} enemies.");
 
                 for (int i = 0; i < allEnemies.Count; i++)
                 {
                     var enemy = allEnemies[i];
+                    var index = i;
                     var button = Instantiate(EnemyListButtonTemplate, EnemyListButtonTemplate.transform.parent);
                     button.gameObject.SetActive(true);
                     button.GetComponentInChildren<TextMeshProUGUI>().text = enemy.enemyName;
                     button.onClick.AddListener(() => {
-                        if (IsHost)
-                        {
-                            spawnEnemy(enemy, StartOfRound.Instance.localPlayerController.gameplayCamera.transform.position);
-                        }
-                        else
-                        {
-                            spawnEnemyServerRpc(enemyTypes.Count, StartOfRound.Instance.localPlayerController.gameplayCamera.transform.position);
-                        }
+                        spawnEnemyServerRpc(index, StartOfRound.Instance.localPlayerController.gameplayCamera.transform.position);
                     });
 
                     var rectTransform = button.GetComponent<RectTransform>();
