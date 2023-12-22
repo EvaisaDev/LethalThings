@@ -36,10 +36,8 @@ namespace LethalThings
             Content.Load();
             Patches.Patches.Load();
 
-            if (BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("com.rune580.LethalCompanyInputUtils"))
-            {
+            if (InputCompat.Enabled)
                 InputCompat.Init();
-            }
             //Logger.LogInfo("LethalThings loaded guh");
 
             //On.RoundManager.Awake += RoundManager_Awake;

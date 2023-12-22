@@ -26,10 +26,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\LTInputUtilsCompat\LTInputUtilsCompat.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
       <Reference Include="0Harmony">
         <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Lethal Company\BepInEx\core\0Harmony.dll</HintPath>
       </Reference>
@@ -123,6 +119,6 @@
     </ItemGroup>
 
     <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-      <Exec Command="cd O:\NetcodePatcher&#xD;&#xA;NetcodePatcher.dll $(TargetDir) deps/&#xD;&#xA;xcopy &quot;$(TargetPath)&quot; &quot;C:\Program Files (x86)\Steam\steamapps\common\Lethal Company\BepInEx\plugins\LethalThings&quot; /Y&#xD;&#xA;xcopy &quot;$(TargetPath)&quot; &quot;C:\Users\mail\Documents\GitHub\LethalCompanyModding\Assets\Plugins&quot; /Y&#xD;&#xA;xcopy &quot;$(TargetDir)LethalThings.pdb&quot; &quot;C:\Program Files (x86)\Steam\steamapps\common\Lethal Company\BepInEx\plugins\LethalThings&quot; /Y&#xD;&#xA;xcopy &quot;$(TargetDir)LTInputUtilsCompat.dll&quot; &quot;C:\Program Files (x86)\Steam\steamapps\common\Lethal Company\BepInEx\plugins\LethalThings&quot; /Y&#xD;&#xA;xcopy &quot;$(TargetDir)LTInputUtilsCompat.pdb&quot; &quot;C:\Program Files (x86)\Steam\steamapps\common\Lethal Company\BepInEx\plugins\LethalThings&quot; /Y" />
+      <Exec Command="cd O:\NetcodePatcher&#xD;&#xA;NetcodePatcher.dll $(TargetDir) deps/&#xD;&#xA;xcopy &quot;$(TargetPath)&quot; &quot;C:\Program Files (x86)\Steam\steamapps\common\Lethal Company\BepInEx\plugins\LethalThings&quot; /Y&#xD;&#xA;xcopy &quot;$(TargetPath)&quot; &quot;C:\Users\mail\Documents\GitHub\LethalCompanyModding\Assets\Plugins&quot; /Y&#xD;&#xA;xcopy &quot;$(TargetDir)LethalThings.pdb&quot; &quot;C:\Program Files (x86)\Steam\steamapps\common\Lethal Company\BepInEx\plugins\LethalThings&quot; /Y" />
     </Target>
 </Project>

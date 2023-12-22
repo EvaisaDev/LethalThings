@@ -8,6 +8,7 @@ using UnityEngine;
 using UnityEngine.InputSystem.HID;
 using UnityEngine.UI;
 using LethalThings.Extensions;
+using UnityEngine.InputSystem;
 
 namespace LethalThings
 {
@@ -24,6 +25,16 @@ namespace LethalThings
         {
             On.GameNetcodeStuff.PlayerControllerB.SetHoverTipAndCurrentInteractTrigger += PlayerControllerB_SetHoverTipAndCurrentInteractTrigger;
             On.GameNetcodeStuff.PlayerControllerB.BeginGrabObject += PlayerControllerB_BeginGrabObject;
+        }
+
+        public void Awake()
+        {
+            if (InputCompat.Enabled) { 
+                InputCompat.LTUtilityBeltQuick1.started += InputReceived;
+                InputCompat.LTUtilityBeltQuick2.started += InputReceived;
+                InputCompat.LTUtilityBeltQuick3.started += InputReceived;
+                InputCompat.LTUtilityBeltQuick4.started += InputReceived;
+            }
         }
 
         private static void PlayerControllerB_BeginGrabObject(On.GameNetcodeStuff.PlayerControllerB.orig_BeginGrabObject orig, PlayerControllerB self)
@@ -101,6 +112,48 @@ namespace LethalThings
 
          }
 
+        public void InputReceived(InputAction.CallbackContext context)
+        {
+            if (IsOwner && playerHeldBy != null)
+            {
+                if (context.started)
+                {
+                    
+                    var index = -1;
+
+                    if (context.action == InputCompat.LTUtilityBeltQuick1)
+                    {
+                        index = 0;
+                    }
+                    else if (context.action == InputCompat.LTUtilityBeltQuick2)
+                    {
+                        index = 1;
+                    }
+                    else if (context.action == InputCompat.LTUtilityBeltQuick3)
+                    {
+                        index = 2;
+                    }
+                    else if (context.action == InputCompat.LTUtilityBeltQuick4)
+                    {
+                        index = 3;
+                    }
+
+                    if(index != -1)
+                    {
+                        if(index >= slotIndexes.Count)
+                        {
+                            return;
+                        }
+
+                        playerHeldBy.SwitchItemSlots(slotIndexes[index]);
+
+                        Plugin.logger.LogInfo($"Switched to slot: {slotIndexes[index]}");
+
+                    }
+                }
+            }
+        }
+
         public override void LateUpdate()
         {
             base.LateUpdate();
@@ -144,8 +197,11 @@ namespace LethalThings
             }
         }
 
+        public List<int> slotIndexes = new List<int>();
+
         public void UpdateHUD(bool add)
         {
+            slotIndexes.Clear();
             var hud = HUDManager.Instance;
             if (add)
             {
@@ -220,12 +276,16 @@ namespace LethalThings
                     // rotate 90 degrees because unity is goofy
                     icon.rectTransform.Rotate(new Vector3(0.0f, 0.0f, -90.0f));
 
+                    var slotIndex = index + i + 1;
+
                     // insert at index
-                    iconFrames.Insert(index + i + 1, frame);
-                    icons.Insert(index + i + 1, icon);
+                    iconFrames.Insert(slotIndex, frame);
+                    icons.Insert(slotIndex, icon);
+
+                    slotIndexes.Add(slotIndex);
 
                     // move up in parent to match index
-                    frame.transform.SetSiblingIndex(index + i + 1);
+                    frame.transform.SetSiblingIndex(slotIndex);
 
                     
                 }
@@ -373,6 +433,20 @@ namespace LethalThings
         {
 
             base.GrabItemOnClient();
+        }
+
+        // unregister inputs
+        public override void OnDestroy()
+        {
+            if (InputCompat.Enabled)
+            {
+                InputCompat.LTUtilityBeltQuick1.started -= InputReceived;
+                InputCompat.LTUtilityBeltQuick2.started -= InputReceived;
+                InputCompat.LTUtilityBeltQuick3.started -= InputReceived;
+                InputCompat.LTUtilityBeltQuick4.started -= InputReceived;
+            }
+
+            base.OnDestroy();
         }
 
         public override void EquipItem()
