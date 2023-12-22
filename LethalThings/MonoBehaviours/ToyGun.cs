@@ -23,10 +23,14 @@ namespace LethalThings.MonoBehaviours
 
         public void Fire(int fireSound, int reloadSound)
         {
+            Plugin.logger.LogInfo("Firing gun.");
+
             if (wasFired)
             {
                 return;
             }
+            Plugin.logger.LogInfo("Firing gun 2.");
+
             wasFired = true;
 
             // play fire animation
@@ -78,18 +82,22 @@ namespace LethalThings.MonoBehaviours
         public void FireServerRpc(int fireSound, int reloadSound)
         {
             FireClientRpc(fireSound, reloadSound);
+            Plugin.logger.LogInfo("Firing gun server");
         }
 
         [ClientRpc]
         public void FireClientRpc(int fireSound, int reloadSound)
         {
             Fire(fireSound, reloadSound);
+            Plugin.logger.LogInfo("Firing gun client");
         }
 
         public override void ItemActivate(bool used, bool buttonDown = true)
         {
             base.ItemActivate(used, buttonDown);
-            
+
+            Plugin.logger.LogInfo("gun item activated");
+
             if (base.IsOwner)
             {
                 //Debug.Log("Player activated item to fire gun.");
@@ -99,6 +107,7 @@ namespace LethalThings.MonoBehaviours
                     int fireSound = Random.Range(0, fireSounds.Length);
                     int reloadSound = Random.Range(0, reloadSounds.Length);
                     FireServerRpc(fireSound, reloadSound);
+                    Plugin.logger.LogInfo("firing goofy ahh!!");
                 }
             }
 

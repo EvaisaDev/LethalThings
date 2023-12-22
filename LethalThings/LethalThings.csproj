@@ -42,7 +42,7 @@
         <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Lethal Company\BepInEx\core\BepInEx.Harmony.dll</HintPath>
       </Reference>
       <Reference Include="LethalCompanyInputUtils">
-        <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Lethal Company\BepInEx\LethalCompanyInputUtils\LethalCompanyInputUtils.dll</HintPath>
+        <HintPath>C:\Users\mail\Desktop\oldplugions\LethalCompanyInputUtils\LethalCompanyInputUtils.dll</HintPath>
       </Reference>
       <Reference Include="LethalLib">
         <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Lethal Company\BepInEx\plugins\LethalLib\LethalLib.dll</HintPath>

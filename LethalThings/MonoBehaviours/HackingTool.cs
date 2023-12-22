@@ -334,6 +334,15 @@ namespace LethalThings.MonoBehaviours
 
             backLight.enabled = turnedOn;
 
+            if (isHacking)
+            {
+                playerHeldBy.activatingItem = true;
+            }
+            else
+            {
+                playerHeldBy.activatingItem = false;
+            }
+
 
             if (selectedTarget != null && Vector3.Distance(selectedTarget.transform.position, transform.position) > maxHackDistance)
             {
