@@ -71,5 +71,9 @@ namespace LethalThings.MonoBehaviours
         private System.Random noisemakerRandom;
 
         public Animator triggerAnimator;
+
+        public bool isCleanable;
+
+        public Item cleanArson;
     }
 }

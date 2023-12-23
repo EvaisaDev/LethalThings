@@ -19,6 +19,9 @@ namespace LethalThings.Patches
             HackingTool.Load();
             FlareController.Init();
             DecalRandomizer.Init();
+            Dart.Init();
+            FatalitiesSign.Init();
+            GremlinEnergy.Init();
 
             // i will surely not forget to remove this when i release.
             Debug.Load();

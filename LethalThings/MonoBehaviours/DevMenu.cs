@@ -9,8 +9,10 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using UnityEngine.UIElements;
+using static UnityEngine.GraphicsBuffer;
 using Button = UnityEngine.UI.Button;
 using Cursor = UnityEngine.Cursor;
+using Random = UnityEngine.Random;
 
 namespace LethalThings.MonoBehaviours
 {
@@ -461,6 +463,32 @@ namespace LethalThings.MonoBehaviours
             
             var gameObject = UnityEngine.Object.Instantiate(prefab, position, Quaternion.identity);
             gameObject.GetComponent<NetworkObject>().Spawn();
+
+            var grabbable = gameObject.GetComponent<GrabbableObject>();
+
+            if (grabbable && grabbable.itemProperties && grabbable.itemProperties.isScrap && RoundManager.Instance)
+            {
+                int price = (int)(Random.Range(grabbable.itemProperties.minValue, grabbable.itemProperties.maxValue) * RoundManager.Instance.scrapValueMultiplier);
+
+                grabbable.scrapValue = price;
+
+                syncScrapValueClientRpc(grabbable.GetComponent<NetworkObject>(), price);
+
+            }
+        }
+
+        [ClientRpc]
+        public void syncScrapValueClientRpc(NetworkObjectReference obj, int scrapValue)
+        {
+            if (obj.TryGet(out NetworkObject targetObject))
+            {
+                var grabbable = targetObject.GetComponent<GrabbableObject>();
+
+                if (grabbable)
+                {
+                    grabbable.scrapValue = scrapValue;
+                }
+            }
         }
 
         public void ToggleViewport(int index)

@@ -24,10 +24,19 @@ namespace LethalThings.MonoBehaviours
 
                 //Plugin.logger.LogInfo("Attempting to spawn darts!!");
 
+                // check if there are darts in the scene already
+                var darts = FindObjectsOfType<Dart>();
+
+                // add darts to list
+                foreach (Dart dart in darts)
+                {
+                    dartInstances.Add(dart.gameObject);
+                }
+
                 // pick random dart spawns, no repeats
                 List<Transform> dartSpawnsList = new List<Transform>(dartSpawns);
                 List<Transform> dartSpawnPositions = new List<Transform>();
-                for (int i = 0; i < dartsToSpawn; i++)
+                for (int i = darts.Length; i < dartsToSpawn; i++)
                 {
                     int randomIndex = UnityEngine.Random.Range(0, dartSpawnsList.Count);
                     dartSpawnPositions.Add(dartSpawnsList[randomIndex]);
@@ -55,17 +64,28 @@ namespace LethalThings.MonoBehaviours
         public void Update()
         {
             // if any darts are lost, respawn them
+            // do every 2 seconds
+            if (Time.frameCount % 120 != 0)
+            {
+                return;
+            }
+            List<GameObject> newDartInstances = new List<GameObject>();
+
+            var dartsChanged = false;
+
             foreach (GameObject dart in dartInstances)
             {
                 if (dart == null)
                 {
                     // pick random dart spawn
 
+                    dartsChanged = true;
+
                     int randomIndex = UnityEngine.Random.Range(0, dartSpawns.Length);
 
                     Transform dartSpawn = dartSpawns[randomIndex];
 
-                    dartInstances.Remove(dart);
+                    
                     GameObject newDart = Instantiate(dartPrefab, dartSpawn.position, dartSpawn.rotation, transform);
 
                     var dartScript = newDart.GetComponent<Dart>();
@@ -74,9 +94,19 @@ namespace LethalThings.MonoBehaviours
                     newDart.transform.position -= newDart.transform.forward * Vector3.Distance(dartScript.dartTip.position, dartSpawn.position);
 
 
-                    dartInstances.Add(newDart);
+                    newDartInstances.Add(newDart);
                     newDart.GetComponent<NetworkObject>().Spawn();
                 }
+                else
+                {
+                    newDartInstances.Add(dart);
+                }
+            }
+
+            if(dartsChanged)
+            {
+                dartInstances = newDartInstances;
+
             }
         }
     }

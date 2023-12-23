@@ -62,6 +62,8 @@ namespace LethalThings
 
         public NetworkVariable<bool> isPlayingMusic = new NetworkVariable<bool>(Config.maxwellPlayMusicDefault.Value, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
 
+        public NetworkVariable<bool> isPipebomb = new NetworkVariable<bool>(false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+
         /*
         public override object SaveObjectData()
         {
@@ -194,7 +196,7 @@ namespace LethalThings
 
             //Plugin.logger.LogInfo($"Interacting with maxwell, evil? {isEvil.Value} && exploding? {exploding}");
 
-            if (isEvil.Value && !exploding) 
+            if (isEvil.Value && !exploding && !isPipebomb.Value) 
             {
                 EvilMaxwellServerRpc();
             }
@@ -219,6 +221,8 @@ namespace LethalThings
         public void EvilMaxwellServerRpc()
         {
             //EvilMaxwellTruly();
+
+            isPipebomb.Value = true;
 
             EvilMaxwellClientRpc();
 

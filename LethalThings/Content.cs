@@ -1,5 +1,6 @@
 ﻿using LethalLib.Extras;
 using LethalLib.Modules;
+using LethalThings.Extensions;
 using LethalThings.MonoBehaviours;
 using System;
 using System.Collections.Generic;
@@ -8,6 +9,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using Unity.Netcode.Components;
+using Unity.Netcode.Samples;
 using UnityEngine;
 
 namespace LethalThings
@@ -217,7 +219,8 @@ namespace LethalThings
                 CustomShopItem.Add("RemoteRadar", "Assets/Custom/LethalThings/Items/Radar/HandheldRadar.asset", "Assets/Custom/LethalThings/Items/Radar/HandheldRadarInfo.asset", Config.remoteRadarPrice.Value, enabled: Config.remoteRadarEnabled.Value),
                 CustomShopItem.Add("PouchyBelt", "Assets/Custom/LethalThings/Items/Pouch/Pouch.asset", "Assets/Custom/LethalThings/Items/Pouch/PouchInfo.asset", Config.pouchyBeltPrice.Value, enabled: Config.pouchyBeltEnabled.Value),
                 CustomShopItem.Add("HackingTool", "Assets/Custom/LethalThings/Items/HackingTool/HackingTool.asset", "Assets/Custom/LethalThings/Items/HackingTool/HackingToolInfo.asset", Config.hackingToolPrice.Value, enabled: Config.hackingToolEnabled.Value),
-                CustomPlainItem.Add("Dart", "Assets/Custom/LethalThings/Unlockables/dartboard/Dart.asset")
+                CustomPlainItem.Add("Dart", "Assets/Custom/LethalThings/Unlockables/dartboard/Dart.asset"),
+                CustomScrap.Add("GremlinEnergy", "Assets/Custom/LethalThings/Scrap/GremlinEnergy/GremlinEnergy.asset", Levels.LevelTypes.All, Config.gremlinSodaSpawnChance.Value),
             };
 
             customEnemies = new List<CustomEnemy>()
@@ -268,10 +271,18 @@ namespace LethalThings
                 }
 
                 var itemAsset = MainAssets.LoadAsset<Item>(item.itemPath);
-                if(itemAsset.spawnPrefab.GetComponent<NetworkTransform>() == null)
+                if(itemAsset.spawnPrefab.GetComponent<NetworkTransform>() == null && itemAsset.spawnPrefab.GetComponent<CustomNetworkTransform>() == null)
                 {
                     var networkTransform = itemAsset.spawnPrefab.AddComponent<NetworkTransform>();
-                    networkTransform.SlerpPosition = true;
+                    networkTransform.SlerpPosition = false;
+                    networkTransform.Interpolate = false;
+                    networkTransform.SyncPositionX = false;
+                    networkTransform.SyncPositionY = false;
+                    networkTransform.SyncPositionZ = false;
+                    networkTransform.SyncScaleX = false;
+                    networkTransform.SyncScaleY = false;
+                    networkTransform.SyncScaleZ = false;
+                    networkTransform.UseHalfFloatPrecision = true;
                 }
                 Prefabs.Add(item.name, itemAsset.spawnPrefab);
                 NetworkPrefabs.RegisterNetworkPrefab(itemAsset.spawnPrefab);
@@ -316,7 +327,7 @@ namespace LethalThings
                     info = MainAssets.LoadAsset<TerminalNode>(unlockableItem.infoPath);
                 }
 
-                Unlockables.RegisterUnlockable(unlockable, StoreType.ShipUpgrade, null, null, info, price: unlockableItem.unlockCost);
+                Unlockables.RegisterUnlockable(unlockable, StoreType.Decor, null, null, info, price: unlockableItem.unlockCost);
             }
 
             foreach (var enemy in customEnemies)
@@ -389,25 +400,33 @@ namespace LethalThings
 
             devMenuPrefab = devMenu;
 
-
-            var types = Assembly.GetExecutingAssembly().GetTypes();
-            foreach (var type in types)
+            try
             {
-                var methods = type.GetMethods(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
-                foreach (var method in methods)
+                var types = Assembly.GetExecutingAssembly().GetLoadableTypes();
+                foreach (var type in types)
                 {
-                    var attributes = method.GetCustomAttributes(typeof(RuntimeInitializeOnLoadMethodAttribute), false);
-                    if (attributes.Length > 0)
+                    var methods = type.GetMethods(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
+                    foreach (var method in methods)
                     {
-                        method.Invoke(null, null);
+                        var attributes = method.GetCustomAttributes(typeof(RuntimeInitializeOnLoadMethodAttribute), false);
+                        if (attributes.Length > 0)
+                        {
+                            method.Invoke(null, null);
+                        }
                     }
                 }
+            }
+            catch (Exception e)
+            {
+                
             }
 
 
 
             Plugin.logger.LogInfo("Custom content loaded!");
         }
+
+
 
     }
 }

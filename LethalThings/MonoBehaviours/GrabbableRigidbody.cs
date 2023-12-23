@@ -8,8 +8,6 @@ namespace LethalThings.MonoBehaviours
 {
     // grabbable object which uses unity rigidbody physics
     [RequireComponent(typeof(Rigidbody))]
-    [RequireComponent(typeof(NetworkRigidbody))]
-    [RequireComponent(typeof(NetworkTransform))]
     public class GrabbableRigidbody : GrabbableObject
     {
         public float gravity = 9.8f;
@@ -48,7 +46,6 @@ namespace LethalThings.MonoBehaviours
             isHeld = true;
             base.Update();
             isHeld = wasHeld;
-
         }
 
 
@@ -73,9 +70,8 @@ namespace LethalThings.MonoBehaviours
 
         public override void LateUpdate()
         {
-            if (parentObject != null && !rb.isKinematic)
+            if (parentObject != null && isHeld)
             {
-                //Plugin.logger.LogMessage("Position being controlled by lateupdate!!");
                 base.transform.rotation = parentObject.rotation;
                 base.transform.Rotate(itemProperties.rotationOffset);
                 base.transform.position = parentObject.position;
@@ -97,6 +93,13 @@ namespace LethalThings.MonoBehaviours
         public new void FallToGround(bool randomizePosition = false)
         {
             // stub, we do not need this.
+        }
+
+        public override void EquipItem()
+        {
+            // remove parent object
+            base.EquipItem();
+            transform.SetParent(null, true);
         }
     }
 }

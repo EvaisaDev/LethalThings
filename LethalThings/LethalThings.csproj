@@ -41,6 +41,9 @@
       <Reference Include="BepInEx.Harmony">
         <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Lethal Company\BepInEx\core\BepInEx.Harmony.dll</HintPath>
       </Reference>
+      <Reference Include="ClientNetworkTransform">
+        <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Lethal Company\Lethal Company_Data\Managed\ClientNetworkTransform.dll</HintPath>
+      </Reference>
       <Reference Include="LethalCompanyInputUtils">
         <HintPath>C:\Users\mail\Desktop\oldplugions\LethalCompanyInputUtils\LethalCompanyInputUtils.dll</HintPath>
       </Reference>
