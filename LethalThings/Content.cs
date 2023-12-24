@@ -214,7 +214,7 @@ namespace LethalThings
                 CustomShopItem.Add("Flaregun", "Assets/Custom/LethalThings/Items/Flaregun/Flaregun.asset", "Assets/Custom/LethalThings/Items/Flaregun/FlaregunInfo.asset", action: (item) => {
                     NetworkPrefabs.RegisterNetworkPrefab(item.spawnPrefab.GetComponent<ProjectileWeapon>().projectilePrefab);
                 }, itemPrice:  10, enabled: true),
-                CustomShopItem.Add("FlaregunAmmo", "Assets/Custom/LethalThings/Items/Flaregun/FlaregunAmmo.asset", "Assets/Custom/LethalThings/Items/Flaregun/FlaregunAmmoInfo.asset", 10, enabled: true),
+                CustomShopItem.Add("FlaregunAmmo", "Assets/Custom/LethalThings/Items/Flaregun/FlaregunAmmo.asset", "Assets/Custom/LethalThings/Items/Flaregun/FlaregunAmmoInfo.asset", Config.flareGunAmmoPrice.Value, enabled: Config.flareGunEnabled.Value),
                 CustomShopItem.Add("ToyHammer", "Assets/Custom/LethalThings/Items/ToyHammer/ToyHammer.asset", "Assets/Custom/LethalThings/Items/ToyHammer/ToyHammerInfo.asset", Config.toyHammerPrice.Value, enabled: Config.toyHammerEnabled.Value),
                 CustomShopItem.Add("RemoteRadar", "Assets/Custom/LethalThings/Items/Radar/HandheldRadar.asset", "Assets/Custom/LethalThings/Items/Radar/HandheldRadarInfo.asset", Config.remoteRadarPrice.Value, enabled: Config.remoteRadarEnabled.Value),
                 CustomShopItem.Add("PouchyBelt", "Assets/Custom/LethalThings/Items/Pouch/Pouch.asset", "Assets/Custom/LethalThings/Items/Pouch/PouchInfo.asset", Config.pouchyBeltPrice.Value, enabled: Config.pouchyBeltEnabled.Value),

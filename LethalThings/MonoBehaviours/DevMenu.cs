@@ -1,6 +1,7 @@
 ﻿using LethalLib.Modules;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using TMPro;
@@ -12,6 +13,7 @@ using UnityEngine.UIElements;
 using static UnityEngine.GraphicsBuffer;
 using Button = UnityEngine.UI.Button;
 using Cursor = UnityEngine.Cursor;
+using Debug = UnityEngine.Debug;
 using Random = UnityEngine.Random;
 
 namespace LethalThings.MonoBehaviours
@@ -470,7 +472,7 @@ namespace LethalThings.MonoBehaviours
             {
                 int price = (int)(Random.Range(grabbable.itemProperties.minValue, grabbable.itemProperties.maxValue) * RoundManager.Instance.scrapValueMultiplier);
 
-                grabbable.scrapValue = price;
+                grabbable.SetScrapValue(price);
 
                 syncScrapValueClientRpc(grabbable.GetComponent<NetworkObject>(), price);
 
@@ -486,7 +488,7 @@ namespace LethalThings.MonoBehaviours
 
                 if (grabbable)
                 {
-                    grabbable.scrapValue = scrapValue;
+                    grabbable.SetScrapValue(scrapValue);
                 }
             }
         }
