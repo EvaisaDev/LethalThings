@@ -37,10 +37,13 @@ namespace LethalThings.MonoBehaviours
 
                 if(noiseSFX[num].name.Contains("chomp"))
                 {
-                    playerHeldBy.DamagePlayer(30, causeOfDeath: CauseOfDeath.Mauling);
+                    if (IsOwner)
+                    {
+                        playerHeldBy.DamagePlayer(30, causeOfDeath: CauseOfDeath.Mauling);
 
-                    // drop item
-                    playerHeldBy.DiscardHeldObject();
+                        // drop item
+                        playerHeldBy.DiscardHeldObject();
+                    }
                 }
             }
         }
@@ -68,5 +71,9 @@ namespace LethalThings.MonoBehaviours
         private System.Random noisemakerRandom;
 
         public Animator triggerAnimator;
+
+        public bool isCleanable;
+
+        public Item cleanArson;
     }
 }

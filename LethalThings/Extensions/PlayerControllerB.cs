@@ -126,5 +126,7 @@ namespace LethalThings.Extensions
             self.ItemSlots[slotIndex] = null;
         }
 
+
+
     }
 }

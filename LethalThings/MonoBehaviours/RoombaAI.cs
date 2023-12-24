@@ -275,7 +275,7 @@ namespace LethalThings
                 return;
             }
             // log tag and name
-            Plugin.logger.LogInfo("[Boomba] Trigger enter, tag: " + other.tag + ", name: " + other.name);
+            //Plugin.logger.LogInfo("[Boomba] Trigger enter, tag: " + other.tag + ", name: " + other.name);
             if (other.CompareTag("Player") || other.transform.parent.CompareTag("Player"))
             {
                 PlayerControllerB component = other.gameObject.GetComponent<PlayerControllerB>();
@@ -335,7 +335,7 @@ namespace LethalThings
 
         public IEnumerator TriggerMine(Collider other)
         {
-            Debug.Log("Object entering mine trigger, gameobject name: " + other.gameObject.name);
+            //Debug.Log("Object entering mine trigger, gameobject name: " + other.gameObject.name);
             yield return new WaitForSeconds(0.5f);
             MineGoesBoom(other);
         }
@@ -344,7 +344,7 @@ namespace LethalThings
         {
             if (!hasExploded)
             {
-                Debug.Log("Object leaving mine trigger, gameobject name: " + other.gameObject.name);
+                //Debug.Log("Object leaving mine trigger, gameobject name: " + other.gameObject.name);
                 if (other.CompareTag("Player") || other.transform.parent.CompareTag("Player"))
                 {
                     PlayerControllerB component = other.gameObject.GetComponent<PlayerControllerB>();

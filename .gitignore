@@ -73,5 +73,7 @@ crashlytics-build.properties
 
 /LethalThings/bin
 /LethalThings/obj
+/LTInputUtilsCompat/bin
+/LTInputUtilsCompat/obj
 
 /LethalThings/DynamicBone/*

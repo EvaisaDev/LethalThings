@@ -12,6 +12,7 @@ namespace LethalThings.MonoBehaviours
         public static int DaysSinceLastFatality = 0;
         public static int lastDeathCount = 0;
         public static int daysSpent = 0;
+        private static bool wasJustUpdated = false;
 
         public TextMeshProUGUI textMesh;
         public TextMeshProUGUI textMeshBack;
@@ -23,7 +24,34 @@ namespace LethalThings.MonoBehaviours
             On.GameNetworkManager.SaveGameValues += GameNetworkManager_SaveGameValues;
             On.GameNetworkManager.ResetSavedGameValues += GameNetworkManager_ResetSavedGameValues;
             On.StartOfRound.SetTimeAndPlanetToSavedSettings += StartOfRound_SetTimeAndPlanetToSavedSettings;
+
+            On.HUDManager.ApplyPenalty += HUDManager_ApplyPenalty;
+            On.StartOfRound.PassTimeToNextDay += StartOfRound_PassTimeToNextDay;
         }
+
+        private static void StartOfRound_PassTimeToNextDay(On.StartOfRound.orig_PassTimeToNextDay orig, StartOfRound self, int connectedPlayersOnServer)
+        {
+            orig(self, connectedPlayersOnServer);
+            if (!wasJustUpdated)
+            {
+                DaysSinceLastFatality++;
+            }
+            wasJustUpdated = false;
+        }
+
+
+        private static void HUDManager_ApplyPenalty(On.HUDManager.orig_ApplyPenalty orig, HUDManager self, int playersDead, int bodiesInsured)
+        {
+            Plugin.logger.LogInfo($"Dead players: {playersDead}");
+            if(playersDead > 0)
+            {
+                DaysSinceLastFatality = 0;
+                wasJustUpdated = true;
+            }
+            orig(self, playersDead, bodiesInsured);
+        }
+
+
 
         private static void StartOfRound_SetTimeAndPlanetToSavedSettings(On.StartOfRound.orig_SetTimeAndPlanetToSavedSettings orig, StartOfRound self)
         {
@@ -58,16 +86,6 @@ namespace LethalThings.MonoBehaviours
 
         public void Update()
         {
-            if (StartOfRound.Instance.gameStats.deaths > lastDeathCount)
-            {
-                DaysSinceLastFatality = 0;
-                lastDeathCount = StartOfRound.Instance.gameStats.deaths;
-            }
-            else if (StartOfRound.Instance.gameStats.daysSpent != daysSpent)
-            {
-                DaysSinceLastFatality++;
-                daysSpent = StartOfRound.Instance.gameStats.daysSpent;
-            }
 
             // if host update the network variable
             if (IsServer && daysSinceLastFatality.Value != DaysSinceLastFatality)

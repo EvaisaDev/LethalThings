@@ -41,6 +41,12 @@
       <Reference Include="BepInEx.Harmony">
         <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Lethal Company\BepInEx\core\BepInEx.Harmony.dll</HintPath>
       </Reference>
+      <Reference Include="ClientNetworkTransform">
+        <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Lethal Company\Lethal Company_Data\Managed\ClientNetworkTransform.dll</HintPath>
+      </Reference>
+      <Reference Include="LethalCompanyInputUtils">
+        <HintPath>C:\Users\mail\Desktop\oldplugions\LethalCompanyInputUtils\LethalCompanyInputUtils.dll</HintPath>
+      </Reference>
       <Reference Include="LethalLib">
         <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Lethal Company\BepInEx\plugins\LethalLib\LethalLib.dll</HintPath>
       </Reference>
@@ -70,6 +76,9 @@
       </Reference>
       <Reference Include="Unity.Netcode.Runtime">
         <HintPath>..\..\..\NetcodePatcher\Unity.Netcode.Runtime.dll</HintPath>
+      </Reference>
+      <Reference Include="Unity.RenderPipelines.HighDefinition.Runtime">
+        <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Lethal Company\Lethal Company_Data\Managed\Unity.RenderPipelines.HighDefinition.Runtime.dll</HintPath>
       </Reference>
       <Reference Include="Unity.TextMeshPro">
         <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Lethal Company\Lethal Company_Data\Managed\Unity.TextMeshPro.dll</HintPath>

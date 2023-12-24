@@ -8,6 +8,7 @@ using UnityEngine;
 using UnityEngine.InputSystem.HID;
 using UnityEngine.UI;
 using LethalThings.Extensions;
+using UnityEngine.InputSystem;
 
 namespace LethalThings
 {
@@ -26,6 +27,16 @@ namespace LethalThings
             On.GameNetcodeStuff.PlayerControllerB.BeginGrabObject += PlayerControllerB_BeginGrabObject;
         }
 
+        public void Awake()
+        {
+            if (InputCompat.Enabled) { 
+                InputCompat.LTUtilityBeltQuick1.started += InputReceived;
+                InputCompat.LTUtilityBeltQuick2.started += InputReceived;
+                InputCompat.LTUtilityBeltQuick3.started += InputReceived;
+                InputCompat.LTUtilityBeltQuick4.started += InputReceived;
+            }
+        }
+
         private static void PlayerControllerB_BeginGrabObject(On.GameNetcodeStuff.PlayerControllerB.orig_BeginGrabObject orig, PlayerControllerB self)
         {
             self.interactRay = new Ray(self.gameplayCamera.transform.position, self.gameplayCamera.transform.forward);
@@ -34,7 +45,7 @@ namespace LethalThings
                 return;
             }
             self.currentlyGrabbingObject = self.hit.collider.transform.gameObject.GetComponent<GrabbableObject>();
-            if (!GameNetworkManager.Instance.gameHasStarted && !self.currentlyGrabbingObject.itemProperties.canBeGrabbedBeforeGameStart && !StartOfRound.Instance.testRoom.activeSelf)
+            if (!GameNetworkManager.Instance.gameHasStarted && !self.currentlyGrabbingObject.itemProperties.canBeGrabbedBeforeGameStart && (StartOfRound.Instance.testRoom == null || !StartOfRound.Instance.testRoom.activeSelf))
             {
                 return;
             }
@@ -101,6 +112,48 @@ namespace LethalThings
 
          }
 
+        public void InputReceived(InputAction.CallbackContext context)
+        {
+            if (IsOwner && playerHeldBy != null)
+            {
+                if (context.started)
+                {
+                    
+                    var index = -1;
+
+                    if (context.action == InputCompat.LTUtilityBeltQuick1)
+                    {
+                        index = 0;
+                    }
+                    else if (context.action == InputCompat.LTUtilityBeltQuick2)
+                    {
+                        index = 1;
+                    }
+                    else if (context.action == InputCompat.LTUtilityBeltQuick3)
+                    {
+                        index = 2;
+                    }
+                    else if (context.action == InputCompat.LTUtilityBeltQuick4)
+                    {
+                        index = 3;
+                    }
+
+                    if(index != -1)
+                    {
+                        if(index >= slotIndexes.Count)
+                        {
+                            return;
+                        }
+
+                        playerHeldBy.SwitchItemSlots(slotIndexes[index]);
+
+                        Plugin.logger.LogInfo($"Switched to slot: {slotIndexes[index]}");
+
+                    }
+                }
+            }
+        }
+
         public override void LateUpdate()
         {
             base.LateUpdate();
@@ -111,6 +164,13 @@ namespace LethalThings
                 // remove from parent
                 beltCosmetic.SetParent(null);
                 beltCosmetic.GetComponent<MeshRenderer>().enabled = true;
+
+                if (IsOwner)
+                {
+                    // prevent belt from showing up for owner.
+                    beltCosmetic.GetComponent<MeshRenderer>().enabled = false;
+                }
+
                 var root = previousPlayerHeldBy.lowerSpine.parent;
 
                 // Set position and rotation
@@ -137,8 +197,11 @@ namespace LethalThings
             }
         }
 
+        public List<int> slotIndexes = new List<int>();
+
         public void UpdateHUD(bool add)
         {
+            slotIndexes.Clear();
             var hud = HUDManager.Instance;
             if (add)
             {
@@ -168,12 +231,40 @@ namespace LethalThings
                 var iconFrames = hud.itemSlotIconFrames.ToList();
                 var icons = hud.itemSlotIcons.ToList();
 
+                // find index of last slot named `slot\d` regex
+                var index = iconFrames.FindLastIndex(x => {
+                    var match = System.Text.RegularExpressions.Regex.IsMatch(x.gameObject.name.ToLowerInvariant(), @"\bslot\d\b");
+                    /*
+                    if (match)
+                    {
+                        Debug.Log($"Found match: {x.gameObject.name}");
+                    }
+                    else
+                    {
+                        Debug.Log($"No match: {x.gameObject.name}");
+                    }*/
+                    
+                    return match;
+                 });
+
+
+                var totalWidth = (beltCapacity * slotSizeX) + ((beltCapacity - 1) * 15f);
+
+
                 Debug.Log($"Adding {beltCapacity} item slots! Surely this will go well..");
+                Debug.Log($"Adding after index: {index}");
 
                 for (int i = 0; i < beltCapacity; i++)
                 {
-                    var xPosition = referenceFrame.rectTransform.anchoredPosition.x + (i + 1) * slotSizeX;
-                    var frame = Instantiate(iconFrames[lastInventorySize - 1], referenceFrame.transform.parent);
+                    // calculate xPosition to center belt using TotalWidth
+                    var anchor = -(referenceFrame.rectTransform.parent.GetComponent<RectTransform>().sizeDelta.x / 2) - (15 / 4);
+
+                    var xPosition = anchor + (i * slotSizeX) + (i * 15f);
+
+
+                    var prefab = iconFrames[0];
+
+                    var frame = Instantiate(prefab, referenceFrame.transform.parent);
                     frame.name = $"Slot{lastInventorySize + i}[LethalThingsBelt]";
                     frame.rectTransform.anchoredPosition = new Vector2(xPosition, yPosition);
                     frame.rectTransform.eulerAngles = frameAngles;
@@ -185,8 +276,18 @@ namespace LethalThings
                     // rotate 90 degrees because unity is goofy
                     icon.rectTransform.Rotate(new Vector3(0.0f, 0.0f, -90.0f));
 
-                    iconFrames.Add(frame);
-                    icons.Add(icon);
+                    var slotIndex = index + i + 1;
+
+                    // insert at index
+                    iconFrames.Insert(slotIndex, frame);
+                    icons.Insert(slotIndex, icon);
+
+                    slotIndexes.Add(slotIndex);
+
+                    // move up in parent to match index
+                    frame.transform.SetSiblingIndex(slotIndex);
+
+                    
                 }
 
                 hud.itemSlotIconFrames = iconFrames.ToArray();
@@ -309,6 +410,8 @@ namespace LethalThings
 
         public override void DiscardItem()
         {
+
+
             RemoveItemSlots();
 
             previousPlayerHeldBy = null;
@@ -316,10 +419,34 @@ namespace LethalThings
             base.DiscardItem();
         }
 
+        public override void OnNetworkDespawn()
+        {
+            RemoveItemSlots();
+
+            previousPlayerHeldBy = null;
+
+            base.OnNetworkDespawn();
+
+        }
+
         new public void GrabItemOnClient()
         {
 
             base.GrabItemOnClient();
+        }
+
+        // unregister inputs
+        public override void OnDestroy()
+        {
+            if (InputCompat.Enabled)
+            {
+                InputCompat.LTUtilityBeltQuick1.started -= InputReceived;
+                InputCompat.LTUtilityBeltQuick2.started -= InputReceived;
+                InputCompat.LTUtilityBeltQuick3.started -= InputReceived;
+                InputCompat.LTUtilityBeltQuick4.started -= InputReceived;
+            }
+
+            base.OnDestroy();
         }
 
         public override void EquipItem()
