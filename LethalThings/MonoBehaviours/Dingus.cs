@@ -92,7 +92,10 @@ namespace LethalThings
         {
             if (IsHost)
             {
-                isEvil.Value = SaveData.LoadObjectData<bool>("dingusBeEvil", uniqueId);
+                var dingusEvilStat = SaveData.LoadObjectData<bool>("dingusBeEvil", uniqueId);
+                if (dingusEvilStat) { 
+                    isEvil.Value = dingusEvilStat;
+                }
             }
         }
 

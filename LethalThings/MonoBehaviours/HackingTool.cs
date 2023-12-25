@@ -334,13 +334,16 @@ namespace LethalThings.MonoBehaviours
 
             backLight.enabled = turnedOn;
 
-            if (isHacking)
+            if (playerHeldBy != null)
             {
-                playerHeldBy.activatingItem = true;
-            }
-            else
-            {
-                playerHeldBy.activatingItem = false;
+                if (isHacking)
+                {
+                    playerHeldBy.activatingItem = true;
+                }
+                else
+                {
+                    playerHeldBy.activatingItem = false;
+                }
             }
 
 
@@ -592,6 +595,7 @@ namespace LethalThings.MonoBehaviours
             if (playerHeldBy != null)
             {
                 playerHeldBy.equippedUsableItemQE = false;
+                playerHeldBy.activatingItem = false;
             }
             hackState.Value = HackState.Off;
             selectedTarget = null;
@@ -606,6 +610,7 @@ namespace LethalThings.MonoBehaviours
         {
             base.EquipItem();
             playerHeldBy.equippedUsableItemQE = true;
+            playerHeldBy.activatingItem = false;
         }
 
         public override void ItemActivate(bool used, bool buttonDown = true)

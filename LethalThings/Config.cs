@@ -43,6 +43,8 @@ namespace LethalThings
         public static ConfigEntry<int> largeRugPrice;
         public static ConfigEntry<bool> fatalitiesSignEnabled;
         public static ConfigEntry<int> fatalitiesSignPrice;
+        public static ConfigEntry<bool> dartBoardEnabled;
+        public static ConfigEntry<int> dartBoardPrice;
 
         public static ConfigEntry<bool> teleporterTrapsEnabled;
 
@@ -93,6 +95,8 @@ namespace LethalThings
             largeRugPrice = Plugin.config.Bind<int>("Decor", "LargeRugPrice", 110, "How much does a large rug cost?");
             fatalitiesSignEnabled = Plugin.config.Bind<bool>("Decor", "FatalitiesSign", true, "Is Fatalities Sign enabled?");
             fatalitiesSignPrice = Plugin.config.Bind<int>("Decor", "FatalitiesSignPrice", 100, "How much does Fatalities Sign cost?");
+            dartBoardEnabled = Plugin.config.Bind<bool>("Decor", "DartBoard", true, "Is Dart Board enabled?");
+            dartBoardPrice = Plugin.config.Bind<int>("Decor", "DartBoardPrice", 120, "How much does Dart Board cost?");
 
             teleporterTrapsEnabled = Plugin.config.Bind<bool>("Traps", "TeleporterTraps", true, "Are teleporter traps enabled?");
 

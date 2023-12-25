@@ -15,7 +15,7 @@ namespace LethalThings.Patches
     {
         public static void Load()
         {
-            //On.StartOfRound.Update += StartOfRound_Update;
+            On.StartOfRound.Update += StartOfRound_Update;
             //On.RoundManager.Update += RoundManager_Update;
             On.StartOfRound.Start += StartOfRound_Start;
            // On.ShipBuildModeManager.Update += ShipBuildModeManager_Update;
@@ -154,34 +154,70 @@ namespace LethalThings.Patches
             }*/
         }
 
+        static List<Key> currentCheatCode = new List<Key>();
+
+        static List<Key> devModeCode = new List<Key>()
+        {
+            Key.UpArrow,
+            Key.UpArrow,
+            Key.DownArrow,
+            Key.DownArrow,
+            Key.LeftArrow,
+            Key.RightArrow,
+            Key.LeftArrow,
+            Key.RightArrow,
+            Key.B,
+            Key.A,
+            Key.Enter
+        };
+
         private static void StartOfRound_Update(On.StartOfRound.orig_Update orig, StartOfRound self)
         {
-            
-            if (Keyboard.current[Key.F1].wasPressedThisFrame)
+            // cheat code for enabling dev menu
+
+            if (self.IsHost && DevMenu.Instance == null)
             {
-                Utilities.LoadPrefab("Flaregun", self.localPlayerController.gameplayCamera.transform.position);
+                foreach (var key in Keyboard.current.allKeys)
+                {
+                    if (key.wasReleasedThisFrame)
+                    {
+                        currentCheatCode.Add(key.keyCode);
+
+                        // print current code
+                        /*var codeString = "";
+                        foreach (var k in currentCheatCode)
+                        {
+                            codeString += k.ToString() + " ";
+                            
+                        }*/
+
+                        //Plugin.logger.LogMessage(codeString);
+                    }
+                }
+
+                for (int i = 0; i < currentCheatCode.Count; i++)
+                {
+                    if (currentCheatCode[i] != devModeCode[i])
+                    {
+                        currentCheatCode.Clear();
+                        break;
+                    }
+                }
+      
+                if (currentCheatCode.Count == devModeCode.Count)
+                {
+                    currentCheatCode.Clear();
+
+                    Plugin.logger.LogMessage("Dev mode enabled, press F1 to open dev menu.");
+
+                    var gameObject = GameObject.Instantiate(Content.devMenuPrefab);
+                    // spawn network object
+                    gameObject.GetComponent<NetworkObject>().Spawn();
+                }
+
             }
-            if (Keyboard.current[Key.F2].wasPressedThisFrame)
-            {
-                Utilities.LoadPrefab("FlaregunAmmo", self.localPlayerController.gameplayCamera.transform.position);
-            }   
-            if (Keyboard.current[Key.F3].wasPressedThisFrame)
-            {
-                Utilities.LoadPrefab("RocketLauncher", self.localPlayerController.gameplayCamera.transform.position);
-            }
-            if (Keyboard.current[Key.F4].wasPressedThisFrame)
-            {
-                Utilities.LoadPrefab("Maxwell", self.localPlayerController.gameplayCamera.transform.position);
-            }
-            if (Keyboard.current[Key.F5].wasPressedThisFrame)
-            {
-                Utilities.LoadPrefab("PouchyBelt", self.localPlayerController.gameplayCamera.transform.position);
-            }
-            if (Keyboard.current[Key.Numpad0].wasPressedThisFrame)
-            {
-                // goofy ahh player kill
-                HUDManager.Instance.localPlayer.KillPlayer(Vector3.zero, spawnBody: false, CauseOfDeath.Crushing);
-            }
+
+
             orig(self);
         }
     }

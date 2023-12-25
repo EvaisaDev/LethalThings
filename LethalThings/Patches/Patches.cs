@@ -22,6 +22,7 @@ namespace LethalThings.Patches
             Dart.Init();
             FatalitiesSign.Init();
             GremlinEnergy.Init();
+            Arson.Init();
 
             // i will surely not forget to remove this when i release.
             Debug.Load();

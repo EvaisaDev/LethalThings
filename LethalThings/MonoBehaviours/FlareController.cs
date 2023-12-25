@@ -48,7 +48,7 @@ namespace LethalThings.MonoBehaviours
 
         private static bool HUDManager_NodeIsNotVisible(On.HUDManager.orig_NodeIsNotVisible orig, HUDManager self, ScanNodeProperties node, int elementIndex)
         {
-            if (node.transform.parent.GetComponent<FlareController>() != null)
+            if (node != null && node.transform != null && node.transform.parent != null && node.transform.parent.GetComponent<FlareController>() != null)
             {
                 var player = GameNetworkManager.Instance.localPlayerController;
 

@@ -62,7 +62,7 @@ namespace LethalThings.MonoBehaviours
 
         private static bool HUDManager_MeetsScanNodeRequirements(On.HUDManager.orig_MeetsScanNodeRequirements orig, HUDManager self, ScanNodeProperties node, PlayerControllerB playerScript)
         {
-            if (node.transform.parent.GetComponent<Dart>() != null)
+            if (node != null && node.transform != null && node.transform.parent != null && node.transform.parent.GetComponent<Dart>() != null)
             {
                 var player = GameNetworkManager.Instance.localPlayerController;
 
@@ -89,7 +89,7 @@ namespace LethalThings.MonoBehaviours
 
         private static bool HUDManager_NodeIsNotVisible(On.HUDManager.orig_NodeIsNotVisible orig, HUDManager self, ScanNodeProperties node, int elementIndex)
         {
-            if (node.transform.parent.GetComponent<Dart>() != null)
+            if (node != null && node.transform != null && node.transform.parent != null && node.transform.parent.GetComponent<Dart>() != null)
             {
                 var player = GameNetworkManager.Instance.localPlayerController;
 

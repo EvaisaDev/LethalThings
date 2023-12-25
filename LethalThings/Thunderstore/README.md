@@ -1,6 +1,25 @@
 # LethalThings
-**A content mod for Lethal Company**  
-*List of included content below*  
+**A content mod for Lethal Company that adds a ton of content!**  
+*Features list at bottom of page!*  
+
+## Credits:
+- [Evaisa](https://evaisa.dev/) 
+	- Making the mod and api and everything.
+	- Hi I'm eba.  
+- [Bobilka](https://www.artstation.com/bobilka)   
+	- Models  
+	- Ideas  
+	- Textures  
+	- Testing  
+- Antlers  
+	- Models  
+	- Cookie model  
+	- Testing  
+- LocalHyena  
+	- Models  
+	- Textures  
+- [Jek Korpen](https://twitter.com/Jek_Korpen)  
+	- Nikki (Cookie) character design.  
 
 ## Scrap items
 - Plushy named Arson  
@@ -35,6 +54,14 @@
 - Glizzy  
 	- Can be thrown at colleagues.  
 ![Glizzy](https://i.imgur.com/OQUi2hq.png)  
+
+- Revolver  
+	- Pew pew!!  
+![Revolver](https://i.imgur.com/V4YnhFe.png)  
+
+- Gremlin Energy Drink   
+	- 100% lethal!!   
+![GremlinEnergy](https://i.imgur.com/A0lzXY0.png)  
   
 ## Store items
 - Toy Hammer
@@ -63,7 +90,13 @@
 - Hacking Tool  
 	- Unlock gates, disable turrets and mines, from up close.  
 	- Requires basic math skills.  
-![HackingTool](https://cdn.discordapp.com/attachments/511206402493251586/1180890040990171186/g-3dUIk1R.png)  
+![HackingTool](https://cdn.discordapp.com/attachments/511206402493251586/1180890040990171186/g-3dUIk1R.png) 
+
+- Flare gun  
+	- Attracts certain enemies.   
+	- Flares are automatically pinged by employees.  
+	- Ammo can be bought from the store.  
+![Flaregun](https://i.imgur.com/8NTZyQ3.png) 
 
 ## Decor  
 - Small/Large Rug  
@@ -71,9 +104,14 @@
 ![Rugs](https://i.imgur.com/JXXXeoW.png)
    
 - Fatalities Sign
-	- A sign which reflects the efficacity of your crew.  
+	- A sign which reflects the efficacy of your crew.  
 	- Automatically updates.  
 ![FatalitiesSign](https://cdn.discordapp.com/attachments/511206402493251586/1180888999951355985/sSk78gIYS.png)  
+
+- Dartboard  
+	- Usable dartboard for passing time.  
+	- Darts are included and be returned if lost.  
+![Dartboard](https://i.imgur.com/Gs7iiu5.png) 
 
 ## Enemies
 - Boomba  
@@ -88,24 +126,3 @@
 ## Miscelaneous
 - Improved Item Charger.  
 	- Stuffing conductive items in the charger will now electrocute you.  
-
-## Credits:
-- [Bobilka](https://www.artstation.com/bobilka)   
-	- Models  
-	- Ideas  
-	- Textures  
-	- Testing  
-- Antlers  
-	- Models  
-	- Cookie model 
-- LocalHyena  
-	- Models  
-	- Textures  
-- [Jek Korpen](https://twitter.com/Jek_Korpen)  
-	- Nikki (Cookie) character design.  
-
-# Latest Changes  
-- Glizzy gobbler update.  
-- Arson go chompy  
-- Recompiled assets against latest update.   
-- Fixed glizzy scan name.

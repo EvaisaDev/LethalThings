@@ -63,6 +63,11 @@ namespace LethalThings.MonoBehaviours
                 decalIndexes.Clear();
                 var decalIndexesList = SaveData.LoadObjectData<List<int>>("decalData", uniqueId);
 
+                if(decalIndexesList == null)
+                {
+                    decalIndexesList = new List<int>();
+                }
+
                 for (int i = 0; i < decalIndexesList.Count; i++)
                 {
                     decalIndexes.Add(decalIndexesList[i]);

@@ -213,7 +213,7 @@ namespace LethalThings
                 }, itemPrice:  Config.rocketLauncherPrice.Value, enabled: Config.rocketLauncherEnabled.Value),
                 CustomShopItem.Add("Flaregun", "Assets/Custom/LethalThings/Items/Flaregun/Flaregun.asset", "Assets/Custom/LethalThings/Items/Flaregun/FlaregunInfo.asset", action: (item) => {
                     NetworkPrefabs.RegisterNetworkPrefab(item.spawnPrefab.GetComponent<ProjectileWeapon>().projectilePrefab);
-                }, itemPrice:  10, enabled: true),
+                }, itemPrice:  Config.flareGunPrice.Value, enabled: Config.flareGunEnabled.Value),
                 CustomShopItem.Add("FlaregunAmmo", "Assets/Custom/LethalThings/Items/Flaregun/FlaregunAmmo.asset", "Assets/Custom/LethalThings/Items/Flaregun/FlaregunAmmoInfo.asset", Config.flareGunAmmoPrice.Value, enabled: Config.flareGunEnabled.Value),
                 CustomShopItem.Add("ToyHammer", "Assets/Custom/LethalThings/Items/ToyHammer/ToyHammer.asset", "Assets/Custom/LethalThings/Items/ToyHammer/ToyHammerInfo.asset", Config.toyHammerPrice.Value, enabled: Config.toyHammerEnabled.Value),
                 CustomShopItem.Add("RemoteRadar", "Assets/Custom/LethalThings/Items/Radar/HandheldRadar.asset", "Assets/Custom/LethalThings/Items/Radar/HandheldRadarInfo.asset", Config.remoteRadarPrice.Value, enabled: Config.remoteRadarEnabled.Value),
@@ -233,7 +233,7 @@ namespace LethalThings
                 CustomUnlockable.Add("SmallRug", "Assets/Custom/LethalThings/Unlockables/Rug/SmallRug.asset", "Assets/Custom/LethalThings/Unlockables/Rug/RugInfo.asset", null, Config.smallRugPrice.Value, enabled: Config.rugsEnabled.Value),
                 CustomUnlockable.Add("LargeRug", "Assets/Custom/LethalThings/Unlockables/Rug/LargeRug.asset", "Assets/Custom/LethalThings/Unlockables/Rug/RugInfo.asset", null, Config.largeRugPrice.Value, enabled: Config.rugsEnabled.Value),
                 CustomUnlockable.Add("FatalitiesSign", "Assets/Custom/LethalThings/Unlockables/Sign/Sign.asset", "Assets/Custom/LethalThings/Unlockables/Sign/SignInfo.asset", null, Config.fatalitiesSignPrice.Value, enabled: Config.fatalitiesSignEnabled.Value),
-                CustomUnlockable.Add("Dartboard", "Assets/Custom/LethalThings/Unlockables/dartboard/Dartboard.asset", "Assets/Custom/LethalThings/Unlockables/dartboard/DartboardInfo.asset", null, 0, true),
+                CustomUnlockable.Add("Dartboard", "Assets/Custom/LethalThings/Unlockables/dartboard/Dartboard.asset", "Assets/Custom/LethalThings/Unlockables/dartboard/DartboardInfo.asset", null, Config.dartBoardPrice.Value, Config.dartBoardEnabled.Value),
             
             };
 
@@ -261,7 +261,9 @@ namespace LethalThings
                 }, Config.teleporterTrapsEnabled.Value)
             };
 
+            //var ebaWeather = MainAssets.LoadAsset<WeatherDef>("Assets/Custom/LethalThings/Weather/TestWeather.asset");
 
+            //Weathers.RegisterWeather(ebaWeather);
 
             foreach (var item in customItems)
             {
