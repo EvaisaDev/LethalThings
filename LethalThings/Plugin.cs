@@ -6,6 +6,7 @@ using LethalThings.MonoBehaviours;
 using UnityEngine;
 using System.Reflection;
 using System;
+using static UnityEngine.Rendering.HighDefinition.HDAdditionalCameraData;
 
 [assembly: SecurityPermission(SecurityAction.RequestMinimum, SkipVerification = true)]
 namespace LethalThings
@@ -13,22 +14,25 @@ namespace LethalThings
     [BepInPlugin(ModGUID, ModName, ModVersion)]
     [BepInDependency(LethalLib.Plugin.ModGUID)]
     [BepInDependency(LethalCompanyInputUtils.LethalCompanyInputUtilsPlugin.ModId, BepInDependency.DependencyFlags.SoftDependency)]
+    [BepInDependency("FlipMods.ReservedItemSlotCore", BepInDependency.DependencyFlags.SoftDependency)]
     public class Plugin : BaseUnityPlugin
     {
         public const string ModGUID = "evaisa.lethalthings";
         public const string ModName = "LethalThings";
-        public const string ModVersion = "0.8.8";
+        public const string ModVersion = "0.8.9";
 
         public static ManualLogSource logger;
         public static ConfigFile config;
 
         public static bool devMode = false;
 
+        public static PluginInfo pluginInfo;
 
         private void Awake()
         {
             logger = Logger;
             config = Config;
+            pluginInfo = Info;
 
             // check lethallib version
             var version = BepInEx.Bootstrap.Chainloader.PluginInfos[LethalLib.Plugin.ModGUID].Metadata.Version;
@@ -52,20 +56,38 @@ namespace LethalThings
 
                 if (iuVersion.Major > 0 || (iuVersion.Minor == 4 && iuVersion.Build >= 3) || iuVersion.Minor > 4)
                 {
-                    logger.LogInfo("LethalCompanyInputUtils version is " + iuVersion.ToString() + ", which is compatible with LethalThings 0.8.0+");
+                    logger.LogInfo("[Optional dependency] LethalCompanyInputUtils version is " + iuVersion.ToString() + ", which is compatible with LethalThings 0.8.0+");
                 }
                 else
                 {
-                    logger.LogError("LethalCompanyInputUtils version is " + iuVersion.ToString() + ", which is not compatible with LethalThings 0.8.0+");
+                    logger.LogError("[Optional dependency] LethalCompanyInputUtils version is " + iuVersion.ToString() + ", which is not compatible with LethalThings 0.8.0+");
                     logger.LogError("Please update LethalCompanyInputUtils to version 0.4.3 or newer");
                     return;
                 }
             }
-           
+
+            if (BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("FlipMods.ReservedItemSlotCore"))
+            {
+                // 	FlipMods-ReservedItemSlotCore-1.6.6
+                var risVersion = BepInEx.Bootstrap.Chainloader.PluginInfos["FlipMods.ReservedItemSlotCore"].Metadata.Version;
+
+                if (risVersion.Major > 1 || (risVersion.Major > 0 && ((risVersion.Minor == 6 && risVersion.Build >= 6) || risVersion.Minor > 6)))
+                {
+                    logger.LogInfo("[Compatibility] ReservedItemSlotCore version is " + risVersion.ToString() + ", which is compatible with LethalThings 0.8.0+");
+                }
+                else
+                {
+                    logger.LogError("[Compatibility] ReservedItemSlotCore version is " + risVersion.ToString() + ", which is not compatible with LethalThings 0.8.0+");
+                    logger.LogError("Please update ReservedItemSlotCore to version 1.6.6 or newer");
+                    return;
+                }
+            }
+
+
 
             Utilities.Init();
-            LethalThings.Config.Load();
-            Content.Load();
+            LethalThings.NetworkConfig.Load();
+            Content.Init();
             Patches.Patches.Load();
 
             if (InputCompat.Enabled)
@@ -73,8 +95,9 @@ namespace LethalThings
 
             Logger.LogInfo("LethalThings loaded successfully!!!");
 
-            //On.RoundManager.Awake += RoundManager_Awake;
         }
+
+
 
         /*
         static bool first = true;
@@ -95,6 +118,6 @@ namespace LethalThings
                 LethalLib.Modules.Dungeon.AddDungeon(newDungeon, 600, LethalLib.Modules.Levels.LevelTypes.All, audioClip);
             }
             orig(self);
-        }*/     
+        }*/
     }
 }

@@ -291,6 +291,7 @@ namespace LethalThings
                     //pressMineDebounceTimer = 0.5f;
                     PressMineServerRpc();
                     StartCoroutine(TriggerMine(other));
+                    hasExploded = true;
                 }
             }
             else
@@ -313,6 +314,7 @@ namespace LethalThings
                 //pressMineDebounceTimer = 0.5f;
                 PressMineServerRpc();
                 StartCoroutine(TriggerMine(other));
+                hasExploded = true;
             }
         }
 
@@ -342,55 +344,50 @@ namespace LethalThings
 
         public void MineGoesBoom(Collider other)
         {
-            if (!hasExploded)
+
+            //Debug.Log("Object leaving mine trigger, gameobject name: " + other.gameObject.name);
+            if (other.CompareTag("Player") || other.transform.parent.CompareTag("Player"))
             {
-                //Debug.Log("Object leaving mine trigger, gameobject name: " + other.gameObject.name);
-                if (other.CompareTag("Player") || other.transform.parent.CompareTag("Player"))
+                PlayerControllerB component = other.gameObject.GetComponent<PlayerControllerB>();
+
+                if (!other.CompareTag("Player"))
                 {
-                    PlayerControllerB component = other.gameObject.GetComponent<PlayerControllerB>();
-
-                    if (!other.CompareTag("Player"))
-                    {
-                        component = other.transform.parent.GetComponent<PlayerControllerB>();
-                    }
-
-                    if (component != null && !component.isPlayerDead && !(component != GameNetworkManager.Instance.localPlayerController))
-                    {
-                        localPlayerOnMine = false;
-                        TriggerMineOnLocalClientByExiting();
-                    }
+                    component = other.transform.parent.GetComponent<PlayerControllerB>();
                 }
-                else
+
+                if (component != null && !component.isPlayerDead && !(component != GameNetworkManager.Instance.localPlayerController))
                 {
-                    if (!other.CompareTag("PlayerRagdoll") /*&& !other.CompareTag("PhysicsProp")*/)
-                    {
-                        return;
-                    }
-                    if ((bool)other.GetComponent<DeadBodyInfo>())
-                    {
-                        if (other.GetComponent<DeadBodyInfo>().playerScript != GameNetworkManager.Instance.localPlayerController)
-                        {
-                            return;
-                        }
-                    }
-                    else if ((bool)other.GetComponent<GrabbableObject>() && !other.GetComponent<GrabbableObject>().NetworkObject.IsOwner)
-                    {
-                        return;
-                    }
+                    localPlayerOnMine = false;
                     TriggerMineOnLocalClientByExiting();
                 }
             }
+            else
+            {
+                if (!other.CompareTag("PlayerRagdoll") /*&& !other.CompareTag("PhysicsProp")*/)
+                {
+                    return;
+                }
+                if ((bool)other.GetComponent<DeadBodyInfo>())
+                {
+                    if (other.GetComponent<DeadBodyInfo>().playerScript != GameNetworkManager.Instance.localPlayerController)
+                    {
+                        return;
+                    }
+                }
+                else if ((bool)other.GetComponent<GrabbableObject>() && !other.GetComponent<GrabbableObject>().NetworkObject.IsOwner)
+                {
+                    return;
+                }
+                TriggerMineOnLocalClientByExiting();
+            }
+ 
         }
 
         private void TriggerMineOnLocalClientByExiting()
         {
-            if (!hasExploded)
-            {
-                hasExploded = true;
-                SetOffMineAnimation();
-                sendingExplosionRPC = true;
-                ExplodeMineServerRpc();
-            }
+            SetOffMineAnimation();
+            sendingExplosionRPC = true;
+            ExplodeMineServerRpc();
         }
 
         [ServerRpc(RequireOwnership = false)]

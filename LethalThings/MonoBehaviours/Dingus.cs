@@ -60,7 +60,7 @@ namespace LethalThings
         public GameObject evilObject;
 
 
-        public NetworkVariable<bool> isPlayingMusic = new NetworkVariable<bool>(Config.maxwellPlayMusicDefault.Value, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
+        public NetworkVariable<bool> isPlayingMusic = new NetworkVariable<bool>(NetworkConfig.maxwellPlayMusicDefault.Value, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
 
         public NetworkVariable<bool> isPipebomb = new NetworkVariable<bool>(false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
 
@@ -120,12 +120,12 @@ namespace LethalThings
 
             if (IsOwner)
             {
-                isPlayingMusic.Value = Config.maxwellPlayMusicDefault.Value;
+                isPlayingMusic.Value = NetworkConfig.Instance.maxwellPlayMusicDefaultNetVar.Value;
             }
 
             if (IsHost)
             {
-                isEvil.Value = (UnityEngine.Random.Range(0f, 100f) <= Config.evilMaxwellChance.Value);
+                isEvil.Value = (UnityEngine.Random.Range(0f, 100f) <= NetworkConfig.evilMaxwellChance.Value);
             }
         }
 

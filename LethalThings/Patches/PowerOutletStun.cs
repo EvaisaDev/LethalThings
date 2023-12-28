@@ -11,12 +11,11 @@ namespace LethalThings.Patches
         public static void Load()
         {
             // Funny power socket stun
-            if (Config.enableItemChargerElectrocution.Value)
-            {
-                On.ItemCharger.ChargeItem += ItemCharger_ChargeItem;
-                On.ItemCharger.Update += ItemCharger_Update;
-                On.GameNetworkManager.Start += GameNetworkManager_Start;
-            }
+
+            On.ItemCharger.ChargeItem += ItemCharger_ChargeItem;
+            On.ItemCharger.Update += ItemCharger_Update;
+            On.GameNetworkManager.Start += GameNetworkManager_Start;
+
         }
 
 
@@ -52,18 +51,21 @@ namespace LethalThings.Patches
 
         private static void ItemCharger_ChargeItem(On.ItemCharger.orig_ChargeItem orig, ItemCharger self)
         {
-            GrabbableObject currentlyHeldObjectServer = GameNetworkManager.Instance.localPlayerController.currentlyHeldObjectServer;
-            if (currentlyHeldObjectServer == null)
+            if (NetworkConfig.Instance && NetworkConfig.Instance.enableItemChargerElectrocutionNetVar.Value)
             {
-                return;
-            }
-            if (!currentlyHeldObjectServer.itemProperties.requiresBattery)
-            {
-                if (currentlyHeldObjectServer.itemProperties.isConductiveMetal)
+                GrabbableObject currentlyHeldObjectServer = GameNetworkManager.Instance.localPlayerController.currentlyHeldObjectServer;
+                if (currentlyHeldObjectServer == null)
                 {
-                    currentlyHeldObjectServer.GetComponent<LethalThings.PowerOutletStun>().Electrocute(self);
+                    return;
                 }
-                return;
+                if (!currentlyHeldObjectServer.itemProperties.requiresBattery)
+                {
+                    if (currentlyHeldObjectServer.itemProperties.isConductiveMetal)
+                    {
+                        currentlyHeldObjectServer.GetComponent<LethalThings.PowerOutletStun>().Electrocute(self);
+                    }
+                    return;
+                }
             }
             orig(self);
         }

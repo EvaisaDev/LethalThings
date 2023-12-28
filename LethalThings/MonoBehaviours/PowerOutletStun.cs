@@ -37,8 +37,15 @@ namespace LethalThings
             strikeParticle.transform.localPosition = Vector3.zero;
             strikeParticle.gameObject.SetActive(true);
 
-            if (IsHost) {
-                damage.Value = (Config.itemChargerElectrocutionDamage.Value);
+
+        }
+
+        public override void OnNetworkSpawn()
+        {
+            base.OnNetworkSpawn();
+            if (IsHost)
+            {
+                damage.Value = (NetworkConfig.itemChargerElectrocutionDamage.Value);
             }
         }
 
@@ -77,7 +84,7 @@ namespace LethalThings
         {
             var stormyWeather = FindObjectOfType<StormyWeather>(true);
 
-            Utilities.CreateExplosion(position, false, Config.itemChargerElectrocutionDamage.Value, 0f, 5f, 3, CauseOfDeath.Electrocution);
+            Utilities.CreateExplosion(position, false, damage.Value, 0f, 5f, 3, CauseOfDeath.Electrocution);
 
             strikeParticle.Play();
             stormyWeather.PlayThunderEffects(position, strikeAudio);

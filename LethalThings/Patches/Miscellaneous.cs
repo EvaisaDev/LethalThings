@@ -15,10 +15,9 @@ namespace LethalThings.Patches
         {
             // Allow item to have no grab animation because the game is dumb
             On.GameNetcodeStuff.PlayerControllerB.SetSpecialGrabAnimationBool += PlayerControllerB_SetSpecialGrabAnimationBool;
-            if (Config.disableOverlappingModContent.Value)
-            {
-                On.StartOfRound.Start += StartOfRound_Start;
-            }
+
+            On.StartOfRound.Start += StartOfRound_Start;
+  
 
             Hook hook3 = new Hook(typeof(UnityEngine.Object).GetMethod("Instantiate", new Type[]
                       {
@@ -168,12 +167,15 @@ namespace LethalThings.Patches
 
             // remove other dingi, so people stop complaining about non eba dingusses
 
-            foreach (SelectableLevel level in self.levels)
+            if(NetworkConfig.Instance && NetworkConfig.Instance.disableOverlappingModContentNetVar.Value)
             {
-                level.spawnableScrap.RemoveAll((scrap) => scrap.spawnableItem.name == "dingus");
-            }
+                foreach (SelectableLevel level in self.levels)
+                {
+                    level.spawnableScrap.RemoveAll((scrap) => scrap.spawnableItem.name == "dingus");
+                }
 
-            self.allItemsList.itemsList.RemoveAll((item) => item.name == "dingus");
+                self.allItemsList.itemsList.RemoveAll((item) => item.name == "dingus");
+            }
         }
 
         private static void PlayerControllerB_SetSpecialGrabAnimationBool(On.GameNetcodeStuff.PlayerControllerB.orig_SetSpecialGrabAnimationBool orig, GameNetcodeStuff.PlayerControllerB self, bool setTrue, GrabbableObject currentItem)

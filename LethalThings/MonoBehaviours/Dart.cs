@@ -237,7 +237,7 @@ namespace LethalThings.MonoBehaviours
 
             if (IsHost)
             {
-                if (rb.isKinematic && !isHeld)
+                if (rb.isKinematic && !isHeld && trackingPoint != null)
                 {
                     rb.position = trackingPoint.transform.position;
                     rb.rotation = trackingPoint.transform.rotation;
