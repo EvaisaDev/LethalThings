@@ -51,7 +51,7 @@ namespace LethalThings.Patches
 
         private static void ItemCharger_ChargeItem(On.ItemCharger.orig_ChargeItem orig, ItemCharger self)
         {
-            if (NetworkConfig.Instance && NetworkConfig.Instance.enableItemChargerElectrocutionNetVar.Value)
+            if (NetworkConfig.Instance != null && NetworkConfig.Instance.enableItemChargerElectrocutionNetVar.Value)
             {
                 GrabbableObject currentlyHeldObjectServer = GameNetworkManager.Instance.localPlayerController.currentlyHeldObjectServer;
                 if (currentlyHeldObjectServer == null)

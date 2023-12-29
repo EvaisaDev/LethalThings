@@ -21,10 +21,14 @@ namespace LethalThings
         public static Dictionary<string, GameObject> Prefabs = new Dictionary<string, GameObject>();
         public static ContentLoader ContentLoader;
         public static GameObject devMenuPrefab;
+        public static GameObject configManagerPrefab;
 
         public static void Init()
         {
             MainAssets = AssetBundle.LoadFromFile(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "lethalthings"));
+
+            configManagerPrefab = MainAssets.LoadAsset<GameObject>("Assets/Custom/LethalThings/LTNetworkConfig.prefab");
+
             ContentLoader = new ContentLoader(Plugin.pluginInfo, MainAssets, (content, prefab) => { 
                 Prefabs.Add(content.ID, prefab);
             });

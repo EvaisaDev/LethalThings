@@ -4,8 +4,10 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Unity.Netcode;
-using static LethalLib.Modules.ContentLoader;
+//using static LethalLib.Modules.ContentLoader;
 using LethalLib.Modules;
+using UnityEngine;
+using static LethalLib.Modules.ContentLoader;
 
 namespace LethalThings
 {
@@ -126,7 +128,7 @@ namespace LethalThings
         public static void Load()
         {
 
-
+            
             arsonSpawnChance = Plugin.config.Bind<int>("Scrap", "Arson", 5, "How much does Arson spawn, higher = more common");
             dirtyArsonSpawnChance = Plugin.config.Bind<int>("Scrap", "DirtyArson", 5, "How much does Arson (Dirty) spawn, higher = more common");
             toimariSpawnChance = Plugin.config.Bind<int>("Scrap", "Toimari", 10, "How much does Toimari spawn, higher = more common");
@@ -180,13 +182,37 @@ namespace LethalThings
             VolumeConfig = new ConfigFile(Paths.ConfigPath + "\\LethalThings.AudioVolume.cfg", true);
 
             On.StartOfRound.Start += StartOfRound_Start;
+            On.StartOfRound.Awake += StartOfRound_Awake;
+            
         }
 
+        
+        private static void StartOfRound_Awake(On.StartOfRound.orig_Awake orig, StartOfRound self)
+        {
+            Plugin.logger.LogInfo($"NetworkConfig: IsHost: {NetworkManager.Singleton.IsHost}");
+            if (Instance == null && NetworkManager.Singleton.IsHost)
+            {
+                var configManager = Instantiate(Content.configManagerPrefab, self.transform.parent);
+                configManager.GetComponent<NetworkObject>().Spawn();
+
+                Plugin.logger.LogInfo("Spawning config manager");
+            }
+            orig(self);
+        }
+        
+        
         private static void StartOfRound_Start(On.StartOfRound.orig_Start orig, StartOfRound self)
         {
             orig(self);
 
-            // surely this is running late enough??
+
+            foreach (var key in Content.ContentLoader.LoadedContent.Keys)
+            {
+                Plugin.logger.LogInfo(key);
+            }
+
+            Plugin.logger.LogInfo($"{Instance}");
+
 
             ShopItem toyHammer = Content.ContentLoader.LoadedContent["ToyHammer"] as ShopItem;
             if (!Instance.toyHammerEnabledNetVar.Value) toyHammer.RemoveFromShop();
@@ -208,11 +234,11 @@ namespace LethalThings
             if (!Instance.hackingToolEnabledNetVar.Value) hackingTool.RemoveFromShop();
             hackingTool.SetPrice(Instance.hackingToolPriceNetVar.Value);
 
-            ShopItem flareGun = Content.ContentLoader.LoadedContent["FlareGun"] as ShopItem;
+            ShopItem flareGun = Content.ContentLoader.LoadedContent["Flaregun"] as ShopItem;
             if (!Instance.flareGunEnabledNetVar.Value) flareGun.RemoveFromShop();
             flareGun.SetPrice(Instance.flareGunPriceNetVar.Value);
 
-            ShopItem flareGunAmmo = Content.ContentLoader.LoadedContent["FlareGunAmmo"] as ShopItem;
+            ShopItem flareGunAmmo = Content.ContentLoader.LoadedContent["FlaregunAmmo"] as ShopItem;
             if (!Instance.flareGunEnabledNetVar.Value) flareGunAmmo.RemoveFromShop();
             flareGunAmmo.SetPrice(Instance.flareGunAmmoPriceNetVar.Value);
 
@@ -228,15 +254,15 @@ namespace LethalThings
             if (!Instance.fatalitiesSignEnabledNetVar.Value) fatalitiesSign.RemoveFromShop();
             fatalitiesSign.SetPrice(Instance.fatalitiesSignPriceNetVar.Value);
 
-            Unlockable dartBoard = Content.ContentLoader.LoadedContent["DartBoard"] as Unlockable;
+            Unlockable dartBoard = Content.ContentLoader.LoadedContent["Dartboard"] as Unlockable;
             if (!Instance.dartBoardEnabledNetVar.Value) dartBoard.RemoveFromShop();
             dartBoard.SetPrice(Instance.dartBoardPriceNetVar.Value);
 
             MapHazard teleporterTrap = Content.ContentLoader.LoadedContent["TeleporterTrap"] as MapHazard;
             if (!Instance.teleporterTrapsEnabledNetVar.Value) teleporterTrap.RemoveFromLevels(Levels.LevelTypes.All);
-
+           
         }
-
+  
         public override void OnNetworkSpawn()
         {
             base.OnNetworkSpawn();
@@ -268,7 +294,7 @@ namespace LethalThings
                 dartBoardPriceNetVar.Value = dartBoardPrice.Value;
 
                 teleporterTrapsEnabledNetVar.Value = teleporterTrapsEnabled.Value;
-                    
+
                 enableItemChargerElectrocutionNetVar.Value = enableItemChargerElectrocution.Value;
                 disableOverlappingModContentNetVar.Value = disableOverlappingModContent.Value;
             }

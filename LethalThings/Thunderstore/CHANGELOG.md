@@ -1,3 +1,5 @@
+# Lethal Things 1.0.0
+
 # Lethal Things 0.8.8
 - Glizzy is no longer called "Training Manual" (idk how the heck that happened because it was called glizzy before.)
 - Custom items / scraps no longer receive decals from spraypaint, in order to fix a transparency bug.

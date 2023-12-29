@@ -167,7 +167,7 @@ namespace LethalThings.Patches
 
             // remove other dingi, so people stop complaining about non eba dingusses
 
-            if(NetworkConfig.Instance && NetworkConfig.Instance.disableOverlappingModContentNetVar.Value)
+            if(NetworkConfig.Instance != null && NetworkConfig.Instance.disableOverlappingModContentNetVar.Value)
             {
                 foreach (SelectableLevel level in self.levels)
                 {

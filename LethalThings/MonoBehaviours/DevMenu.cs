@@ -203,10 +203,11 @@ namespace LethalThings.MonoBehaviours
             {
                 // generate item list
                 var allItems = StartOfRound.Instance.allItemsList.itemsList;
+                var list = allItems.OrderBy(x => x.itemName).ToList();
 
-                for (int i = 0; i < allItems.Count; i++)
+                for (int i = 0; i < list.Count; i++)
                 {
-                    var item = allItems[i];
+                    var item = list[i];
                     var index = i;
                     var button = Instantiate(ItemListButtonTemplate, ItemListButtonTemplate.transform.parent);
                     button.gameObject.SetActive(true);
@@ -231,6 +232,7 @@ namespace LethalThings.MonoBehaviours
                     // set position so that we start from the top of the scroll container
                     rectTransform.anchoredPosition = new Vector2(rectTransform.anchoredPosition.x, -cumulativeHeight);
                 }
+
             }
         }
 
