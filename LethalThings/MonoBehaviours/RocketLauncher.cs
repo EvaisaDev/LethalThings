@@ -70,10 +70,8 @@ namespace LethalThings
             }
         }
 
-        public override void Awake()
+        public void Awake()
         {
-            base.Awake();
-
             // get materials from mesh renderer
             var renderer = GetComponentInChildren<MeshRenderer>();
             List<Material> materials = new List<Material>();

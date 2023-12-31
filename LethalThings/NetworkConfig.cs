@@ -81,6 +81,10 @@ namespace LethalThings
 
         // Enemies, no need to sync weight
         public static ConfigEntry<int> boombaSpawnWeight;
+        public static ConfigEntry<int> maggieSpawnWeight;
+
+        public static ConfigEntry<float> maggieTeleporterChance;
+        public NetworkVariable<float> maggieTeleporterChanceNetVar = new NetworkVariable<float>(0.3f);
 
         // Decor
         public static ConfigEntry<bool> rugsEnabled;
@@ -157,6 +161,8 @@ namespace LethalThings
 
 
             boombaSpawnWeight = Plugin.config.Bind<int>("Enemies", "Boomba", 20, "How much does Boomba spawn, higher = more common");
+            maggieSpawnWeight = Plugin.config.Bind<int>("Enemies", "Maggie", 1, "How much does Maggie spawn, higher = more common");
+            maggieTeleporterChance = Plugin.config.Bind<float>("Enemies", "MaggieTeleporterChance", 30f, "Chance for players to become lost in transit, percentage.");
 
             rugsEnabled = Plugin.config.Bind<bool>("Decor", "Rugs", true, "Are rugs enabled?");
             smallRugPrice = Plugin.config.Bind<int>("Decor", "SmallRugPrice", 80, "How much does a small rug cost?");
@@ -297,6 +303,8 @@ namespace LethalThings
 
                 enableItemChargerElectrocutionNetVar.Value = enableItemChargerElectrocution.Value;
                 disableOverlappingModContentNetVar.Value = disableOverlappingModContent.Value;
+
+                maggieTeleporterChanceNetVar.Value = maggieTeleporterChance.Value;
             }
         }
 

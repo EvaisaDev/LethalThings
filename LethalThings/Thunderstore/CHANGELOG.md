@@ -1,4 +1,12 @@
-# Lethal Things 1.0.0
+# Lethal Things 0.9.0
+**Systems**
+- Completely rewrite of Content Loader and Config system.
+- Config files are now synced between host and client.
+
+**Bugfixes**
+- Boomba improvements.
+- Power outlet stun damage config is now working.
+- Added null check to tracking point which should fix one of the dartboard errors.
 
 # Lethal Things 0.8.8
 - Glizzy is no longer called "Training Manual" (idk how the heck that happened because it was called glizzy before.)

@@ -12,19 +12,24 @@ namespace LethalThings.MonoBehaviours
         {
             base.LoadItemSaveData(saveData);
 
+            Plugin.logger.LogInfo($"Loading save data for {name} with id {saveData}");
+
             uniqueId = saveData;
         }
 
         public override int GetItemDataToSave()
         {
+            Plugin.logger.LogInfo($"Saving save data for {name} with id {uniqueId}");
             return uniqueId;
         }
 
-        public virtual void Awake()
+
+        public override void OnNetworkSpawn()
         {
+            base.OnNetworkSpawn();
             if (IsHost)
             {
-                uniqueId = UnityEngine.Random.Range(0, 1000000);
+                uniqueId = UnityEngine.Random.Range(0, 100000000);
 
                 var SaveableNetworkBehaviours = transform.GetComponentsInChildren<SaveableNetworkBehaviour>();
 

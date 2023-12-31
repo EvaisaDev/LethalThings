@@ -93,6 +93,9 @@ namespace LethalThings
             if (IsHost)
             {
                 var dingusEvilStat = SaveData.LoadObjectData<bool>("dingusBeEvil", uniqueId);
+
+                Plugin.logger.LogInfo($"Loading object[{uniqueId}] save data, evil? {dingusEvilStat}");
+
                 if (dingusEvilStat) { 
                     isEvil.Value = dingusEvilStat;
                 }

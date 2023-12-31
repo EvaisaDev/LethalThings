@@ -29,6 +29,8 @@ namespace LethalThings
 
             configManagerPrefab = MainAssets.LoadAsset<GameObject>("Assets/Custom/LethalThings/LTNetworkConfig.prefab");
 
+            NetworkPrefabs.RegisterNetworkPrefab(configManagerPrefab);  
+
             ContentLoader = new ContentLoader(Plugin.pluginInfo, MainAssets, (content, prefab) => { 
                 Prefabs.Add(content.ID, prefab);
             });
@@ -47,8 +49,12 @@ namespace LethalThings
                 new ScrapItem("GremlinEnergy", "Assets/Custom/LethalThings/Scrap/GremlinEnergy/GremlinEnergy.asset", NetworkConfig.gremlinSodaSpawnChance.Value, Levels.LevelTypes.All),
 
                 // shop
-                new ShopItem("RocketLauncher", "Assets/Custom/LethalThings/Items/RocketLauncher/RocketLauncher.asset", NetworkConfig.rocketLauncherPrice.Value, null, null, "Assets/Custom/LethalThings/Items/RocketLauncher/RocketLauncherInfo.asset"),
-                new ShopItem("Flaregun", "Assets/Custom/LethalThings/Items/Flaregun/Flaregun.asset", NetworkConfig.flareGunPrice.Value, null, null, "Assets/Custom/LethalThings/Items/Flaregun/FlaregunInfo.asset"),
+                new ShopItem("RocketLauncher", "Assets/Custom/LethalThings/Items/RocketLauncher/RocketLauncher.asset", NetworkConfig.rocketLauncherPrice.Value, null, null, "Assets/Custom/LethalThings/Items/RocketLauncher/RocketLauncherInfo.asset", (item) => {
+                    NetworkPrefabs.RegisterNetworkPrefab(item.spawnPrefab.GetComponent<RocketLauncher>().missilePrefab);
+                }),
+                new ShopItem("Flaregun", "Assets/Custom/LethalThings/Items/Flaregun/Flaregun.asset", NetworkConfig.flareGunPrice.Value, null, null, "Assets/Custom/LethalThings/Items/Flaregun/FlaregunInfo.asset", (item) => {
+                    NetworkPrefabs.RegisterNetworkPrefab(item.spawnPrefab.GetComponent<ProjectileWeapon>().projectilePrefab);
+                }),
                 new ShopItem("FlaregunAmmo", "Assets/Custom/LethalThings/Items/Flaregun/FlaregunAmmo.asset", NetworkConfig.flareGunAmmoPrice.Value, null, null, "Assets/Custom/LethalThings/Items/Flaregun/FlaregunAmmoInfo.asset"),
                 new ShopItem("ToyHammer", "Assets/Custom/LethalThings/Items/ToyHammer/ToyHammer.asset", NetworkConfig.toyHammerPrice.Value, null, null, "Assets/Custom/LethalThings/Items/ToyHammer/ToyHammerInfo.asset"),
                 new ShopItem("RemoteRadar", "Assets/Custom/LethalThings/Items/Radar/HandheldRadar.asset", NetworkConfig.remoteRadarPrice.Value, null, null, "Assets/Custom/LethalThings/Items/Radar/HandheldRadarInfo.asset"),
@@ -66,6 +72,10 @@ namespace LethalThings
 
                 // enemies
                 new CustomEnemy("Boomba", "Assets/Custom/LethalThings/Enemies/Roomba/Boomba.asset", NetworkConfig.boombaSpawnWeight.Value, Levels.LevelTypes.All, Enemies.SpawnType.Default, null, "Assets/Custom/LethalThings/Enemies/Roomba/BoombaFile.asset"),
+                new CustomEnemy("Maggie", "Assets/Custom/LethalThings/Enemies/Maggie/Maggie.asset", NetworkConfig.maggieSpawnWeight.Value, Levels.LevelTypes.All, Enemies.SpawnType.Default, null, "Assets/Custom/LethalThings/Enemies/Maggie/MaggieFile.asset", null, (enemyType) => {
+                    var goopRagdoll = MainAssets.LoadAsset<GameObject>("Assets/Custom/LethalThings/Enemies/Maggie/PlayerRagdollGoop.prefab");
+                    Player.RegisterPlayerRagdoll("LTGoopRagdoll", goopRagdoll);
+                }),
 
                 // map objects
                 new MapHazard("TeleporterTrap", "Assets/Custom/LethalThings/hazards/TeleporterTrap/TeleporterTrap.asset", Levels.LevelTypes.All, null, (level) => { 

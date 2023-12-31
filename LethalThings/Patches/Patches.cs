@@ -23,6 +23,7 @@ namespace LethalThings.Patches
             FatalitiesSign.Init();
             GremlinEnergy.Init();
             Arson.Init();
+            MaggieSpawner.Init();
 
             // i will surely not forget to remove this when i release.
             Debug.Load();
