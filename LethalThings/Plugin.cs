@@ -39,14 +39,14 @@ namespace LethalThings
 
 
             // check if major version is over 0 or minor verison is over 6
-            if (version.Major > 0 || version.Minor > 6)
+            if (version.Major > 0 || version.Minor > 9)
             {
                 logger.LogInfo("LethalLib version is " + version.ToString() + ", which is compatible with LethalThings 0.8.0+");
             }
             else
             {
                 logger.LogError("LethalLib version is " + version.ToString() + ", which is not compatible with LethalThings 0.8.0+");
-                logger.LogError("Please update LethalLib to version 0.7.1 or newer");
+                logger.LogError("Please update LethalLib to version 0.10.0 or newer");
                 return;
             }
 

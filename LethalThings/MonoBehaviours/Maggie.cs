@@ -113,7 +113,9 @@ namespace LethalThings.MonoBehaviours
 
         private float interestInShipCooldown;
 
-        public AudioClip footSquelch;
+        public AudioClip[] footSquelches;
+
+        public ParticleSystem[] killParticles;
 
         public override void Start()
         {
@@ -218,7 +220,7 @@ namespace LethalThings.MonoBehaviours
                     creatureAnimator.SetBool("Running", value: true);
                     SetRunningServerRpc(running: true);
                 }
-                else if (!onlySetRunning)
+                /*else if (!onlySetRunning)
                 {
                     Vector3 onUnitSphere = UnityEngine.Random.onUnitSphere;
                     float y = 0f;
@@ -228,7 +230,7 @@ namespace LethalThings.MonoBehaviours
                     }
                     onUnitSphere.y = y;
                     LookAtDirectionServerRpc(onUnitSphere, UnityEngine.Random.Range(0.25f, 2f), UnityEngine.Random.Range(-60f, 60f));
-                }
+                }*/
             }
             else
             {
@@ -1050,6 +1052,10 @@ namespace LethalThings.MonoBehaviours
             Quaternion startingPlayerRot = inSpecialAnimationWithPlayer.transform.rotation;
             Quaternion targetRot = RoundManager.Instance.tempTransform.rotation;
             Vector3 startingPosition = base.transform.position;
+            foreach(var particle in killParticles)
+            {
+                particle.Play();
+            }
             for (int i = 0; i < 8; i++)
             {
                 if (i > 0)
@@ -1074,6 +1080,9 @@ namespace LethalThings.MonoBehaviours
             if (inSpecialAnimationWithPlayer != null)
             {
                 bool flag = inSpecialAnimationWithPlayer.transform.position.y < -80f;
+
+                //Plugin.logger.LogInfo($"Killing player {inSpecialAnimationWithPlayer.playerClientId} with ragdoll index {Player.GetRagdollIndex("LTGoopRagdoll")}");
+
                 inSpecialAnimationWithPlayer.KillPlayer(Vector3.zero, spawnBody: true, CauseOfDeath.Bludgeoning, Player.GetRagdollIndex("LTGoopRagdoll"));
                 inSpecialAnimationWithPlayer.snapToServerPosition = false;
                 /*if (base.IsServer)
@@ -1248,11 +1257,13 @@ namespace LethalThings.MonoBehaviours
             {
                 num2 = 0.75f;
             }
+            var randomfootSquelch = UnityEngine.Random.Range(0, footSquelches.Length);
+
             movementAudio.PlayOneShot(StartOfRound.Instance.footstepSurfaces[currentFootstepSurfaceIndex].clips[num], num2);
-            movementAudio.PlayOneShot(footSquelch, num2);
+            movementAudio.PlayOneShot(footSquelches[randomfootSquelch], num2);
             previousFootstepClip = num;
             WalkieTalkie.TransmitOneShotAudio(movementAudio, StartOfRound.Instance.footstepSurfaces[currentFootstepSurfaceIndex].clips[num], num2);
-            WalkieTalkie.TransmitOneShotAudio(movementAudio, footSquelch, num2);
+            WalkieTalkie.TransmitOneShotAudio(movementAudio, footSquelches[randomfootSquelch], num2);
         }
 
         public override void AnimationEventA()

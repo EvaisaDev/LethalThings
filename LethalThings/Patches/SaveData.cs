@@ -1,4 +1,5 @@
-﻿using LethalThings.MonoBehaviours;
+﻿using BepInEx.Configuration;
+using LethalThings.MonoBehaviours;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +15,7 @@ namespace LethalLib.Modules
     // This is extremely poorly coded LMAO i don't care truly
     public class SaveData
     {
+
         public static void Init()
         {
             On.GameNetworkManager.ResetSavedGameValues += GameNetworkManager_ResetSavedGameValues;
