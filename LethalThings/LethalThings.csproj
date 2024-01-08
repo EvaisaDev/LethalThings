@@ -63,4 +63,9 @@
     <Target Name="PostBuild" AfterTargets="PostBuildEvent">
       <Exec Command="xcopy &quot;$(TargetPath)&quot; &quot;C:\Users\mail\Documents\GitHub\LethalCompanyModding\Assets\Plugins&quot; /Y&#xD;&#xA;xcopy &quot;$(TargetPath)&quot; &quot;C:\Program Files (x86)\Steam\steamapps\common\Lethal Company\BepInEx\plugins\LethalThings&quot; /Y&#xD;&#xA;xcopy &quot;$(TargetDir)LethalThings.pdb&quot; &quot;C:\Program Files (x86)\Steam\steamapps\common\Lethal Company\BepInEx\plugins\LethalThings&quot; /Y" />
     </Target>
+	
+	<Target Name="LogReferencedAssemblies" BeforeTargets="Build">
+	  <Message Importance="high" Text="Hello, world!"/>
+	  <Message Importance="high" Text="@(ReferencePathWithRefAssemblies)"/>
+	</Target>
 </Project>
