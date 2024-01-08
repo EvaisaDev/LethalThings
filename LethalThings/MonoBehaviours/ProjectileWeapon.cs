@@ -21,7 +21,7 @@ namespace LethalThings
         public Transform aimDirection;
 
         public int maxAmmo = 4;
-
+        [HideInInspector]
         private NetworkVariable<int> currentAmmo = new NetworkVariable<int>(4, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
 
         public GameObject projectilePrefab;
@@ -262,7 +262,20 @@ namespace LethalThings
             // set owner of projectile
             projectile.GetComponent<NetworkObject>().SpawnWithOwnership(OwnerClientId);
 
-            projectile.GetComponent<Rigidbody>().AddForce(aimDirection.forward * LobForce, ForceMode.Impulse);
+            ApplyProjectileForceClientRpc(projectile.GetComponent<NetworkObject>(), aimPosition, aimRotation);
+        }
+
+        [ClientRpc]
+        public void ApplyProjectileForceClientRpc(NetworkObjectReference projectile, Vector3 aimPosition, Quaternion aimRotation)
+        {
+            NetworkObject networkObject;
+            if (projectile.TryGet(out networkObject))
+            {
+                GameObject projectileObject = networkObject.gameObject;
+                projectileObject.transform.position = aimPosition;
+                projectileObject.transform.rotation = aimRotation;
+                projectileObject.GetComponent<Rigidbody>().AddForce(aimDirection.forward * LobForce, ForceMode.Impulse);
+            }
         }
 
         private void PlayRandomAudio(AudioSource audioSource, AudioClip[] audioClips)

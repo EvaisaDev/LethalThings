@@ -86,7 +86,7 @@ namespace LethalThings.MonoBehaviours
             Success
         }
 
-
+        [HideInInspector]
         public NetworkVariable<HackState> hackState = new NetworkVariable<HackState>(HackState.Off, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
         private HackState lastHackState = HackState.Off;
         private TerminalAccessibleObject selectedTarget;

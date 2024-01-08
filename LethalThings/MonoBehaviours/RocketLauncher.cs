@@ -276,6 +276,12 @@ namespace LethalThings
         public override void PocketItem()
         {
             base.PocketItem();
+            if (IsOwner)
+            {
+                isLaserOn.Value = false;
+            }
+            laserPointer.enabled = false;
+            laserLine.enabled = false;
             if (playerHeldBy != null)
             {
                 playerHeldBy.equippedUsableItemQE = false;
@@ -284,7 +290,13 @@ namespace LethalThings
 
         public override void DiscardItem()
         {
+            if (IsOwner)
+            {
+                isLaserOn.Value = false;
+            }
             base.DiscardItem();
+            laserPointer.enabled = false;
+            laserLine.enabled = false;
             if (playerHeldBy != null)
             {
                 //playerHeldBy.activatingItem = false;

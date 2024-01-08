@@ -149,7 +149,7 @@ namespace LethalThings.MonoBehaviours
         {
             base.ItemActivate(used, buttonDown);
 
-            if (!IsOwner)
+            if (!IsOwner || !turnedOn)
             {
                 return;
             }

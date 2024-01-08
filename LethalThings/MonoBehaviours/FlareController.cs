@@ -1,6 +1,7 @@
 ﻿using DunGen;
 using GameNetcodeStuff;
 using HarmonyLib;
+using LethalLib.Modules;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -21,6 +22,7 @@ namespace LethalThings.MonoBehaviours
     {
         public float flareDuration = 20f;
         public float burnoutTime = 5f;
+        [HideInInspector]
         public NetworkVariable<float> currentBurnTime = new NetworkVariable<float>(0f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
         public bool burntOut = false;
         public float attractRadius = 60f;
@@ -33,6 +35,7 @@ namespace LethalThings.MonoBehaviours
         private Rigidbody rb;
         private ScanNodeProperties scanNodeProperties;
         private HUDManager hudManager;
+        [HideInInspector]
         public NetworkVariable<float> initialVelocity = new NetworkVariable<float>(0f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
         public ParticleSystem popSystem;
         public AudioClip flarePopSound;
@@ -60,7 +63,7 @@ namespace LethalThings.MonoBehaviours
                 //UnityEngine.Debug.Log($"View pos: {viewPos}");
 
                 // if node is not in field of view, return false
-                if (viewPos.x < 0 || viewPos.x > 1 || viewPos.y < 0 || viewPos.y > 1 || viewPos.z <= 0)
+                if (Vector3.Distance(node.transform.position, player.transform.position) > node.maxRange || viewPos.x < 0 || viewPos.x > 1 || viewPos.y < 0 || viewPos.y > 1 || viewPos.z <= 0)
                 {
                     return orig(self, node, elementIndex);
                 }
@@ -101,11 +104,14 @@ namespace LethalThings.MonoBehaviours
 
             //hudManager.AttemptScanNode(scanNodeProperties, 0, GameNetworkManager.Instance.localPlayerController);
 
-            if (!hudManager.nodesOnScreen.Contains(scanNodeProperties))
+            if (Vector3.Distance(scanNodeProperties.transform.position, GameNetworkManager.Instance.localPlayerController.transform.position) <= scanNodeProperties.maxRange)
             {
-                hudManager.nodesOnScreen.Add(scanNodeProperties);
+                if (!hudManager.nodesOnScreen.Contains(scanNodeProperties))
+                {
+                    hudManager.nodesOnScreen.Add(scanNodeProperties);
+                }
+                hudManager.AssignNodeToUIElement(scanNodeProperties);
             }
-            hudManager.AssignNodeToUIElement(scanNodeProperties);
         }
 
         public override void OnNetworkSpawn()
@@ -193,7 +199,8 @@ namespace LethalThings.MonoBehaviours
                 //Debug.Log($"Wtf truly: {viewPos.x < 1 && viewPos.x > 0 && viewPos.y < 1 && viewPos.y > 0 && viewPos.z >= 0}");
 
                 // if node is not in field of view, return false
-                if (viewPos.x < 1 && viewPos.x > 0 && viewPos.y < 1 && viewPos.y > 0 && viewPos.z >= 0)
+
+                if (Vector3.Distance(scanNodeProperties.transform.position, GameNetworkManager.Instance.localPlayerController.transform.position) <= scanNodeProperties.maxRange && viewPos.x < 1 && viewPos.x > 0 && viewPos.y < 1 && viewPos.y > 0 && viewPos.z >= 0)
                 {
                     if (!hudManager.nodesOnScreen.Contains(scanNodeProperties))
                     {

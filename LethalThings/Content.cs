@@ -60,6 +60,9 @@ namespace LethalThings
                 new ShopItem("RemoteRadar", "Assets/Custom/LethalThings/Items/Radar/HandheldRadar.asset", NetworkConfig.remoteRadarPrice.Value, null, null, "Assets/Custom/LethalThings/Items/Radar/HandheldRadarInfo.asset"),
                 new ShopItem("PouchyBelt", "Assets/Custom/LethalThings/Items/Pouch/Pouch.asset", NetworkConfig.pouchyBeltPrice.Value, null, null, "Assets/Custom/LethalThings/Items/Pouch/PouchInfo.asset"),
                 new ShopItem("HackingTool", "Assets/Custom/LethalThings/Items/HackingTool/HackingTool.asset", NetworkConfig.hackingToolPrice.Value, null, null, "Assets/Custom/LethalThings/Items/HackingTool/HackingToolInfo.asset"),
+                new ShopItem("Pinger", "Assets/Custom/LethalThings/Items/PingingTool/PingTool.asset", NetworkConfig.pingerPrice.Value, null, null, "Assets/Custom/LethalThings/Items/PingingTool/PingToolInfo.asset", (item) => {
+                    NetworkPrefabs.RegisterNetworkPrefab(item.spawnPrefab.GetComponent<Pinger>().pingMarkerPrefab);
+                }),
 
                 // plain items
                 new CustomItem("Dart", "Assets/Custom/LethalThings/Unlockables/dartboard/Dart.asset"),
@@ -76,6 +79,7 @@ namespace LethalThings
                     var goopRagdoll = MainAssets.LoadAsset<GameObject>("Assets/Custom/LethalThings/Enemies/Maggie/PlayerRagdollGoop.prefab");
                     Player.RegisterPlayerRagdoll("LTGoopRagdoll", goopRagdoll);
                 }),
+                new CustomEnemy("CrystalRay", "Assets/Custom/LethalThings/Enemies/CrystalRay/CrystalRay.asset", NetworkConfig.crystalRaySpawnWeight.Value, Levels.LevelTypes.All, Enemies.SpawnType.Default, null, "Assets/Custom/LethalThings/Enemies/CrystalRay/CrystalRayFile.asset"),
 
                 // map objects
                 new MapHazard("TeleporterTrap", "Assets/Custom/LethalThings/hazards/TeleporterTrap/TeleporterTrap.asset", Levels.LevelTypes.All, null, (level) => { 
