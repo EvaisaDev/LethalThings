@@ -34,10 +34,6 @@
         <PrivateAssets>all</PrivateAssets>
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       </PackageReference>
-      <PackageReference Include="Evaisa.NetcodePatcher.MSBuild" Version="3.1.1">
-        <PrivateAssets>all</PrivateAssets>
-        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      </PackageReference>
       <PackageReference Include="LethalCompany.GameLibs.Steam" Version="45.0.2-alpha.1" Publicize="true" />
 	  <PackageReference Include="BepInEx.Analyzers" Version="1.*" PrivateAssets="all" />
       <PackageReference Include="BepInEx.Core" Version="5.*" />
@@ -61,11 +57,11 @@
 	</ItemGroup>
 
     <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-      <Exec Command="xcopy &quot;$(TargetPath)&quot; &quot;C:\Users\mail\Documents\GitHub\LethalCompanyModding\Assets\Plugins&quot; /Y&#xD;&#xA;xcopy &quot;$(TargetPath)&quot; &quot;C:\Program Files (x86)\Steam\steamapps\common\Lethal Company\BepInEx\plugins\LethalThings&quot; /Y&#xD;&#xA;xcopy &quot;$(TargetDir)LethalThings.pdb&quot; &quot;C:\Program Files (x86)\Steam\steamapps\common\Lethal Company\BepInEx\plugins\LethalThings&quot; /Y" />
+      <Exec Command="copy &quot;$(TargetPath)&quot; &quot;C:\Users\mail\Documents\GitHub\LethalCompanyModding\Assets\Plugins&quot; /Y&#xD;&#xA;netcode-patch &quot;$(TargetPath)&quot; &quot;O:\NetcodePatcher\deps&quot; --disable-parallel&#xD;&#xA;copy &quot;$(TargetPath)&quot; &quot;C:\Program Files (x86)\Steam\steamapps\common\Lethal Company\BepInEx\plugins\LethalThings&quot; /Y&#xD;&#xA;copy &quot;$(TargetDir)LethalThings.pdb&quot; &quot;C:\Program Files (x86)\Steam\steamapps\common\Lethal Company\BepInEx\plugins\LethalThings&quot; /Y" />
     </Target>
 	
 	<Target Name="LogReferencedAssemblies" BeforeTargets="Build">
-	  <Message Importance="high" Text="Hello, world!"/>
-	  <Message Importance="high" Text="@(ReferencePathWithRefAssemblies)"/>
+	  <Message Importance="high" Text="Hello, world!" />
+	  <Message Importance="high" Text="@(ReferencePathWithRefAssemblies)" />
 	</Target>
 </Project>
