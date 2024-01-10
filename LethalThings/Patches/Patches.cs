@@ -25,6 +25,7 @@ namespace LethalThings.Patches
             Arson.Init();
             MaggieSpawner.Init();
             ForcedPing.Init();
+            ThrowableNoisemaker.Init();
 
             // i will surely not forget to remove this when i release.
             Debug.Load();

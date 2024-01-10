@@ -7,12 +7,61 @@ using UnityEngine;
 
 namespace LethalThings.MonoBehaviours
 {
-    public class ThrowableItem : GrabbableObject
+    public class ThrowableNoisemaker : NoisemakerProp
     {
-        public override void ItemActivate(bool used, bool buttonDown = true)
+        public bool throwWithRight = false;
+        public bool beingThrown = false;
+        
+        public static void Init()
         {
-            base.ItemActivate(used, buttonDown);
-            if (base.IsOwner)
+            On.GrabbableObject.RequireCooldown += GrabbableObject_RequireCooldown;
+            On.GrabbableObject.ItemInteractLeftRightOnClient += GrabbableObject_ItemInteractLeftRightOnClient;
+        }
+
+        private static void GrabbableObject_ItemInteractLeftRightOnClient(On.GrabbableObject.orig_ItemInteractLeftRightOnClient orig, GrabbableObject self, bool right)
+        {
+            if(self is ThrowableNoisemaker noisemaker)
+            {
+                if ((noisemaker.throwWithRight && right) || !right)
+                {
+                    noisemaker.beingThrown = true;
+                    orig(self, right);
+                    noisemaker.beingThrown = false;
+                }
+                else
+                {
+                    orig(self, right);
+                }
+            }
+            else
+            {
+                orig(self, right);
+            }
+
+        }
+
+        private static bool GrabbableObject_RequireCooldown(On.GrabbableObject.orig_RequireCooldown orig, GrabbableObject self)
+        {
+            if (self is ThrowableNoisemaker noisemaker)
+            {
+                if (noisemaker.beingThrown)
+                {
+                    return false;
+                }
+            }
+            return orig(self);
+        }
+
+        public override void ItemInteractLeftRight(bool right)
+        {
+            base.ItemInteractLeftRight(right);
+
+            if (!IsOwner)
+            {
+                return;
+            }
+
+            if ((throwWithRight && right) || !right)
             {
                 playerHeldBy.DiscardHeldObject(placeObject: true, null, GetItemThrowDestination());
             }
@@ -21,7 +70,26 @@ namespace LethalThings.MonoBehaviours
         public override void EquipItem()
         {
             EnableItemMeshes(enable: true);
+            playerHeldBy.equippedUsableItemQE = true;
             isPocketed = false;
+        }
+
+        public override void DiscardItem()
+        {
+            if (playerHeldBy != null)
+            {
+                playerHeldBy.equippedUsableItemQE = false;
+            }
+            base.DiscardItem();
+        }
+
+        public override void PocketItem()
+        {
+            if (base.IsOwner && playerHeldBy != null)
+            {
+                playerHeldBy.equippedUsableItemQE = false;
+            }
+            base.PocketItem();
         }
 
         public override void FallWithCurve()
@@ -57,7 +125,7 @@ namespace LethalThings.MonoBehaviours
             // check if position is inside a collider, and position below is not
             if (Physics.OverlapSphere(position, 0.02f, StartOfRound.Instance.collidersAndRoomMaskAndDefault).Length > 0)
             {
-                if(Physics.OverlapSphere(position + (Vector3.down * 0.05f), 0.02f, StartOfRound.Instance.collidersAndRoomMaskAndDefault).Length == 0)
+                if (Physics.OverlapSphere(position + (Vector3.down * 0.05f), 0.02f, StartOfRound.Instance.collidersAndRoomMaskAndDefault).Length == 0)
                 {
                     // set new position
                     position += (Vector3.down * 0.05f);

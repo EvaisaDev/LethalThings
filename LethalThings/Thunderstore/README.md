@@ -20,6 +20,11 @@
 	- Textures  
 - [Jek Korpen](https://twitter.com/Jek_Korpen)  
 	- Nikki (Cookie) character design.  
+- Regretevator (Roblox)
+	- Gnarpy origin (I think)
+- [horinhorin2006](https://twitter.com/horinhorin2006)
+	- Art which was used as a reference for the gnarpy model.
+	
 
 ## Scrap items
 - Plushy named Arson  
@@ -62,14 +67,19 @@
 - Gremlin Energy Drink   
 	- 100% lethal!!   
 ![GremlinEnergy](https://i.imgur.com/A0lzXY0.png)  
-  
-## Store items
+
 - Toy Hammer
 	- Good for bonking unruly employees.  
 	- We are not responsible for any fatalities related to this item.  
 	- Clowns are known to love this one.  
 ![Hammer](https://i.imgur.com/UDtb5GC.png)
+
+- Gnarpy Plush  
+	- Some kind of alien critter   
+![GremlinEnergy](https://i.imgur.com/t8Zd7uE.png)  
   
+## Store items
+
 - Rocket Launcher  
 	- For if you want to go on the offense.  
 	- Only has 4 shots.  
@@ -97,6 +107,10 @@
 	- Flares are automatically pinged by employees.  
 	- Ammo can be bought from the store.  
 ![Flaregun](https://i.imgur.com/8NTZyQ3.png) 
+
+- Pinger  
+	- Sends a location ping to your nearby colleagues.   
+![Pinger](https://i.imgur.com/C6NxvEY.png) 
 
 ## Decor  
 - Small/Large Rug  

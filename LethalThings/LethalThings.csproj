@@ -34,10 +34,11 @@
         <PrivateAssets>all</PrivateAssets>
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       </PackageReference>
-      <PackageReference Include="LethalCompany.GameLibs.Steam" Version="45.0.2-alpha.1" Publicize="true" />
+      <PackageReference Include="LethalCompany.GameLibs.Steam" Version="49.0.0-alpha.1" Publicize="true" />
 	  <PackageReference Include="BepInEx.Analyzers" Version="1.*" PrivateAssets="all" />
       <PackageReference Include="BepInEx.Core" Version="5.*" />
       <PackageReference Include="BepInEx.PluginInfoProps" Version="2.*" />
+	  <PackageReference Include="Evaisa.NetcodePatcher.MSBuild" Version="3.*" PrivateAssets="all" />
     </ItemGroup>
 
     <ItemGroup>
@@ -55,9 +56,15 @@
 	<ItemGroup>
 	  <NetcodePatch Include="$(TargetPath)" />
 	</ItemGroup>
+	
+	<!--
+	<ItemGroup Condition="'$(TargetFramework.TrimEnd(`0123456789.`))' == 'netstandard'">
+		<PackageReference Include="NETStandard.Library" Version="2.0.3" PrivateAssets="all" />
+	</ItemGroup>
+	-->
 
-    <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-      <Exec Command="copy &quot;$(TargetPath)&quot; &quot;C:\Users\mail\Documents\GitHub\LethalCompanyModding\Assets\Plugins&quot; /Y&#xD;&#xA;netcode-patch &quot;$(TargetPath)&quot; &quot;O:\NetcodePatcher\deps&quot; --disable-parallel&#xD;&#xA;copy &quot;$(TargetPath)&quot; &quot;C:\Program Files (x86)\Steam\steamapps\common\Lethal Company\BepInEx\plugins\LethalThings&quot; /Y&#xD;&#xA;copy &quot;$(TargetDir)LethalThings.pdb&quot; &quot;C:\Program Files (x86)\Steam\steamapps\common\Lethal Company\BepInEx\plugins\LethalThings&quot; /Y" />
+    <Target Name="PostBuild" AfterTargets="PostBuildEvent" DependsOnTargets="NetcodePatch">
+      <Exec Command="copy &quot;$(TargetPath)&quot; &quot;C:\Users\mail\Documents\GitHub\LethalCompanyModding\Assets\Plugins&quot; /Y&#xD;copy &quot;$(TargetPath)&quot; &quot;C:\Program Files (x86)\Steam\steamapps\common\Lethal Company\BepInEx\plugins\LethalThings&quot; /Y&#xD;&#xA;copy &quot;$(TargetDir)LethalThings.pdb&quot; &quot;C:\Program Files (x86)\Steam\steamapps\common\Lethal Company\BepInEx\plugins\LethalThings&quot; /Y" />
     </Target>
 	
 	<Target Name="LogReferencedAssemblies" BeforeTargets="Build">

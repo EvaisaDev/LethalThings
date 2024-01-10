@@ -232,20 +232,7 @@ namespace LethalThings
                 var icons = hud.itemSlotIcons.ToList();
 
                 // find index of last slot named `slot\d` regex
-                var index = iconFrames.FindLastIndex(x => {
-                    var match = System.Text.RegularExpressions.Regex.IsMatch(x.gameObject.name.ToLowerInvariant(), @"\bslot\d\b");
-                    /*
-                    if (match)
-                    {
-                        Debug.Log($"Found match: {x.gameObject.name}");
-                    }
-                    else
-                    {
-                        Debug.Log($"No match: {x.gameObject.name}");
-                    }*/
-                    
-                    return match;
-                 });
+                var index = iconFrames.Count;
 
 
                 var totalWidth = (beltCapacity * slotSizeX) + ((beltCapacity - 1) * 15f);
@@ -276,7 +263,7 @@ namespace LethalThings
                     // rotate 90 degrees because unity is goofy
                     icon.rectTransform.Rotate(new Vector3(0.0f, 0.0f, -90.0f));
 
-                    var slotIndex = index + i + 1;
+                    var slotIndex = index + i;
 
                     // insert at index
                     iconFrames.Insert(slotIndex, frame);

@@ -29,6 +29,16 @@ namespace LethalThings.MonoBehaviours
         private float evadeTime = 0f;
         public float evadeTimeMax = 10f;
 
+        public ParticleSystem loveParticles;
+        public ParticleSystem hateParticles;
+
+        private PlayerControllerB favouritePlayer;
+        private int tamedLevel = 0;
+
+        public Animator animator;
+
+        public InteractTrigger petTrigger;
+
 
         public override void Start()
         {
@@ -61,6 +71,66 @@ namespace LethalThings.MonoBehaviours
             }
             base.DoAIInterval();
         }
+
+        public void wasPet(PlayerControllerB player)
+        {
+            increaseLove(player, 1);
+        }
+
+        public void increaseLove(PlayerControllerB player, int value)
+        {
+
+            increaseLoveServerRpc(player.playerClientId, value);
+        }
+
+        [ServerRpc(RequireOwnership = false)]
+        public void increaseLoveServerRpc(ulong playerID, int value)
+        {
+            increaseLoveClientRpc(playerID, value);
+        }
+
+        [ClientRpc]
+        public void increaseLoveClientRpc(ulong playerID, int value)
+        {
+            tamedLevel += value;
+
+            var player = StartOfRound.Instance.allPlayerScripts[playerID];
+
+            favouritePlayer = player;
+
+            loveParticles.Play();
+
+            animator.SetTrigger("nuzzle");
+        }
+
+
+        public void decreaseLove(PlayerControllerB player, int value)
+        {
+
+            decreaseLoveServerRpc(player.playerClientId, value);
+        }
+
+        [ServerRpc(RequireOwnership = false)]
+        public void decreaseLoveServerRpc(ulong playerID, int value)
+        {
+            decreaseLoveClientRpc(playerID, value);
+        }
+
+        [ClientRpc]
+        public void decreaseLoveClientRpc(ulong playerID, int value)
+        {
+            tamedLevel -= value;
+
+            var player = StartOfRound.Instance.allPlayerScripts[playerID];
+
+            if(favouritePlayer == player)
+            {
+                favouritePlayer = null;
+            }
+
+            hateParticles.Play();
+        }
+
 
         public void AvoidClosestPlayer()
         {
@@ -138,7 +208,8 @@ namespace LethalThings.MonoBehaviours
 
         public override void KillEnemy(bool destroy = false)
         {
-
+            animator.SetTrigger("killed");
+            petTrigger.enabled = false;
             base.KillEnemy(destroy);
         }
 
@@ -150,6 +221,15 @@ namespace LethalThings.MonoBehaviours
                 return;
             }
             enemyHP -= force;
+
+            // run away
+            SwitchToBehaviourState(1);
+            evadeTime = 0f;
+
+            decreaseLove(playerWhoHit, 1);
+
+            // play hurt animation
+            animator.SetTrigger("hurt");
         }
     }
 }

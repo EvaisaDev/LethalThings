@@ -47,7 +47,8 @@ namespace LethalThings
                 new ScrapItem("Glizzy", "Assets/Custom/LethalThings/Scrap/glizzy/glizzy.asset", NetworkConfig.glizzySpawnChance.Value, Levels.LevelTypes.All),
                 new ScrapItem("Revolver", "Assets/Custom/LethalThings/Scrap/Flaggun/Toygun.asset", NetworkConfig.revolverSpawnChance.Value, Levels.LevelTypes.All),
                 new ScrapItem("GremlinEnergy", "Assets/Custom/LethalThings/Scrap/GremlinEnergy/GremlinEnergy.asset", NetworkConfig.gremlinSodaSpawnChance.Value, Levels.LevelTypes.All),
-
+                new ScrapItem("ToyHammerScrap", "Assets/Custom/LethalThings/Items/ToyHammer/ToyHammer.asset", NetworkConfig.toyHammerScrapSpawnChance.Value, Levels.LevelTypes.All),
+                new ScrapItem("Gnarpy", "Assets/Custom/LethalThings/Scrap/Gnarpy/GnarpyPlush.asset", NetworkConfig.gnarpySpawnChance.Value, Levels.LevelTypes.All),
                 // shop
                 new ShopItem("RocketLauncher", "Assets/Custom/LethalThings/Items/RocketLauncher/RocketLauncher.asset", NetworkConfig.rocketLauncherPrice.Value, null, null, "Assets/Custom/LethalThings/Items/RocketLauncher/RocketLauncherInfo.asset", (item) => {
                     NetworkPrefabs.RegisterNetworkPrefab(item.spawnPrefab.GetComponent<RocketLauncher>().missilePrefab);
@@ -56,7 +57,7 @@ namespace LethalThings
                     NetworkPrefabs.RegisterNetworkPrefab(item.spawnPrefab.GetComponent<ProjectileWeapon>().projectilePrefab);
                 }),
                 new ShopItem("FlaregunAmmo", "Assets/Custom/LethalThings/Items/Flaregun/FlaregunAmmo.asset", NetworkConfig.flareGunAmmoPrice.Value, null, null, "Assets/Custom/LethalThings/Items/Flaregun/FlaregunAmmoInfo.asset"),
-                new ShopItem("ToyHammer", "Assets/Custom/LethalThings/Items/ToyHammer/ToyHammer.asset", NetworkConfig.toyHammerPrice.Value, null, null, "Assets/Custom/LethalThings/Items/ToyHammer/ToyHammerInfo.asset"),
+                new ShopItem("ToyHammerShop", "Assets/Custom/LethalThings/Items/ToyHammer/ToyHammer.asset", NetworkConfig.toyHammerPrice.Value, null, null, "Assets/Custom/LethalThings/Items/ToyHammer/ToyHammerInfo.asset"),
                 new ShopItem("RemoteRadar", "Assets/Custom/LethalThings/Items/Radar/HandheldRadar.asset", NetworkConfig.remoteRadarPrice.Value, null, null, "Assets/Custom/LethalThings/Items/Radar/HandheldRadarInfo.asset"),
                 new ShopItem("PouchyBelt", "Assets/Custom/LethalThings/Items/Pouch/Pouch.asset", NetworkConfig.pouchyBeltPrice.Value, null, null, "Assets/Custom/LethalThings/Items/Pouch/PouchInfo.asset"),
                 new ShopItem("HackingTool", "Assets/Custom/LethalThings/Items/HackingTool/HackingTool.asset", NetworkConfig.hackingToolPrice.Value, null, null, "Assets/Custom/LethalThings/Items/HackingTool/HackingToolInfo.asset"),
@@ -75,11 +76,14 @@ namespace LethalThings
 
                 // enemies
                 new CustomEnemy("Boomba", "Assets/Custom/LethalThings/Enemies/Roomba/Boomba.asset", NetworkConfig.boombaSpawnWeight.Value, Levels.LevelTypes.All, Enemies.SpawnType.Default, null, "Assets/Custom/LethalThings/Enemies/Roomba/BoombaFile.asset"),
+                
+                /* Unfinished content
                 new CustomEnemy("Maggie", "Assets/Custom/LethalThings/Enemies/Maggie/Maggie.asset", NetworkConfig.maggieSpawnWeight.Value, Levels.LevelTypes.All, Enemies.SpawnType.Default, null, "Assets/Custom/LethalThings/Enemies/Maggie/MaggieFile.asset", null, (enemyType) => {
                     var goopRagdoll = MainAssets.LoadAsset<GameObject>("Assets/Custom/LethalThings/Enemies/Maggie/PlayerRagdollGoop.prefab");
                     Player.RegisterPlayerRagdoll("LTGoopRagdoll", goopRagdoll);
                 }),
                 new CustomEnemy("CrystalRay", "Assets/Custom/LethalThings/Enemies/CrystalRay/CrystalRay.asset", NetworkConfig.crystalRaySpawnWeight.Value, Levels.LevelTypes.All, Enemies.SpawnType.Default, null, "Assets/Custom/LethalThings/Enemies/CrystalRay/CrystalRayFile.asset"),
+                */
 
                 // map objects
                 new MapHazard("TeleporterTrap", "Assets/Custom/LethalThings/hazards/TeleporterTrap/TeleporterTrap.asset", Levels.LevelTypes.All, null, (level) => { 

@@ -1,9 +1,9 @@
 {
     "name": "LethalThings",
     "author": "Evaisa",
-    "version_number": "0.8.8",
+    "version_number": "0.9.0",
     "website_url": "https://github.com/EvaisaDev/LethalThings",
-    "description": "Adds 9 scrap, 6 store items, 1 enemy, 4 decor, 1 map hazard, and 1 game mechanic.",
+    "description": "Adds 11 scrap, 6 store items, 1 enemy, 4 decor, 1 map hazard, and 1 game mechanic.",
     "dependencies": [
 		"BepInEx-BepInExPack-5.4.2100",
         "Evaisa-HookGenPatcher-0.0.5",

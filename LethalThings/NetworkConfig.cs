@@ -32,6 +32,7 @@ namespace LethalThings
         public static ConfigEntry<int> glizzySpawnChance;
         public static ConfigEntry<int> revolverSpawnChance;
         public static ConfigEntry<int> gremlinSodaSpawnChance;
+        public static ConfigEntry<int> gnarpySpawnChance;
 
         public static ConfigEntry<float> evilMaxwellChance;
 
@@ -41,13 +42,19 @@ namespace LethalThings
         public NetworkVariable<bool> maxwellPlayMusicDefaultNetVar = new NetworkVariable<bool>(true);
 
         // Shop items
-        public static ConfigEntry<bool> toyHammerEnabled;
+        public static ConfigEntry<bool> toyHammerIsScrap;
         [HideInInspector]
-        public NetworkVariable<bool> toyHammerEnabledNetVar = new NetworkVariable<bool>(true);
+        public NetworkVariable<bool> toyHammerIsScrapNetVar = new NetworkVariable<bool>(true);
+
+        public static ConfigEntry<bool> toyHammerInShop;
+        [HideInInspector]
+        public NetworkVariable<bool> toyHammerInShopNetVar = new NetworkVariable<bool>(false);
 
         public static ConfigEntry<int> toyHammerPrice;
         [HideInInspector]
         public NetworkVariable<int> toyHammerPriceNetVar = new NetworkVariable<int>(0);
+
+        public static ConfigEntry<int> toyHammerScrapSpawnChance;
 
         public static ConfigEntry<bool> pouchyBeltEnabled;
         [HideInInspector]
@@ -175,12 +182,16 @@ namespace LethalThings
             glizzySpawnChance = Plugin.config.Bind<int>("Scrap", "GlizzySpawnChance", 5, "How much do glizzies spawn, higher = more common");
             revolverSpawnChance = Plugin.config.Bind<int>("Scrap", "Revolver", 10, "How much do revolvers spawn, higher = more common");
             gremlinSodaSpawnChance = Plugin.config.Bind<int>("Scrap", "GremlinEnergyDrink", 10, "How much does Gremlin Energy Drink spawn, higher = more common");
+            gnarpySpawnChance = Plugin.config.Bind<int>("Scrap", "Gnarpy", 10, "How much does Gnarpy spawn, higher = more common");
             maxwellSpawnChance = Plugin.config.Bind<int>("Scrap", "Maxwell", 3, "How much does Maxwell spawn, higher = more common");
             evilMaxwellChance = Plugin.config.Bind<float>("Scrap", "MaxwellEvilChance", 10, "Chance for maxwell to be evil, percentage.");
             maxwellPlayMusicDefault = Plugin.config.Bind<bool>("Scrap", "MaxwellPlayMusicDefault", true, "Does Maxwell play music by default?");
 
-            toyHammerEnabled = Plugin.config.Bind<bool>("Items", "ToyHammer", true, "Is the Toy Hammer enabled?");
+            toyHammerIsScrap = Plugin.config.Bind<bool>("Items", "ToyHammerIsScrap", true, "Does the Toy Hammer spawn as a scrap item?");
+            toyHammerInShop = Plugin.config.Bind<bool>("Items", "ToyHammerInShop", false, "Is the Toy Hammer in the shop?");
             toyHammerPrice = Plugin.config.Bind<int>("Items", "ToyHammerPrice", 15, "How much do Toy Hammers cost?");
+            toyHammerScrapSpawnChance = Plugin.config.Bind<int>("Items", "ToyHammerScrapSpawnChance", 10, "How much does the Toy Hammer spawn as scrap, higher = more common");
+
             pouchyBeltEnabled = Plugin.config.Bind<bool>("Items", "PouchyBelt", true, "Is the Utility Belt enabled?");
             pouchyBeltPrice = Plugin.config.Bind<int>("Items", "PouchyBeltPrice", 290, "How much do Utility Belts cost?");
             remoteRadarEnabled = Plugin.config.Bind<bool>("Items", "RemoteRadar", true, "Is the Remote Radar enabled?");
@@ -257,53 +268,56 @@ namespace LethalThings
             Plugin.logger.LogInfo($"{Instance}");
 
 
-            ShopItem toyHammer = Content.ContentLoader.LoadedContent["ToyHammer"] as ShopItem;
-            if (!Instance.toyHammerEnabledNetVar.Value) toyHammer.RemoveFromShop();
+            ShopItem toyHammer = Content.ContentLoader.LoadedContent["ToyHammerShop"] as ShopItem;
             toyHammer.SetPrice(Instance.toyHammerPriceNetVar.Value);
+            if (!Instance.toyHammerInShopNetVar.Value) toyHammer.RemoveFromShop();
+
+            ScrapItem toyHammerScrap = Content.ContentLoader.LoadedContent["ToyHammerScrap"] as ScrapItem;
+            if(!Instance.toyHammerIsScrapNetVar.Value) toyHammerScrap.RemoveFromLevels(Levels.LevelTypes.All);
 
             ShopItem pouchyBelt = Content.ContentLoader.LoadedContent["PouchyBelt"] as ShopItem;
-            if (!Instance.pouchyBeltEnabledNetVar.Value) pouchyBelt.RemoveFromShop();
             pouchyBelt.SetPrice(Instance.pouchyBeltPriceNetVar.Value);
+            if (!Instance.pouchyBeltEnabledNetVar.Value) pouchyBelt.RemoveFromShop();
 
             ShopItem remoteRadar = Content.ContentLoader.LoadedContent["RemoteRadar"] as ShopItem;
-            if (!Instance.remoteRadarEnabledNetVar.Value) remoteRadar.RemoveFromShop();
             remoteRadar.SetPrice(Instance.remoteRadarPriceNetVar.Value);
+            if (!Instance.remoteRadarEnabledNetVar.Value) remoteRadar.RemoveFromShop();
 
             ShopItem rocketLauncher = Content.ContentLoader.LoadedContent["RocketLauncher"] as ShopItem;
-            if (!Instance.rocketLauncherEnabledNetVar.Value) rocketLauncher.RemoveFromShop();
             rocketLauncher.SetPrice(Instance.rocketLauncherPriceNetVar.Value);
+            if (!Instance.rocketLauncherEnabledNetVar.Value) rocketLauncher.RemoveFromShop();
 
             ShopItem hackingTool = Content.ContentLoader.LoadedContent["HackingTool"] as ShopItem;
-            if (!Instance.hackingToolEnabledNetVar.Value) hackingTool.RemoveFromShop();
             hackingTool.SetPrice(Instance.hackingToolPriceNetVar.Value);
+            if (!Instance.hackingToolEnabledNetVar.Value) hackingTool.RemoveFromShop();
 
             ShopItem flareGun = Content.ContentLoader.LoadedContent["Flaregun"] as ShopItem;
-            if (!Instance.flareGunEnabledNetVar.Value) flareGun.RemoveFromShop();
             flareGun.SetPrice(Instance.flareGunPriceNetVar.Value);
+            if (!Instance.flareGunEnabledNetVar.Value) flareGun.RemoveFromShop();
 
             ShopItem flareGunAmmo = Content.ContentLoader.LoadedContent["FlaregunAmmo"] as ShopItem;
-            if (!Instance.flareGunEnabledNetVar.Value) flareGunAmmo.RemoveFromShop();
             flareGunAmmo.SetPrice(Instance.flareGunAmmoPriceNetVar.Value);
+            if (!Instance.flareGunEnabledNetVar.Value) flareGunAmmo.RemoveFromShop();
 
             ShopItem pinger = Content.ContentLoader.LoadedContent["Pinger"] as ShopItem;
-            if (!Instance.pingerEnabledNetVar.Value) pinger.RemoveFromShop();
             pinger.SetPrice(Instance.pingerPriceNetVar.Value);
+            if (!Instance.pingerEnabledNetVar.Value) pinger.RemoveFromShop();
 
             Unlockable smallRug = Content.ContentLoader.LoadedContent["SmallRug"] as Unlockable;
-            if (!Instance.rugsEnabledNetVar.Value) smallRug.RemoveFromShop();
             smallRug.SetPrice(Instance.smallRugPriceNetVar.Value);
+            if (!Instance.rugsEnabledNetVar.Value) smallRug.RemoveFromShop();
 
             Unlockable largeRug = Content.ContentLoader.LoadedContent["LargeRug"] as Unlockable;
-            if (!Instance.rugsEnabledNetVar.Value) largeRug.RemoveFromShop();
             largeRug.SetPrice(Instance.largeRugPriceNetVar.Value);
+            if (!Instance.rugsEnabledNetVar.Value) largeRug.RemoveFromShop();
 
             Unlockable fatalitiesSign = Content.ContentLoader.LoadedContent["FatalitiesSign"] as Unlockable;
-            if (!Instance.fatalitiesSignEnabledNetVar.Value) fatalitiesSign.RemoveFromShop();
             fatalitiesSign.SetPrice(Instance.fatalitiesSignPriceNetVar.Value);
+            if (!Instance.fatalitiesSignEnabledNetVar.Value) fatalitiesSign.RemoveFromShop();
 
             Unlockable dartBoard = Content.ContentLoader.LoadedContent["Dartboard"] as Unlockable;
-            if (!Instance.dartBoardEnabledNetVar.Value) dartBoard.RemoveFromShop();
             dartBoard.SetPrice(Instance.dartBoardPriceNetVar.Value);
+            if (!Instance.dartBoardEnabledNetVar.Value) dartBoard.RemoveFromShop();
 
             MapHazard teleporterTrap = Content.ContentLoader.LoadedContent["TeleporterTrap"] as MapHazard;
             if (!Instance.teleporterTrapsEnabledNetVar.Value) teleporterTrap.RemoveFromLevels(Levels.LevelTypes.All);
@@ -318,8 +332,9 @@ namespace LethalThings
             {
                 maxwellPlayMusicDefaultNetVar.Value = maxwellPlayMusicDefault.Value;
 
-                toyHammerEnabledNetVar.Value = toyHammerEnabled.Value;
                 toyHammerPriceNetVar.Value = toyHammerPrice.Value;
+                toyHammerIsScrapNetVar.Value = toyHammerIsScrap.Value;
+                toyHammerInShopNetVar.Value = toyHammerInShop.Value;
                 pouchyBeltEnabledNetVar.Value = pouchyBeltEnabled.Value;
                 pouchyBeltPriceNetVar.Value = pouchyBeltPrice.Value;
                 remoteRadarEnabledNetVar.Value = remoteRadarEnabled.Value;
