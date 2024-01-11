@@ -74,7 +74,7 @@ namespace LethalThings.MonoBehaviours
                 //UnityEngine.Debug.Log($"View pos: {viewPos}");
 
                 // if node is not in field of view, return false
-                if (viewPos.x < 0 || viewPos.x > 1 || viewPos.y < 0 || viewPos.y > 1 || viewPos.z <= 0)
+                if ((viewPos.x < 0 || viewPos.x > 1 || viewPos.y < 0 || viewPos.y > 1 || viewPos.z <= 0) || node.transform.parent.GetComponent<Dart>().isHeld)
                 {
 
 
@@ -101,7 +101,7 @@ namespace LethalThings.MonoBehaviours
                 //UnityEngine.Debug.Log($"View pos: {viewPos}");
 
                 // if node is not in field of view, return true
-                if (viewPos.x < 0 || viewPos.x > 1 || viewPos.y < 0 || viewPos.y > 1 || viewPos.z <= 0)
+                if (viewPos.x < 0 || viewPos.x > 1 || viewPos.y < 0 || viewPos.y > 1 || viewPos.z <= 0 || node.transform.parent.GetComponent<Dart>().isHeld)
                 {
                     self.nodesOnScreen.Remove(node);
                 }
@@ -124,7 +124,7 @@ namespace LethalThings.MonoBehaviours
                 foreach (Dart dart in darts)
                 {
                     var scanNode = dart.GetComponentInChildren<ScanNodeProperties>();
-                    if(scanNode != null)
+                    if(!dart.isHeld && scanNode != null)
                     {
 
                         var player = GameNetworkManager.Instance.localPlayerController;
@@ -295,11 +295,10 @@ namespace LethalThings.MonoBehaviours
 
         public void TryParent(Collider collider)
         {
-            var rootMarker = collider.GetComponent<RootMarker>();
-            if(rootMarker != null)
+
+            var root = Utilities.TryFindRoot(collider.transform);
+            if (root != null)
             {
-                // get root
-                var root = rootMarker.root;
 
                 if (root.GetComponent<Dart>() != null || root.GetComponentInParent<Dart>() != null || root.name == "DartTrackingPoint")
                 {
@@ -380,12 +379,12 @@ namespace LethalThings.MonoBehaviours
             isKinematic.Value = true;
             rb.isKinematic = true;
 
-            Plugin.logger.LogMessage($"Parented to: {transform.parent}");
+            //Plugin.logger.LogMessage($"Parented to: {transform.parent}");
         }
 
         public void SetParent(Transform parent)
         {
-            Plugin.logger.LogInfo($"Setting parent to: {parent.name}");
+            //Plugin.logger.LogInfo($"Setting parent to: {parent.name}");
 
             // if tracking point is null, create a empty gameobject and set it as the tracking point
             if (trackingPoint == null)

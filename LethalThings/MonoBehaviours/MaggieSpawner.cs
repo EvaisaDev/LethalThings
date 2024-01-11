@@ -43,7 +43,7 @@ namespace LethalThings.MonoBehaviours
 
                     mS.GetComponent<NetworkObject>().ChangeOwnership(self.OwnerClientId);
 
-                    Plugin.logger.LogInfo("MaggieSpawner spawned on " + self.gameObject.name);
+                    //Plugin.logger.LogInfo("MaggieSpawner spawned on " + self.gameObject.name);
                 }
             }
         }
@@ -51,18 +51,18 @@ namespace LethalThings.MonoBehaviours
         [ClientRpc]
         public void MaggieSpawnerMadeClientRpc()
         {
-            Plugin.logger.LogInfo("MaggieSpawner spawned, parent: " + transform.parent);
+            //Plugin.logger.LogInfo("MaggieSpawner spawned, parent: " + transform.parent);
 
         }
 
         private static void PlayerControllerB_TeleportPlayer(On.GameNetcodeStuff.PlayerControllerB.orig_TeleportPlayer orig, GameNetcodeStuff.PlayerControllerB self, UnityEngine.Vector3 pos, bool withRotation, float rot, bool allowInteractTrigger, bool enableController)
         {
             orig(self, pos, withRotation, rot, allowInteractTrigger, enableController);
-            Plugin.logger.LogInfo("Teleported wawa");
+            //Plugin.logger.LogInfo("Teleported wawa");
             MaggieSpawner maggieSpawner = self.GetComponentInChildren<MaggieSpawner>();
             if (maggieSpawner != null && maggieSpawner.isSpawning)
             {
-                Plugin.logger.LogInfo("Maggie spawning!!");
+                //Plugin.logger.LogInfo("Maggie spawning!!");
                 maggieSpawner.isSpawning = false;
                 maggieSpawner.SpawnMaggieServerRpc(pos, (int)self.playerClientId);
                 // kill player
@@ -77,14 +77,14 @@ namespace LethalThings.MonoBehaviours
             {
                 if (self.clingingToPlayer == playerTeleported && playerTeleported.IsOwner)
                 {
-                    Plugin.logger.LogInfo("attempt spawn stuff maggie wah");
+                    //Plugin.logger.LogInfo("attempt spawn stuff maggie wah");
                     self.KillEnemyServerRpc(true);
                     // get MaggieSpawner on teleporting player
                     MaggieSpawner maggieSpawner = playerTeleported.GetComponentInChildren<MaggieSpawner>();
                     if (maggieSpawner != null)
                     {
                         maggieSpawner.isSpawning = true;
-                        Plugin.logger.LogInfo("Allowing maggie spawn!!");
+                        //Plugin.logger.LogInfo("Allowing maggie spawn!!");
                     }
 
                     return;

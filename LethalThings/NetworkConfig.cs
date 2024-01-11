@@ -243,7 +243,7 @@ namespace LethalThings
         
         private static void StartOfRound_Awake(On.StartOfRound.orig_Awake orig, StartOfRound self)
         {
-            Plugin.logger.LogInfo($"NetworkConfig: IsHost: {NetworkManager.Singleton.IsHost}");
+            //Plugin.logger.LogInfo($"NetworkConfig: IsHost: {NetworkManager.Singleton.IsHost}");
             if (Instance == null && NetworkManager.Singleton.IsHost)
             {
                 var configManager = Instantiate(Content.configManagerPrefab, self.transform.parent);
@@ -259,13 +259,13 @@ namespace LethalThings
         {
             orig(self);
 
-
+            /*
             foreach (var key in Content.ContentLoader.LoadedContent.Keys)
             {
                 Plugin.logger.LogInfo(key);
             }
 
-            Plugin.logger.LogInfo($"{Instance}");
+            Plugin.logger.LogInfo($"{Instance}");*/
 
 
             ShopItem toyHammer = Content.ContentLoader.LoadedContent["ToyHammerShop"] as ShopItem;

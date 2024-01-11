@@ -59,7 +59,7 @@ namespace LethalThings.MonoBehaviours
 
                     rb.AddForce(Vector3.down * gravity, ForceMode.Acceleration);
 
-                    Plugin.logger.LogMessage("Velocity: " + rb.velocity.ToString());
+                   // Plugin.logger.LogMessage("Velocity: " + rb.velocity.ToString());
                 }
                 else
                 {

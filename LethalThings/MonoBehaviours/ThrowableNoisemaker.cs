@@ -16,6 +16,20 @@ namespace LethalThings.MonoBehaviours
         {
             On.GrabbableObject.RequireCooldown += GrabbableObject_RequireCooldown;
             On.GrabbableObject.ItemInteractLeftRightOnClient += GrabbableObject_ItemInteractLeftRightOnClient;
+            On.GrabbableObject.UseItemBatteries += GrabbableObject_UseItemBatteries;
+        }
+
+        private static bool GrabbableObject_UseItemBatteries(On.GrabbableObject.orig_UseItemBatteries orig, GrabbableObject self)
+        {
+            if (self is ThrowableNoisemaker noisemaker)
+            {
+                if (noisemaker.beingThrown)
+                {
+                    return true;
+                }
+            }
+
+            return orig(self);
         }
 
         private static void GrabbableObject_ItemInteractLeftRightOnClient(On.GrabbableObject.orig_ItemInteractLeftRightOnClient orig, GrabbableObject self, bool right)
@@ -119,21 +133,10 @@ namespace LethalThings.MonoBehaviours
             Vector3 position = base.transform.position;
             Debug.DrawRay(playerHeldBy.gameplayCamera.transform.position, playerHeldBy.gameplayCamera.transform.forward, Color.yellow, 15f);
             itemThrowRay = new Ray(playerHeldBy.gameplayCamera.transform.position, playerHeldBy.gameplayCamera.transform.forward);
-            position = ((!Physics.Raycast(itemThrowRay, out itemHit, 12f, StartOfRound.Instance.collidersAndRoomMaskAndDefault)) ? itemThrowRay.GetPoint(10f) : itemThrowRay.GetPoint(itemHit.distance - 0.05f));
+            position = ((!Physics.Raycast(itemThrowRay, out itemHit, 12f, StartOfRound.Instance.collidersAndRoomMaskAndDefault, QueryTriggerInteraction.Ignore)) ? itemThrowRay.GetPoint(10f) : itemThrowRay.GetPoint(itemHit.distance - 0.05f));
             Debug.DrawRay(position, Vector3.down, Color.blue, 15f);
-
-            // check if position is inside a collider, and position below is not
-            if (Physics.OverlapSphere(position, 0.02f, StartOfRound.Instance.collidersAndRoomMaskAndDefault).Length > 0)
-            {
-                if (Physics.OverlapSphere(position + (Vector3.down * 0.05f), 0.02f, StartOfRound.Instance.collidersAndRoomMaskAndDefault).Length == 0)
-                {
-                    // set new position
-                    position += (Vector3.down * 0.05f);
-                }
-            }
-
             itemThrowRay = new Ray(position, Vector3.down);
-            if (Physics.Raycast(itemThrowRay, out itemHit, 30f, StartOfRound.Instance.collidersAndRoomMaskAndDefault))
+            if (Physics.Raycast(itemThrowRay, out itemHit, 30f, StartOfRound.Instance.collidersAndRoomMaskAndDefault, QueryTriggerInteraction.Ignore))
             {
                 return itemHit.point + Vector3.up * 0.05f;
             }

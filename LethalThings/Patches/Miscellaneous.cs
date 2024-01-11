@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
+using Unity.Netcode;
 using UnityEngine;
 
 namespace LethalThings.Patches
@@ -17,7 +18,9 @@ namespace LethalThings.Patches
             On.GameNetcodeStuff.PlayerControllerB.SetSpecialGrabAnimationBool += PlayerControllerB_SetSpecialGrabAnimationBool;
 
             On.StartOfRound.Start += StartOfRound_Start;
-  
+
+            /*
+            On.GameNetworkManager.Start += GameNetworkManager_Start;
 
             Hook hook3 = new Hook(typeof(UnityEngine.Object).GetMethod("Instantiate", new Type[]
                       {
@@ -47,8 +50,49 @@ namespace LethalThings.Patches
                 typeof(Quaternion),
                 typeof(Transform)
             }), typeof(Miscellaneous).GetMethod("InstantiateOPRP"));
+
+            // hook public void NetworkManager.AddNetworkPrefab(GameObject prefab)
+            Hook hook = new Hook(typeof(NetworkManager).GetMethod("AddNetworkPrefab", new Type[]
+            {
+                typeof(GameObject)
+            }), typeof(Miscellaneous).GetMethod("AddNetworkPrefab"));*/
+        }
+        /*
+        public static void AddNetworkPrefab(Action<NetworkManager, GameObject> orig, NetworkManager self, GameObject prefab)
+        {
+            orig(self, prefab);
+            foreach (Collider collider in prefab.GetComponentsInChildren<Collider>())
+            {
+                // if has root marker, skip
+                if (collider.gameObject.GetComponent<RootMarker>() != null)
+                {
+                    continue;
+                }
+                RootMarker marker = collider.gameObject.AddComponent<RootMarker>();
+                marker.root = prefab.transform;
+            }
         }
 
+        private static void GameNetworkManager_Start(On.GameNetworkManager.orig_Start orig, GameNetworkManager self)
+        {
+            orig(self);
+           
+            foreach(var obj in NetworkManager.Singleton.NetworkConfig.Prefabs.m_Prefabs)
+            {
+                var go = obj.Prefab.gameObject;
+                foreach (Collider collider in go.GetComponentsInChildren<Collider>())
+                {
+                    // if has root marker, skip
+                    if (collider.gameObject.GetComponent<RootMarker>() != null)
+                    {
+                        continue;
+                    }
+                    RootMarker marker = collider.gameObject.AddComponent<RootMarker>();
+                    marker.root = go.transform;
+                }
+            }
+            
+        }
 
         public static UnityEngine.Object InstantiateOPI(Func<UnityEngine.Object, Transform, bool, UnityEngine.Object> orig, UnityEngine.Object original, Transform parent, bool instantiateInWorldSpace)
         {
@@ -159,7 +203,7 @@ namespace LethalThings.Patches
             
         }
 
-
+        */
 
         private static void StartOfRound_Start(On.StartOfRound.orig_Start orig, StartOfRound self)
         {

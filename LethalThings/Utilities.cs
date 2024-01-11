@@ -36,6 +36,20 @@ namespace LethalThings
             }
         }
 
+        public static Transform TryFindRoot(Transform child)
+        {
+            // iterate upwards until we find a NetworkObject
+            Transform current = child;
+            while (current != null)
+            {
+                if (current.GetComponent<NetworkObject>() != null)
+                {
+                    return current;
+                }
+                current = current.transform.parent;
+            }
+            return null;
+        }
         public static int MaskForLayer(int layer)
         {
             return _masksByLayer[layer];

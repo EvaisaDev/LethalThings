@@ -147,7 +147,7 @@ namespace LethalThings
 
                         playerHeldBy.SwitchItemSlots(slotIndexes[index]);
 
-                        Plugin.logger.LogInfo($"Switched to slot: {slotIndexes[index]}");
+                        //Plugin.logger.LogInfo($"Switched to slot: {slotIndexes[index]}");
 
                     }
                 }

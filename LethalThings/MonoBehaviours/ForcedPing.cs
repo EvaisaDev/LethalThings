@@ -48,7 +48,7 @@ namespace LethalThings.MonoBehaviours
                 // if node is not in field of view, return false
                 if (Vector3.Distance(node.transform.position, camera.transform.position) > node.maxRange || (viewPos.x < 0 || viewPos.x > 1 || viewPos.y < 0 || viewPos.y > 1 || viewPos.z <= 0))
                 {
-                    Plugin.logger.LogInfo($"[1] Node {node.name} not valid");
+                    //Plugin.logger.LogInfo($"[1] Node {node.name} not valid");
                     return orig(self, node, elementIndex);
                 }
 
@@ -104,7 +104,7 @@ namespace LethalThings.MonoBehaviours
         [ClientRpc]
         public void RemovePingClientRpc()
         {
-            Plugin.logger.LogInfo("Removing ping");
+            //Plugin.logger.LogInfo("Removing ping");
             Dictionary<RectTransform, ScanNodeProperties> scanNodes = hudManager.scanNodes;
             RectTransform rectTransform = null;
             foreach (var scanNode in scanNodes)
@@ -153,7 +153,7 @@ namespace LethalThings.MonoBehaviours
 
                 if (Vector3.Distance(scanNodeProperties.transform.position, camera.transform.position) < scanNodeProperties.maxRange && (viewPos.x < 1 && viewPos.x > 0 && viewPos.y < 1 && viewPos.y > 0 && viewPos.z >= 0))
                 {
-                    Plugin.logger.LogInfo($"[2] Node {scanNodeProperties.name} not valid");
+                    //Plugin.logger.LogInfo($"[2] Node {scanNodeProperties.name} not valid");
                     if (!hudManager.nodesOnScreen.Contains(scanNodeProperties))
                     {
                         hudManager.nodesOnScreen.Add(scanNodeProperties);

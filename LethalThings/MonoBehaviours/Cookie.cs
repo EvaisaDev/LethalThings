@@ -17,14 +17,14 @@ namespace LethalThings.MonoBehaviours
         {
             base.ItemInteractLeftRight(right);
 
-            Plugin.logger.LogInfo($"Attempted to throw cookie!!");
+            //Plugin.logger.LogInfo($"Attempted to throw cookie!!");
 
             if (!IsOwner)
             {
                 return;
             }
 
-            Plugin.logger.LogInfo($"Cookie thrown with right: {right} - {throwWithRight}");
+            //Plugin.logger.LogInfo($"Cookie thrown with right: {right} - {throwWithRight}");
 
             if ((throwWithRight && right) || !right)
             {

@@ -106,13 +106,14 @@ namespace LethalThings
 
                 if (IsOwner)
                 {
+                   
                     if (IsHost)
                     {
-                        ProjectileSpawner(aimDirection.position, aimDirection.rotation);
+                        ProjectileSpawner(aimDirection.position, aimDirection.rotation, aimDirection.forward);
                     }
                     else
                     {
-                        SpawnProjectileServerRpc(aimDirection.position, aimDirection.rotation);
+                        SpawnProjectileServerRpc(aimDirection.position, aimDirection.rotation, aimDirection.forward);
                     }
                 }
             }
@@ -249,12 +250,12 @@ namespace LethalThings
 
         // server rpc for spawning projectile
         [ServerRpc]
-        private void SpawnProjectileServerRpc(Vector3 aimPosition, Quaternion aimRotation)
+        private void SpawnProjectileServerRpc(Vector3 aimPosition, Quaternion aimRotation, Vector3 forward)
         {
-            ProjectileSpawner(aimPosition, aimRotation);
+            ProjectileSpawner(aimPosition, aimRotation, forward);
         }
 
-        private void ProjectileSpawner(Vector3 aimPosition, Quaternion aimRotation)
+        private void ProjectileSpawner(Vector3 aimPosition, Quaternion aimRotation, Vector3 forward)
         {
             // spawn projectile
             GameObject projectile = Instantiate(projectilePrefab, aimPosition, aimRotation);
@@ -262,11 +263,11 @@ namespace LethalThings
             // set owner of projectile
             projectile.GetComponent<NetworkObject>().SpawnWithOwnership(OwnerClientId);
 
-            ApplyProjectileForceClientRpc(projectile.GetComponent<NetworkObject>(), aimPosition, aimRotation);
+            ApplyProjectileForceClientRpc(projectile.GetComponent<NetworkObject>(), aimPosition, aimRotation, forward);
         }
 
         [ClientRpc]
-        public void ApplyProjectileForceClientRpc(NetworkObjectReference projectile, Vector3 aimPosition, Quaternion aimRotation)
+        public void ApplyProjectileForceClientRpc(NetworkObjectReference projectile, Vector3 aimPosition, Quaternion aimRotation, Vector3 forward)
         {
             NetworkObject networkObject;
             if (projectile.TryGet(out networkObject))
@@ -274,7 +275,7 @@ namespace LethalThings
                 GameObject projectileObject = networkObject.gameObject;
                 projectileObject.transform.position = aimPosition;
                 projectileObject.transform.rotation = aimRotation;
-                projectileObject.GetComponent<Rigidbody>().AddForce(aimDirection.forward * LobForce, ForceMode.Impulse);
+                projectileObject.GetComponent<Rigidbody>().AddForce(forward * LobForce, ForceMode.Impulse);
             }
         }
 

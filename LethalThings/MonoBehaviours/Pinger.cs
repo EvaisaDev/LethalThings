@@ -7,6 +7,7 @@ using System.Text;
 using TMPro;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.InputSystem.HID;
 using static LethalThings.DynamicBone.DynamicBoneColliderBase;
 using static LethalThings.MonoBehaviours.HackingTool;
 
@@ -94,15 +95,15 @@ namespace LethalThings.MonoBehaviours
                 backLight.enabled = true;
 
                 // if not pinging, cast ray forward and check if hit something
-
-                if (!isPinging)
+                // run every 20 frames
+                if (!isPinging && Time.frameCount % 20 == 0)
                 {
                     selectionUI.gameObject.SetActive(true);
                     pingUI.gameObject.SetActive(false);
 
                     RaycastHit raycastHit;
 
-                    if (Physics.Raycast(StartOfRound.Instance.activeCamera.transform.position + (StartOfRound.Instance.activeCamera.transform.forward * 1), StartOfRound.Instance.activeCamera.transform.forward, out raycastHit, maxPingDistance, rayMask))
+                    if (Physics.Raycast(StartOfRound.Instance.activeCamera.transform.position + (StartOfRound.Instance.activeCamera.transform.forward * 1), StartOfRound.Instance.activeCamera.transform.forward, out raycastHit, maxPingDistance, rayMask, QueryTriggerInteraction.Ignore))
                     {
                         /*
                         if (raycastHit.collider.transform.GetComponentInChildren<ScanNodeProperties>() != null)
@@ -122,62 +123,105 @@ namespace LethalThings.MonoBehaviours
                         nodeType = 0;
                         pingText = "Received Ping";
 
-                        if (raycastHit.collider.transform.GetComponent<RootMarker>() != null)
+                        var root = Utilities.TryFindRoot(raycastHit.collider.transform);
+                        if (root != null)
                         {
-                            var rootMarker = raycastHit.collider.transform.GetComponent<RootMarker>();
-                            var root = rootMarker.root;
-
-                            if (root.GetComponentInChildren<ScanNodeProperties>() != null)
+                    
+                            if (root.GetComponentInChildren<ScanNodeProperties>(true) != null)
                             {
-                                var scanNode = root.GetComponentInChildren<ScanNodeProperties>();
+                                var scanNode = root.GetComponentInChildren<ScanNodeProperties>(true);
 
-                                selectionString.text = $"[{scanNode.headerText}]";
-                                nodeType = scanNode.nodeType;
-                                pingText = scanNode.headerText;
+                                var scanNodeRoot = Utilities.TryFindRoot(scanNode.transform);
+
+                                if (scanNodeRoot == root)
+                                {
+                                    selectionString.text = $"[{scanNode.headerText}]";
+                                    nodeType = scanNode.nodeType;
+                                    pingText = scanNode.headerText;
+
+                                    //Plugin.logger.LogInfo($"target: {pingText}");
+                                }
+                                else
+                                {
+                                    selectionString.text = $"[Unknown Surface]";
+                                }
+
                             }
                             else
                             {
-                                if (root.GetComponentInChildren<PlayerControllerB>() != null)
+                                if (root.GetComponentInChildren<PlayerControllerB>(true) != null)
                                 {
-                                    var playerController = root.GetComponentInChildren<PlayerControllerB>();
-                                    selectionString.text = $"[{playerController.playerUsername}]";
-                                    pingText = playerController.playerUsername;
-                                }
-                                else if (root.GetComponentInChildren<DeadBodyInfo>() != null)
-                                {
+                                    var playerController = root.GetComponentInChildren<PlayerControllerB>(true);
 
-                                    selectionString.text = $"[{root.GetComponentInChildren<DeadBodyInfo>().playerScript.playerUsername} (Dead)]";
-                                    pingText = $"{root.GetComponentInChildren<DeadBodyInfo>().playerScript.playerUsername} (Dead)";
+                                    var childRoot = Utilities.TryFindRoot(playerController.transform);
+                                    if (childRoot == root)
+                                    {
+
+                                        selectionString.text = $"[{playerController.playerUsername}]";
+                                        pingText = playerController.playerUsername;
+                                    }
+                                    else
+                                    {
+                                        selectionString.text = $"[Unknown Surface]";
+                                    }
                                 }
-                                else if (root.GetComponentInChildren<GrabbableObject>())
+                                else if (root.GetComponentInChildren<DeadBodyInfo>(true) != null)
+                                {
+                                    var child = root.GetComponentInChildren<DeadBodyInfo>(true);
+                                    var childRoot = Utilities.TryFindRoot(child.transform);
+                                    if (childRoot == root)
+                                    {
+                                        selectionString.text = $"[{child.playerScript.playerUsername} (Dead)]";
+                                        pingText = $"{child.playerScript.playerUsername} (Dead)";
+                                    }
+                                    else
+                                    {
+                                        selectionString.text = $"[Unknown Surface]";
+                                    }
+                                }
+                                else if (root.GetComponentInChildren<GrabbableObject>(true))
                                 { 
-                                    var item = root.GetComponentInChildren<GrabbableObject>();
-                                    if (item.itemProperties != null)
+                                    var item = root.GetComponentInChildren<GrabbableObject>(true);
+                                    var childRoot = Utilities.TryFindRoot(item.transform);
+                                    if (childRoot == root && item.itemProperties != null)
                                     {
                                         selectionString.text = $"[{item.itemProperties.itemName}]";
                                         pingText = item.itemProperties.itemName;
                                     }
+                                    else
+                                    {
+                                        selectionString.text = $"[Unknown Surface]";
+                                    }
                                 }
-                                else if (root.GetComponentInChildren<PlaceableShipObject>())
+                                else if (root.GetComponentInChildren<PlaceableShipObject>(true))
                                 {
-                                    var item = root.GetComponentInChildren<PlaceableShipObject>();
-                                    selectionString.text = $"[{StartOfRound.Instance.unlockablesList.unlockables[item.unlockableID].unlockableName}]";
-                                    pingText = StartOfRound.Instance.unlockablesList.unlockables[item.unlockableID].unlockableName;
+                                    var item = root.GetComponentInChildren<PlaceableShipObject>(true);
 
-                                    var material = root.GetComponentInChildren<MeshRenderer>().material;
+                                    var childRoot = Utilities.TryFindRoot(item.transform);
+                                    if (childRoot == root)
+                                    {
 
-                                    // print hdrp/lit shader material type property
-                                    // [Enum(Subsurface Scattering, 0, Standard, 1, Anisotropy, 2, Iridescence, 3, Specular Color, 4, Translucent, 5)] _MaterialID("MaterialId", Int) = 1 
+                                        selectionString.text = $"[{StartOfRound.Instance.unlockablesList.unlockables[item.unlockableID].unlockableName}]";
+                                        pingText = StartOfRound.Instance.unlockablesList.unlockables[item.unlockableID].unlockableName;
+
+                                        var material = root.GetComponentInChildren<MeshRenderer>(true).material;
+
+                                        // print hdrp/lit shader material type property
+                                        // [Enum(Subsurface Scattering, 0, Standard, 1, Anisotropy, 2, Iridescence, 3, Specular Color, 4, Translucent, 5)] _MaterialID("MaterialId", Int) = 1 
 
 
-                                    // Find the property ID for "_MaterialID"
-                                    //int materialIDPropertyID = Shader.PropertyToID("_MaterialID");
+                                        // Find the property ID for "_MaterialID"
+                                        //int materialIDPropertyID = Shader.PropertyToID("_MaterialID");
 
-                                    // Get the value of the "_MaterialID" property
-                                    //int materialIDValue = material.GetInt(materialIDPropertyID);
+                                        // Get the value of the "_MaterialID" property
+                                        //int materialIDValue = material.GetInt(materialIDPropertyID);
 
-                                    //Plugin.logger.LogInfo($"Material ID: {materialIDValue}");
-
+                                        //Plugin.logger.LogInfo($"Material ID: {materialIDValue}");
+                                    }
+                                    else
+                                    {
+                                        selectionString.text = $"[Unknown Surface]";
+                                    }
 
                                 }
                                 else {
@@ -205,7 +249,7 @@ namespace LethalThings.MonoBehaviours
 
                     }
                 }
-                else
+                else if(isPinging)
                 {
                     // if pinging, show ping UI
                     selectionUI.gameObject.SetActive(false);
@@ -297,7 +341,7 @@ namespace LethalThings.MonoBehaviours
 
             triggerAnimator.Play("fire");
 
-            if (!IsOwner || turnedOn.Value == false)
+            if (!IsOwner || turnedOn.Value == false || validPing == false)
             {
                 return;
             }
