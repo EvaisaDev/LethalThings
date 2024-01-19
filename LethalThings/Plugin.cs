@@ -7,7 +7,6 @@ using UnityEngine;
 using System.Reflection;
 using System;
 using static UnityEngine.Rendering.HighDefinition.HDAdditionalCameraData;
-using Unity.Netcode;
 
 [assembly: SecurityPermission(SecurityAction.RequestMinimum, SkipVerification = true)]
 namespace LethalThings
@@ -28,8 +27,6 @@ namespace LethalThings
         public static bool devMode = false;
 
         public static PluginInfo pluginInfo;
-
-        public static GameObject testPrefab;
 
         private void Awake()
         {
@@ -86,10 +83,6 @@ namespace LethalThings
                 }
             }
 
-            testPrefab = LethalLib.Modules.NetworkPrefabs.CreateNetworkPrefab("test");
-
-            testPrefab.AddComponent<TestBehaviour>();
-
 
 
             Utilities.Init();
@@ -102,14 +95,6 @@ namespace LethalThings
 
             Logger.LogInfo("LethalThings loaded successfully!!!");
 
-            On.StartOfRound.Start += StartOfRound_Start;
-
-        }
-
-        private void StartOfRound_Start(On.StartOfRound.orig_Start orig, StartOfRound self)
-        {
-            var test = GameObject.Instantiate(testPrefab);
-            test.GetComponent<NetworkObject>().Spawn();
         }
 
 
