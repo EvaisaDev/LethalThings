@@ -8,6 +8,7 @@ using Unity.Netcode;
 using LethalLib.Modules;
 using UnityEngine;
 using static LethalLib.Modules.ContentLoader;
+using System.Collections;
 
 namespace LethalThings
 {
@@ -146,6 +147,15 @@ namespace LethalThings
         [HideInInspector]
         public NetworkVariable<int> dartBoardPriceNetVar = new NetworkVariable<int>(0);
 
+        public static ConfigEntry<bool> deliveryRoverEnabled;
+        [HideInInspector]
+        public NetworkVariable<bool> deliveryRoverEnabledNetVar = new NetworkVariable<bool>(true);
+
+        public static ConfigEntry<int> deliveryRoverPrice;
+        [HideInInspector]
+        public NetworkVariable<int> deliveryRoverPriceNetVar = new NetworkVariable<int>(0);
+
+
         // Hazards
         public static ConfigEntry<bool> teleporterTrapsEnabled;
         [HideInInspector]
@@ -219,6 +229,8 @@ namespace LethalThings
             fatalitiesSignPrice = Plugin.config.Bind<int>("Decor", "FatalitiesSignPrice", 100, "How much does the Fatalities Sign cost?");
             dartBoardEnabled = Plugin.config.Bind<bool>("Decor", "DartBoard", true, "Is the Dart Board enabled?");
             dartBoardPrice = Plugin.config.Bind<int>("Decor", "DartBoardPrice", 120, "How much does the Dart Board cost?");
+            deliveryRoverEnabled = Plugin.config.Bind<bool>("Decor", "DeliveryRover", true, "Is the Delivery Rover enabled?");
+            deliveryRoverPrice = Plugin.config.Bind<int>("Decor", "DeliveryRoverPrice", 600, "How much does the Delivery Rover cost?");
 
             teleporterTrapsEnabled = Plugin.config.Bind<bool>("Traps", "TeleporterTraps", true, "Are teleporter traps enabled?");
 
@@ -259,21 +271,23 @@ namespace LethalThings
         {
             orig(self);
 
-            /*
-            foreach (var key in Content.ContentLoader.LoadedContent.Keys)
-            {
-                Plugin.logger.LogInfo(key);
-            }
+            Instance.StartCoroutine(Instance.SyncConfigs());
+        }
 
-            Plugin.logger.LogInfo($"{Instance}");*/
+        private IEnumerator SyncConfigs()
+        {
+            // make sure network initialized
+            yield return new WaitUntil(() => networkSpawned);
+            yield return new WaitForSeconds(3);
 
+            Plugin.logger.LogInfo("Syncing configs!");
 
             ShopItem toyHammer = Content.ContentLoader.LoadedContent["ToyHammerShop"] as ShopItem;
             toyHammer.SetPrice(Instance.toyHammerPriceNetVar.Value);
             if (!Instance.toyHammerInShopNetVar.Value) toyHammer.RemoveFromShop();
 
             ScrapItem toyHammerScrap = Content.ContentLoader.LoadedContent["ToyHammerScrap"] as ScrapItem;
-            if(!Instance.toyHammerIsScrapNetVar.Value) toyHammerScrap.RemoveFromLevels(Levels.LevelTypes.All);
+            if (!Instance.toyHammerIsScrapNetVar.Value) toyHammerScrap.RemoveFromLevels(Levels.LevelTypes.All);
 
             ShopItem pouchyBelt = Content.ContentLoader.LoadedContent["PouchyBelt"] as ShopItem;
             pouchyBelt.SetPrice(Instance.pouchyBeltPriceNetVar.Value);
@@ -319,14 +333,21 @@ namespace LethalThings
             dartBoard.SetPrice(Instance.dartBoardPriceNetVar.Value);
             if (!Instance.dartBoardEnabledNetVar.Value) dartBoard.RemoveFromShop();
 
+            Unlockable deliveryRover = Content.ContentLoader.LoadedContent["DeliveryRover"] as Unlockable;
+            deliveryRover.SetPrice(Instance.deliveryRoverPriceNetVar.Value);
+            if (!Instance.deliveryRoverEnabledNetVar.Value) deliveryRover.RemoveFromShop();
+
             MapHazard teleporterTrap = Content.ContentLoader.LoadedContent["TeleporterTrap"] as MapHazard;
             if (!Instance.teleporterTrapsEnabledNetVar.Value) teleporterTrap.RemoveFromLevels(Levels.LevelTypes.All);
-           
         }
+
+        public bool networkSpawned = false;
   
         public override void OnNetworkSpawn()
         {
             base.OnNetworkSpawn();
+
+            networkSpawned = true;
 
             if (IsHost)
             {
@@ -356,6 +377,8 @@ namespace LethalThings
                 fatalitiesSignPriceNetVar.Value = fatalitiesSignPrice.Value;
                 dartBoardEnabledNetVar.Value = dartBoardEnabled.Value;
                 dartBoardPriceNetVar.Value = dartBoardPrice.Value;
+                deliveryRoverEnabledNetVar.Value = deliveryRoverEnabled.Value;
+                deliveryRoverPriceNetVar.Value = deliveryRoverPrice.Value;
 
                 teleporterTrapsEnabledNetVar.Value = teleporterTrapsEnabled.Value;
 

@@ -293,8 +293,9 @@ namespace LethalThings.MonoBehaviours
             mainObjectRenderer = transform.Find("Tool/Cube").GetComponent<MeshRenderer>();
 
             renderTexture = new RenderTexture(500, 390, 16, RenderTextureFormat.ARGB32);
+
             renderTexture.name = $"HackingToolRenderTexture({renderTextureID})";
-            currentRenderTextureID = 0;
+            currentRenderTextureID = renderTextureID;
             renderTextureID++;
             // setup camera to render to texture
             renderCamera.targetTexture = renderTexture;

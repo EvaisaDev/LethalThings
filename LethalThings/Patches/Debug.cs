@@ -16,7 +16,7 @@ namespace LethalThings.Patches
         public static void Load()
         {
             On.StartOfRound.Update += StartOfRound_Update;
-            //On.RoundManager.Update += RoundManager_Update;
+            On.RoundManager.Update += RoundManager_Update;
             On.StartOfRound.Start += StartOfRound_Start;
            // On.ShipBuildModeManager.Update += ShipBuildModeManager_Update;
         }
@@ -119,39 +119,18 @@ namespace LethalThings.Patches
         private static void RoundManager_Update(On.RoundManager.orig_Update orig, RoundManager self)
         {
             orig(self);
+
+
             
-            /*if (Keyboard.current.f8Key.wasPressedThisFrame)
+            if (Keyboard.current.f2Key.wasPressedThisFrame)
             {
-                UnityEngine.Debug.Log("Attempting to spawn enemy from vent.");
-                var vents = UnityEngine.Object.FindObjectsOfType<EnemyVent>();
+                var ray = Content.Prefabs["CrystalRay"];
 
-                var position = StartOfRound.Instance.localPlayerController.gameplayCamera.transform.position;
-                // closest vent
-                EnemyVent vent = null;
+                var gameObject = GameObject.Instantiate(ray, self.playersManager.localPlayerController.gameplayCamera.transform.position, Quaternion.identity);
 
-                foreach (var v in vents)
-                {
-                    if (vent == null)
-                    {
-                        vent = v;
-                        continue;
-                    }
+                gameObject.GetComponent<NetworkObject>().Spawn();
 
-                    if (Vector3.Distance(position, v.transform.position) < Vector3.Distance(position, vent.transform.position))
-                    {
-                        vent = v;
-                    }
-                }
-
-                vent.enemyType = Content.Prefabs["Boomba"].GetComponent<RoombaAI>().enemyType;
-                vent.enemyTypeIndex = self.currentLevel.Enemies.FindIndex(x => x.enemyType == vent.enemyType);
-
-                UnityEngine.Debug.Log($"Spawning enemy from vent {vent.name}.");
-
-
-                self.SpawnEnemyFromVent(vent);
-    
-            }*/
+            }
         }
 
         static List<Key> currentCheatCode = new List<Key>();

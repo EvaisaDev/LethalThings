@@ -56,6 +56,15 @@ namespace LethalThings.MonoBehaviours
             SaveData.SaveObjectData<List<int>>("decalData", decalIndexesList, uniqueId);
         }
 
+        public void ToggleDecals(bool enabled)
+        {
+            // loop decalrenderers and toggle
+            for (int i = 0; i < decalProjectors.Count; i++)
+            {
+                decalProjectors[i].enabled = enabled;
+            }
+        }
+
         public override void LoadObjectData()
         {
             if (IsHost)
@@ -112,10 +121,17 @@ namespace LethalThings.MonoBehaviours
         {
             orig(self, enable);
 
-            DecalProjector[] componentsInChildren = self.gameObject.GetComponentsInChildren<DecalProjector>();
-            for (int i = 0; i < componentsInChildren.Length; i++)
+            if(self.GetComponentsInChildren<DecalRandomizer>() == null)
             {
-                componentsInChildren[i].enabled = enable;
+                return;
+            }
+
+            var decalRandomizers = self.GetComponentsInChildren<DecalRandomizer>();
+
+            
+            for (int i = 0; i < decalRandomizers.Length; i++)
+            {
+                decalRandomizers[i].ToggleDecals(enable);
             }
         }
     }

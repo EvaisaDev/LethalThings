@@ -32,7 +32,7 @@ namespace LethalThings.MonoBehaviours
         private int currentRenderTextureID = 0;
 
         [Space(3f)]
-
+        public Transform UISystem;
         public Transform selectionUI;
         public Transform pingUI;
         public Animator pingAnimator;
@@ -66,8 +66,8 @@ namespace LethalThings.MonoBehaviours
         public void Awake()
         {
             renderTexture = new RenderTexture(500, 390, 16, RenderTextureFormat.ARGB32);
-            renderTexture.name = $"HackingToolRenderTexture({renderTextureID})";
-            currentRenderTextureID = 0;
+            renderTexture.name = $"PingerTool({renderTextureID})";
+            currentRenderTextureID = renderTextureID;
             renderTextureID++;
             // setup camera to render to texture
             renderCamera.targetTexture = renderTexture;
@@ -85,6 +85,8 @@ namespace LethalThings.MonoBehaviours
 
         public override void Update()
         {
+            UISystem.position = new Vector3(-1000, -1000 * (currentRenderTextureID + 1), -1000);
+
             if (IsOwner && turnedOn.Value && insertedBattery.empty)
             {
                 turnedOn.Value = false;
@@ -275,13 +277,14 @@ namespace LethalThings.MonoBehaviours
                 playerHeldBy.equippedUsableItemQE = false;
                 playerHeldBy.activatingItem = false;
             }
-            backLight.enabled = false;
+            //backLight.enabled = false;
             isBeingUsed = false;
 
+            /*
             if (IsOwner)
             {
                 turnedOn.Value = false;
-            }
+            }*/
             base.DiscardItem();
         }
 
@@ -355,7 +358,7 @@ namespace LethalThings.MonoBehaviours
                 // ping
                 PingServerRpc(pingPosition, pingText, nodeType, (int)playerHeldBy.playerClientId);
 
-                pingAnimator.Play("ping");
+                
 
                 selectionUI.gameObject.SetActive(false);
                 pingUI.gameObject.SetActive(true);
@@ -387,6 +390,7 @@ namespace LethalThings.MonoBehaviours
         {
             if (isPing)
             {
+                pingAnimator.Play("ping");
                 audioSource.PlayOneShot(pingClip);
                 audioSourceFar.PlayOneShot(pingClip);
                 WalkieTalkie.TransmitOneShotAudio(audioSource, pingClip, 1);

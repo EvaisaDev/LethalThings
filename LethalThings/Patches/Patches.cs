@@ -11,11 +11,14 @@ namespace LethalThings.Patches
     {
         public static void Load()
         {
+
             SaveData.Init();
             PowerOutletStun.Load();
             Miscellaneous.Load();
+
             PouchyBelt.Initialize();
             HandheldRadar.Load();
+
             HackingTool.Load();
             FlareController.Init();
             DecalRandomizer.Init();
@@ -26,8 +29,8 @@ namespace LethalThings.Patches
             MaggieSpawner.Init();
             ForcedPing.Init();
             ThrowableNoisemaker.Init();
+            
 
-            // i will surely not forget to remove this when i release.
             Debug.Load();
         }
     }

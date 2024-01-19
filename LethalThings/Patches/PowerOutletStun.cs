@@ -27,6 +27,7 @@ namespace LethalThings.Patches
             {
                 if (prefab.Prefab.GetComponent<GrabbableObject>() != null)
                 {
+                    Plugin.logger.LogInfo($"Found {prefab.Prefab.name}");
                     if (prefab.Prefab.GetComponent<GrabbableObject>().itemProperties.isConductiveMetal)
                     {
                         var comp = prefab.Prefab.AddComponent<LethalThings.PowerOutletStun>();

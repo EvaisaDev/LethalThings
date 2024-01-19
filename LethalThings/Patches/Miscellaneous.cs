@@ -230,7 +230,7 @@ namespace LethalThings.Patches
             }
             if (currentItem != null && currentItem.itemProperties.grabAnim == "none")
             {
-                //Plugin.logger.LogInfo("Skipping grab animation because the item has no grab animation");
+                //no animation!!!
                 return;
             }
             orig(self, setTrue, currentItem);

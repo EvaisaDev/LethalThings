@@ -1,3 +1,25 @@
+# LethalThings 0.10.0
+**Bugfixes**
+- Zapgun laser is no longer permanently active.
+- Radar camera is only active if any player is holding Remote Radar and said radar is turned on.
+
+# LethalThings 0.9.4
+**Bugfixes**  
+- Pinger was breaking the escape menu while turned on.  
+- Pinger ping animation was not playing.  
+  
+# Lethal Things 0.9.3  
+- Updated dependency version of LethalLib to 0.11.2  
+	- If you want to LethalThings to work please update LethalLib to that version.  
+  
+# Lethal Things 0.9.2
+- Updated used NetcodePatcher version to v3.3.3  
+- Removed unfinished content from config, accidental leak moment lmao  
+
+# Lethal Things 0.9.1
+**Bugfixes**
+- Fixed crash to desktop on launch, caused by NetcodePatcher update.
+
 # Lethal Things 0.9.0
 **Content**
 - Added Shop Item: Pinger
@@ -6,7 +28,7 @@
 **Systems**
 - Completely rewrite of Content Loader and Config system.
 - Config files are now synced between host and client.  
-- Changed how utility belt adds slow for potential compatibility improvement.  
+- Changed how utility belt adds slots for potential compatibility improvement.  
 
 **Bugfixes**
 - Lethal Things content should now spawn on modded moons  
@@ -19,12 +41,15 @@
 - Flare gun client aim issue.  
 - Remote radar was able to switch target while turned off.  
 - Toy hammer was broken because of lethal company v47 update.  
+- Darts are no longer pingable while held.
+- Maxwell becomes evil sometimes when loading a save :(
 
 **Changes**
 - Toyhammer is now a scrap item by default  
 	- Added config option to add Toyhammer to store.  
 	- Added config option to make Toyhammer spawn as scrap.  
 - Cookie is now throwable.  
+	- Note: Batteries may spontaneously combust  
 
 # Lethal Things 0.8.8
 - Glizzy is no longer called "Training Manual" (idk how the heck that happened because it was called glizzy before.)

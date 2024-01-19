@@ -73,6 +73,7 @@ namespace LethalThings.MonoBehaviours
         private static void CentipedeAI_OnPlayerTeleport(On.CentipedeAI.orig_OnPlayerTeleport orig, CentipedeAI self, GameNetcodeStuff.PlayerControllerB playerTeleported)
         {
             // if chance is met, spawn maggie
+            /*
             if (NetworkConfig.Instance != null && UnityEngine.Random.Range(0f, 100f) <= NetworkConfig.Instance.maggieTeleporterChanceNetVar.Value)
             {
                 if (self.clingingToPlayer == playerTeleported && playerTeleported.IsOwner)
@@ -89,7 +90,7 @@ namespace LethalThings.MonoBehaviours
 
                     return;
                 }
-            }
+            }*/
 
             orig(self, playerTeleported);
         }
