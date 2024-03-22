@@ -16,7 +16,7 @@ namespace LethalThings.MonoBehaviours
 
         public TextMeshProUGUI textMesh;
         public TextMeshProUGUI textMeshBack;
-
+        [HideInInspector]
         public NetworkVariable<int> daysSinceLastFatality = new NetworkVariable<int>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
 
         public static void Init()

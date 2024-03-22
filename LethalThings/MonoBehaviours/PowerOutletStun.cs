@@ -23,6 +23,8 @@ namespace LethalThings
 
         public AudioSource strikeAudio;
         public ParticleSystem strikeParticle;
+
+        [HideInInspector]
         private NetworkVariable<int> damage = new NetworkVariable<int>(20, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
 
         public void Awake()

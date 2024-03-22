@@ -54,14 +54,14 @@ namespace LethalThings
         public bool wasLoadedFromSave = false;
 
         public bool exploding = false;
-
+        [HideInInspector]
         private NetworkVariable<bool> isEvil = new NetworkVariable<bool>(false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
 
         public GameObject evilObject;
 
-
+        [HideInInspector]
         public NetworkVariable<bool> isPlayingMusic = new NetworkVariable<bool>(NetworkConfig.maxwellPlayMusicDefault.Value, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
-
+        [HideInInspector]
         public NetworkVariable<bool> isPipebomb = new NetworkVariable<bool>(false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
 
         /*
@@ -126,7 +126,7 @@ namespace LethalThings
                 isPlayingMusic.Value = NetworkConfig.Instance.maxwellPlayMusicDefaultNetVar.Value;
             }
 
-            if (IsHost)
+            if (IsHost && !StartOfRound.Instance.inShipPhase)
             {
                 isEvil.Value = (UnityEngine.Random.Range(0f, 100f) <= NetworkConfig.evilMaxwellChance.Value);
             }

@@ -28,6 +28,7 @@ namespace LethalThings.MonoBehaviours
 
         public float playerEvadeDistance = 10f;
         public float playerSpookDistance = 4f;
+        public float runDistance = 100f;
 
         public float playerEvadeSpeed = 5f;
 
@@ -55,6 +56,14 @@ namespace LethalThings.MonoBehaviours
 
         private PlayerControllerB favouritePlayer;
         private int tamedLevel = 0;
+        private int maxTamedLevel = 5;
+
+        private bool isTamed 
+        {
+            get {
+                 return tamedLevel >= maxTamedLevel;
+            }
+        }
 
         public Animator animator;
 
@@ -66,12 +75,224 @@ namespace LethalThings.MonoBehaviours
         public Transform gemTransform;
         public Item gemItem;
 
+        public float wanderSpeed = 3.5f;
+        public float runSpeed = 7f;
+        public float sneakSpeed = 3f;
+
+        public MonoBehaviour closestScary;
+
         public override void Start()
         {
             base.Start();
             movingTowardsTargetPlayer = true;
             localPlayerCamera = GameNetworkManager.Instance.localPlayerController.gameplayCamera.transform;
         }
+
+        public bool TargetFavouritePlayer(float bufferDistance = 1.5f, bool requireLineOfSight = false, float viewWidth = 70f)
+        {
+            mostOptimalDistance = 2000f;
+            PlayerControllerB playerControllerB = targetPlayer;
+            targetPlayer = null;
+            for (int i = 0; i < StartOfRound.Instance.connectedPlayersAmount + 1; i++)
+            {
+                if (StartOfRound.Instance.allPlayerScripts[i] == favouritePlayer && PlayerIsTargetable(StartOfRound.Instance.allPlayerScripts[i]) && !PathIsIntersectedByLineOfSight(StartOfRound.Instance.allPlayerScripts[i].transform.position, calculatePathDistance: false, avoidLineOfSight: false) && (!requireLineOfSight || HasLineOfSightToPosition(StartOfRound.Instance.allPlayerScripts[i].gameplayCamera.transform.position, viewWidth, 40)))
+                {
+                    tempDist = Vector3.Distance(base.transform.position, StartOfRound.Instance.allPlayerScripts[i].transform.position);
+                    if (tempDist < mostOptimalDistance)
+                    {
+                        mostOptimalDistance = tempDist;
+                        targetPlayer = StartOfRound.Instance.allPlayerScripts[i];
+                    }
+                }
+            }
+            if (targetPlayer != null && bufferDistance > 0f && playerControllerB != null && Mathf.Abs(mostOptimalDistance - Vector3.Distance(base.transform.position, playerControllerB.transform.position)) < bufferDistance)
+            {
+                targetPlayer = playerControllerB;
+            }
+            return targetPlayer != null;
+        }
+
+        public bool TargetClosestScary()
+        {
+            mostOptimalDistance = 2000f;
+            MonoBehaviour currentScary = closestScary;
+            closestScary = null;
+            // loop through RoundManager.instance.SpawnedEnemies
+
+            foreach (EnemyAI enemy in RoundManager.Instance.SpawnedEnemies)
+            {
+                if (enemy == null || enemy.isEnemyDead) continue;
+                var distance = Vector3.Distance(base.transform.position, enemy.transform.position);
+                if (distance < mostOptimalDistance)
+                {
+                    mostOptimalDistance = distance;
+                    closestScary = enemy;
+                }
+
+            }
+
+            // check players
+            if (!isTamed)
+            {
+                foreach (PlayerControllerB player in StartOfRound.Instance.allPlayerScripts)
+                {
+                    if (player == null) continue;
+                    var distance = Vector3.Distance(base.transform.position, player.transform.position);
+                    if (distance < mostOptimalDistance)
+                    {
+                        mostOptimalDistance = distance;
+                        closestScary = player;
+                    }
+                }
+            }
+
+            return closestScary != null;
+        }
+
+        // Behaviour implementations
+        public void RunFromScary()
+        {
+            if (closestScary == null)
+            {
+                // switch to roam
+                GoToRandomNode();
+                SwitchToBehaviourState(2);
+                return;
+            }
+
+
+            AvoidClosestScaryThing();
+
+            lastPlayerInvestigateTime = 0f;
+            investigateTime = 0f;
+
+            if (evadeTime > evadeTimeMax || Vector3.Distance(transform.position, closestScary.transform.position) >= playerEvadeDistance)
+            {
+                
+                if (isTamed)
+                {
+                    SwitchToBehaviourState(3);
+                }
+                else
+                {
+                    GoToRandomNode();
+                    SwitchToBehaviourState(2);
+                }
+            }
+            agent.speed = runSpeed;
+
+            evadeTime += Time.deltaTime;
+            petTrigger.interactable = false;
+        }
+
+        public void FollowPlayer()
+        {
+            if (targetPlayer == null)
+            {
+                // switch to roam
+                GoToRandomNode();
+                SwitchToBehaviourState(2);
+                return;
+            }
+
+            if (Vector3.Distance(transform.position, targetPlayer.transform.position) > PlayerFarthestDistance && Vector3.Distance(targetPlayer.transform.position, targetNode.position) > PlayerFarthestDistance)
+            {
+                ChooseRandomNodeAroundPlayer();
+            }
+
+            evadeTime = 0f;
+
+            agent.speed = wanderSpeed;
+
+            petTrigger.interactable = true;
+        }
+
+        public void Sneak()
+        {
+            if(targetPlayer == null)
+            {
+                // switch to roam
+                GoToRandomNode();
+                SwitchToBehaviourState(2);
+                return;
+            }
+
+            if (Vector3.Distance(transform.position, targetPlayer.transform.position) > PlayerFarthestDistance && Vector3.Distance(targetPlayer.transform.position, targetNode.position) > PlayerFarthestDistance)
+            {
+                ChooseRandomNodeAroundPlayer();
+            }
+
+            lastPlayerInvestigateTime = 0f;
+
+            if (investigateTime > maxInvestigateTime)
+            {
+                GoToRandomNode();
+                SwitchToBehaviourState(2);
+            }
+            evadeTime = 0f;
+            if (isTamed)
+            {
+                agent.speed = wanderSpeed;
+            }
+            else
+            {
+                agent.speed = sneakSpeed;
+            }
+
+            petTrigger.interactable = true;
+        }
+
+        public void Roam()
+        {
+            investigateTime = 0f;
+
+            if (targetNode == null || Vector3.Distance(transform.position, targetNode.position) < 2f)
+            {
+                GoToRandomNode();
+
+                Plugin.logger.LogInfo($"Going to random node");
+            }
+            petTrigger.interactable = false;
+
+            agent.speed = wanderSpeed;
+
+            if (lastPlayerInvestigateTime >= playerInvestigateInterval)
+            {
+                if (Random.Range(0, 100) <= 30)
+                {
+                    SwitchToBehaviourState(0);
+                }
+            }
+        }
+
+        public void CheckIfSpooked()
+        {
+            foreach (PlayerControllerB player in StartOfRound.Instance.allPlayerScripts)
+            {
+                if (player == null)
+                {
+                    continue;
+                }
+
+                var tamedValue = !(Random.Range(0, maxTamedLevel * 10) <= (tamedLevel * 10));
+
+                if ((tamedValue && ((player.thisController.velocity.magnitude > playerEvadeSpeed && Vector3.Distance(transform.position, player.transform.position) < playerEvadeDistance)) || (Vector3.Distance(transform.position, player.transform.position) < playerSpookDistance && currentBehaviourStateIndex != 0)))
+                {
+                    Plugin.logger.LogInfo("Spooked by player!!");
+                    SwitchToBehaviourState(1);
+                    break;
+                }
+            }
+
+            // check if closest scary is close enough
+            if (closestScary != null && closestScary is EnemyAI && (Vector3.Distance(transform.position, closestScary.transform.position) < playerSpookDistance))
+            {
+                Plugin.logger.LogInfo("Spooked by scary!!");
+                SwitchToBehaviourState(1);
+            }
+        }
+
+
 
         public override void DoAIInterval()
         {
@@ -80,97 +301,35 @@ namespace LethalThings.MonoBehaviours
                 base.DoAIInterval();
                 return;
             }
-            if (TargetClosestPlayer())
+
+            // we have 4 states
+            // 0 - sneak
+            // 1 - evade
+            // 2 - roam
+            // 3 - follow
+
+            var foundPlayer = TargetClosestPlayer();
+            var foundScary = TargetClosestScary();
+
+            switch (currentBehaviourStateIndex)
             {
-
-                // sneaking up on player
-                if (currentBehaviourStateIndex == 0)
-                {
-                    if(Vector3.Distance(transform.position, targetPlayer.transform.position) > PlayerFarthestDistance)
-                    {
-                        ChooseRandomNodeAroundPlayer();
-                    }
-                    
-                    Plugin.logger.LogInfo($"(Fibsh fren) We are sneaking up on {targetPlayer.playerUsername}!!");
-                    lastPlayerInvestigateTime = 0f;
-
-                    if(investigateTime > maxInvestigateTime)
-                    {
-                        SwitchToBehaviourState(2);
-                    }
-                    evadeTime = 0f;
-                    agent.speed = 0.9f;
-                    petTrigger.interactable = true;
-                }
-                // evading player
-                else if (currentBehaviourStateIndex == 1)
-                {
-                    AvoidClosestPlayer();
-                    Plugin.logger.LogInfo($"(Fibsh fren) We are evading {targetPlayer.playerUsername}!!");
-                    lastPlayerInvestigateTime = 0f;
-                    investigateTime = 0f;
-
-                    if (evadeTime > evadeTimeMax || Vector3.Distance(transform.position, targetPlayer.transform.position) >= playerEvadeDistance)
-                    {
-                        Plugin.logger.LogInfo($"(Fibsh fren) We are done evading {targetPlayer.playerUsername}!!");
-                        SwitchToBehaviourState(2);
-                    }
-                    agent.speed = 5f;
-
-                    evadeTime += Time.deltaTime;
-                    petTrigger.interactable = false;
-                }
-                // roaming
-                else if (currentBehaviourStateIndex == 2)
-                {
-                    investigateTime = 0f;
-                    //Plugin.logger.LogInfo($"(Fibsh fren) We are roaming!!");
-                    // if we are close enough to the target node, choose a new one
-                    if (targetNode == null || Vector3.Distance(transform.position, targetNode.position) < 2f)
-                    {
-                        ChooseRandomNodeAroundPlayer();
-                    }
-                    petTrigger.interactable = false;
-
-                    Plugin.logger.LogInfo($"(Fibsh fren) {lastPlayerInvestigateTime} / {playerInvestigateInterval}");
-
-                    agent.speed = 1f;
-
-                    if (lastPlayerInvestigateTime >= playerInvestigateInterval)
-                    {
-                        if (Random.Range(0, 100) <= 30)
-                        {
-                            SwitchToBehaviourState(0);
-                            Plugin.logger.LogInfo($"(Fibsh fren) We are investigating {targetPlayer.playerUsername}!!");
-                        }
-                    }
-                }
-
-                // check target player velocity, if they are moving too fast and we are close enough, switch to evade mode
-                if (currentBehaviourStateIndex != 1)
-                {
-                    foreach (PlayerControllerB player in StartOfRound.Instance.allPlayerScripts)
-                    {
-                        if (player == null)
-                        {
-                            continue;
-                        }
-
-                        var tamedValue = !(Random.Range(1, 100) <= (tamedLevel * 10));
-
-                        if (tamedValue && ((targetPlayer.thisController.velocity.magnitude > playerEvadeSpeed && Vector3.Distance(transform.position, targetPlayer.transform.position) < playerEvadeDistance) || (Vector3.Distance(transform.position, targetPlayer.transform.position) < playerSpookDistance && currentBehaviourStateIndex != 0)))
-                        {
-                            SwitchToBehaviourState(1);
-                            Plugin.logger.LogInfo($"(Fibsh fren) Player {player.playerUsername} is spooking us!!");
-                            break;
-                        }
-
-
-                    }
-                }
-
-
+                case 0:
+                    Sneak();
+                    break;
+                case 1:
+                    RunFromScary();
+                    break;
+                case 2:
+                    Roam();
+                    break;
+                case 3:
+                    FollowPlayer();
+                    break;
             }
+
+            // check if spooked
+            if(currentBehaviourStateIndex != 1)
+                CheckIfSpooked();
 
 
             base.DoAIInterval();
@@ -210,8 +369,9 @@ namespace LethalThings.MonoBehaviours
 
             favouritePlayer = player;
 
-            creatureSFX.PlayOneShot(petHappy);
-            WalkieTalkie.TransmitOneShotAudio(creatureVoice, petHappy);
+            creatureSFX.pitch = Random.Range(0.8f, 1.2f);
+            creatureSFX.PlayOneShot(petHappy, 0.5f);
+            WalkieTalkie.TransmitOneShotAudio(creatureVoice, petHappy, 0.5f);
             RoundManager.Instance.PlayAudibleNoise(base.transform.position, 12f, 0.6f, 0, noiseIsInsideClosedShip: false, 911);
 
             loveParticles.Play();
@@ -247,10 +407,10 @@ namespace LethalThings.MonoBehaviours
         }
 
 
-        public void AvoidClosestPlayer()
+        public void AvoidClosestScaryThing()
         {
            // get point from current position to target position in opposite direction, at specified distance
-            Vector3 point = this.transform.position + (this.transform.position - targetPlayer.transform.position).normalized * 1000;
+            Vector3 point = this.transform.position + (this.transform.position - closestScary.transform.position).normalized * 1000;
 
             // get closest node to point
             Transform transform = ChooseClosestNodeToPosition(point);
@@ -266,6 +426,20 @@ namespace LethalThings.MonoBehaviours
             
         }
 
+        public void GoToRandomNode()
+        {
+            var transform = ChooseRandomNode();
+
+            if (transform != null)
+            {
+                targetNode = transform;
+                SetDestinationToPosition(targetNode.position);
+
+                return;
+            }
+
+            movingTowardsTargetPlayer = false;
+        }
 
 
         public void ChooseRandomNodeAroundPlayer()
@@ -278,8 +452,8 @@ namespace LethalThings.MonoBehaviours
                 SetDestinationToPosition(targetNode.position);
                 return;
             }
-           
-            movingTowardsTargetPlayer = true;
+
+            movingTowardsTargetPlayer = false;
         }
 
         public Transform ChooseRandomNodeAroundPosition(Vector3 pos, float minDist, float maxDist, bool avoidLineOfSight = false, int offset = 0)

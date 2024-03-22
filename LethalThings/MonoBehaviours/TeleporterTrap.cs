@@ -15,6 +15,7 @@ namespace LethalThings.MonoBehaviours
         private RaycastHit hit;
         public float teleportCooldownTime = 5f;
         public float teleporterChargeUp = 2f;
+        [HideInInspector]
         private NetworkVariable<float> teleportCooldown = new NetworkVariable<float>(0f, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
         public AudioSource teleporterAudio;
         public AudioClip teleporterBeamUpSFX;

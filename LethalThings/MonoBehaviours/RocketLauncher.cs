@@ -24,9 +24,9 @@ namespace LethalThings
         public Transform aimDirection;
 
         public int maxAmmo = 4;
-
+        [HideInInspector]
         private NetworkVariable<int> currentAmmo = new NetworkVariable<int>(4, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
-
+        [HideInInspector]
         private NetworkVariable<bool> isLaserOn = new NetworkVariable<bool>(false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
 
         public GameObject missilePrefab;

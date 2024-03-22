@@ -122,7 +122,7 @@ namespace LethalThings.Patches
 
 
             
-            if (Keyboard.current.f2Key.wasPressedThisFrame)
+            /*if (Keyboard.current.f2Key.wasPressedThisFrame)
             {
                 var ray = Content.Prefabs["CrystalRay"];
 
@@ -130,7 +130,7 @@ namespace LethalThings.Patches
 
                 gameObject.GetComponent<NetworkObject>().Spawn();
 
-            }
+            }*/
         }
 
         static List<Key> currentCheatCode = new List<Key>();

@@ -27,7 +27,9 @@ namespace LethalThings.MonoBehaviours
         public float throwForce = 10f;
         private float t = 0f;
         public bool isThrown = false;
+        [HideInInspector]
         private NetworkVariable<Vector3> throwDir = new NetworkVariable<Vector3>(Vector3.zero, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
+        [HideInInspector]
         private NetworkVariable<bool> isKinematic = new NetworkVariable<bool>(false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
 
         public AudioClip dartHitSound;

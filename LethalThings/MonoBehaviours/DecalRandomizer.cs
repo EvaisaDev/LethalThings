@@ -11,6 +11,7 @@ namespace LethalThings.MonoBehaviours
     public class DecalRandomizer : SaveableNetworkBehaviour
     {
         public List<DecalProjector> decalProjectors = new List<DecalProjector>();
+        [HideInInspector]
         private NetworkList<int> decalIndexes = new NetworkList<int>(new List<int>(), NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
 
         public List<Material> decalMaterials = new List<Material>();

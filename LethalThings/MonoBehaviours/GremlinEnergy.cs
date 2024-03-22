@@ -27,19 +27,19 @@ namespace LethalThings.MonoBehaviours
         {
             orig(self);
 
-            foreach (var prefab in self.GetComponent<NetworkManager>().NetworkConfig.Prefabs.m_Prefabs)
+            List<NetworkPrefab> prefabs = self?.GetComponent<NetworkManager>()?.NetworkConfig?.Prefabs?.m_Prefabs;
+            if (prefabs == null) return;
+
+            foreach (var prefabContainer in prefabs)
             {
-                if (prefab.Prefab.GetComponent<BlobAI>() != null)
-                {
-                    if (prefab.Prefab.GetComponent<BlobAI>().enemyType.enemyName == "Blob")
-                    {
-                        blobPrefab = prefab.Prefab;
+                GameObject prefab = prefabContainer?.Prefab;
+                if (prefab?.GetComponent<BlobAI>()?.enemyType?.enemyName != "Blob") continue;
 
-                        //Plugin.logger.LogMessage("Found blob prefab!");
+                blobPrefab = prefab;
 
-                        break;
-                    }
-                }
+                //Plugin.logger.LogMessage("Found blob prefab!");
+
+                break;
             }
         }
 
@@ -81,11 +81,12 @@ namespace LethalThings.MonoBehaviours
             yield return new WaitForSeconds(3);
             if (base.IsOwner)
             {
+                playerHeldBy.playerBodyAnimator.SetBool("useTZPItem", false);
+                playerHeldBy.activatingItem = false;
+
                 // damage player 
                 playerHeldBy.DamagePlayer(50, causeOfDeath: CauseOfDeath.Unknown, deathAnimation: 1);
 
-                playerHeldBy.playerBodyAnimator.SetBool("useTZPItem", false);
-                playerHeldBy.activatingItem = false;
             }
         }
 

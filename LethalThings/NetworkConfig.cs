@@ -111,12 +111,12 @@ namespace LethalThings
 
         // Enemies, no need to sync weight
         public static ConfigEntry<int> boombaSpawnWeight;
-        public static ConfigEntry<int> maggieSpawnWeight;
-        public static ConfigEntry<int> crystalRaySpawnWeight;
+        //public static ConfigEntry<int> maggieSpawnWeight;
+        //public static ConfigEntry<int> crystalRaySpawnWeight;
 
-        public static ConfigEntry<float> maggieTeleporterChance;
+        /*public static ConfigEntry<float> maggieTeleporterChance;
         [HideInInspector]
-        public NetworkVariable<float> maggieTeleporterChanceNetVar = new NetworkVariable<float>(0.3f);
+        public NetworkVariable<float> maggieTeleporterChanceNetVar = new NetworkVariable<float>(0.3f);*/
 
         // Decor
         public static ConfigEntry<bool> rugsEnabled;
@@ -147,13 +147,13 @@ namespace LethalThings
         [HideInInspector]
         public NetworkVariable<int> dartBoardPriceNetVar = new NetworkVariable<int>(0);
 
-        public static ConfigEntry<bool> deliveryRoverEnabled;
+        /*public static ConfigEntry<bool> deliveryRoverEnabled;
         [HideInInspector]
         public NetworkVariable<bool> deliveryRoverEnabledNetVar = new NetworkVariable<bool>(true);
 
         public static ConfigEntry<int> deliveryRoverPrice;
         [HideInInspector]
-        public NetworkVariable<int> deliveryRoverPriceNetVar = new NetworkVariable<int>(0);
+        public NetworkVariable<int> deliveryRoverPriceNetVar = new NetworkVariable<int>(0);*/
 
 
         // Hazards
@@ -218,9 +218,9 @@ namespace LethalThings
 
 
             boombaSpawnWeight = Plugin.config.Bind<int>("Enemies", "Boomba", 20, "How much do Boombas spawn, higher = more common");
-            maggieSpawnWeight = Plugin.config.Bind<int>("Enemies", "Maggie", 1, "How much does Maggie spawn, higher = more common");
-            maggieTeleporterChance = Plugin.config.Bind<float>("Enemies", "MaggieTeleporterChance", 30f, "Chance for players to become lost in transit, percentage.");
-            crystalRaySpawnWeight = Plugin.config.Bind<int>("Enemies", "CrystalRay", 10, "How much do Crystal Rays spawn, higher = more common");
+            //maggieSpawnWeight = Plugin.config.Bind<int>("Enemies", "Maggie", 1, "How much does Maggie spawn, higher = more common");
+            //maggieTeleporterChance = Plugin.config.Bind<float>("Enemies", "MaggieTeleporterChance", 30f, "Chance for players to become lost in transit, percentage.");
+            //crystalRaySpawnWeight = Plugin.config.Bind<int>("Enemies", "CrystalRay", 10, "How much do Crystal Rays spawn, higher = more common");
 
             rugsEnabled = Plugin.config.Bind<bool>("Decor", "Rugs", true, "Are rugs enabled?");
             smallRugPrice = Plugin.config.Bind<int>("Decor", "SmallRugPrice", 80, "How much does a small rug cost?");
@@ -229,8 +229,8 @@ namespace LethalThings
             fatalitiesSignPrice = Plugin.config.Bind<int>("Decor", "FatalitiesSignPrice", 100, "How much does the Fatalities Sign cost?");
             dartBoardEnabled = Plugin.config.Bind<bool>("Decor", "DartBoard", true, "Is the Dart Board enabled?");
             dartBoardPrice = Plugin.config.Bind<int>("Decor", "DartBoardPrice", 120, "How much does the Dart Board cost?");
-            deliveryRoverEnabled = Plugin.config.Bind<bool>("Decor", "DeliveryRover", true, "Is the Delivery Rover enabled?");
-            deliveryRoverPrice = Plugin.config.Bind<int>("Decor", "DeliveryRoverPrice", 600, "How much does the Delivery Rover cost?");
+            //deliveryRoverEnabled = Plugin.config.Bind<bool>("Decor", "DeliveryRover", true, "Is the Delivery Rover enabled?");
+            //deliveryRoverPrice = Plugin.config.Bind<int>("Decor", "DeliveryRoverPrice", 600, "How much does the Delivery Rover cost?");
 
             teleporterTrapsEnabled = Plugin.config.Bind<bool>("Traps", "TeleporterTraps", true, "Are teleporter traps enabled?");
 
@@ -333,9 +333,9 @@ namespace LethalThings
             dartBoard.SetPrice(Instance.dartBoardPriceNetVar.Value);
             if (!Instance.dartBoardEnabledNetVar.Value) dartBoard.RemoveFromShop();
 
-            Unlockable deliveryRover = Content.ContentLoader.LoadedContent["DeliveryRover"] as Unlockable;
-            deliveryRover.SetPrice(Instance.deliveryRoverPriceNetVar.Value);
-            if (!Instance.deliveryRoverEnabledNetVar.Value) deliveryRover.RemoveFromShop();
+            //Unlockable deliveryRover = Content.ContentLoader.LoadedContent["DeliveryRover"] as Unlockable;
+            //deliveryRover.SetPrice(Instance.deliveryRoverPriceNetVar.Value);
+            //if (!Instance.deliveryRoverEnabledNetVar.Value) deliveryRover.RemoveFromShop();
 
             MapHazard teleporterTrap = Content.ContentLoader.LoadedContent["TeleporterTrap"] as MapHazard;
             if (!Instance.teleporterTrapsEnabledNetVar.Value) teleporterTrap.RemoveFromLevels(Levels.LevelTypes.All);
@@ -377,15 +377,15 @@ namespace LethalThings
                 fatalitiesSignPriceNetVar.Value = fatalitiesSignPrice.Value;
                 dartBoardEnabledNetVar.Value = dartBoardEnabled.Value;
                 dartBoardPriceNetVar.Value = dartBoardPrice.Value;
-                deliveryRoverEnabledNetVar.Value = deliveryRoverEnabled.Value;
-                deliveryRoverPriceNetVar.Value = deliveryRoverPrice.Value;
+                //deliveryRoverEnabledNetVar.Value = deliveryRoverEnabled.Value;
+                //deliveryRoverPriceNetVar.Value = deliveryRoverPrice.Value;
 
                 teleporterTrapsEnabledNetVar.Value = teleporterTrapsEnabled.Value;
 
                 enableItemChargerElectrocutionNetVar.Value = enableItemChargerElectrocution.Value;
                 disableOverlappingModContentNetVar.Value = disableOverlappingModContent.Value;
 
-                maggieTeleporterChanceNetVar.Value = maggieTeleporterChance.Value;
+                //maggieTeleporterChanceNetVar.Value = maggieTeleporterChance.Value;
             }
         }
 

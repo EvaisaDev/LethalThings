@@ -43,13 +43,13 @@
 
     <ItemGroup>
       <Reference Include="LethalCompanyInputUtils">
-        <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Lethal Company\BepInEx\plugins\LethalCompanyInputUtils\LethalCompanyInputUtils.dll</HintPath>
+        <HintPath>C:\Users\mail\AppData\Roaming\r2modmanPlus-local\LethalCompany\profiles\modding\BepInEx\plugins\Rune580-LethalCompany_InputUtils\LethalCompanyInputUtils\LethalCompanyInputUtils.dll</HintPath>
       </Reference>
       <Reference Include="LethalLib">
-        <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Lethal Company\BepInEx\plugins\LethalLib\LethalLib.dll</HintPath>
+        <HintPath>C:\Users\mail\AppData\Roaming\r2modmanPlus-local\LethalCompany\profiles\modding\BepInEx\plugins\LethalLib\LethalLib.dll</HintPath>
       </Reference>
       <Reference Include="MMHOOK_Assembly-CSharp">
-        <HintPath>C:\Program Files (x86)\Steam\steamapps\common\Lethal Company\BepInEx\plugins\MMHOOK\MMHOOK_Assembly-CSharp.dll</HintPath>
+        <HintPath>C:\Users\mail\AppData\Roaming\r2modmanPlus-local\LethalCompany\profiles\modding\BepInEx\plugins\MMHOOK\MMHOOK_Assembly-CSharp.dll</HintPath>
       </Reference>
     </ItemGroup>
 	
@@ -64,7 +64,7 @@
 	-->
 
     <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-      <Exec Command="copy &quot;$(TargetPath)&quot; &quot;C:\Users\mail\Documents\GitHub\LethalCompanyModding\Assets\Plugins&quot; /Y&#xD;&#xA;netcode-patch &quot;$(TargetPath)&quot; @(ReferencePathWithRefAssemblies->'&quot;%(Identity)&quot;', ' ')&#xD;&#xA;copy &quot;$(TargetPath)&quot; &quot;C:\Program Files (x86)\Steam\steamapps\common\Lethal Company\BepInEx\plugins\LethalThings&quot; /Y&#xD;&#xA;copy &quot;$(TargetDir)LethalThings.pdb&quot; &quot;C:\Program Files (x86)\Steam\steamapps\common\Lethal Company\BepInEx\plugins\LethalThings&quot; /Y" />
+      <Exec Command="copy &quot;$(TargetPath)&quot; &quot;C:\Users\mail\Documents\GitHub\LethalCompanyModding\Assets\Plugins&quot; /Y&#xD;&#xA;netcode-patch &quot;$(TargetPath)&quot; @(ReferencePathWithRefAssemblies->'&quot;%(Identity)&quot;', ' ')&#xD;&#xA;copy &quot;$(TargetPath)&quot; &quot;C:\Users\mail\AppData\Roaming\r2modmanPlus-local\LethalCompany\profiles\modding\BepInEx\plugins\LethalThings&quot; /Y&#xD;&#xA;copy &quot;$(TargetDir)LethalThings.pdb&quot; &quot;C:\Users\mail\AppData\Roaming\r2modmanPlus-local\LethalCompany\profiles\modding\BepInEx\plugins\LethalThings&quot; /Y" />
     </Target>
 	
 	<Target Name="LogReferencedAssemblies" BeforeTargets="Build">

@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Unity.Netcode;
+using UnityEngine;
 
 namespace LethalThings.Patches
 {
@@ -23,16 +24,26 @@ namespace LethalThings.Patches
         {
             orig(self);
 
-            foreach (var prefab in self.GetComponent<NetworkManager>().NetworkConfig.Prefabs.m_Prefabs)
+            List<NetworkPrefab> prefabs = self?.GetComponent<NetworkManager>()?.NetworkConfig?.Prefabs?.m_Prefabs;
+            if (prefabs == null) return;
+
+            foreach (var prefabContainer in prefabs)
             {
-                if (prefab.Prefab.GetComponent<GrabbableObject>() != null)
+                GameObject prefab = prefabContainer?.Prefab;
+
+                // Using this to search for bugged prefabs:
+                /*
+                if (prefab?.name == null)
                 {
-                    Plugin.logger.LogInfo($"Found {prefab.Prefab.name}");
-                    if (prefab.Prefab.GetComponent<GrabbableObject>().itemProperties.isConductiveMetal)
-                    {
-                        var comp = prefab.Prefab.AddComponent<LethalThings.PowerOutletStun>();
-                    }
+                    Plugin.logger.LogWarning($"Found a potentially bugged prefab! Container [{prefabContainer}] | GameObject: [{prefab}]");
                 }
+                */
+
+                if (prefab?.GetComponent<GrabbableObject>()?.itemProperties?.isConductiveMetal != true) continue;
+
+                Plugin.logger.LogInfo($"Found conductive scrap [{prefab.name}]");
+
+                var comp = prefab.AddComponent<LethalThings.PowerOutletStun>();
             }
         }
 
