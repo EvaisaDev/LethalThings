@@ -95,7 +95,7 @@ namespace LethalThings.MonoBehaviours
             targetPlayer = null;
             for (int i = 0; i < StartOfRound.Instance.connectedPlayersAmount + 1; i++)
             {
-                if (StartOfRound.Instance.allPlayerScripts[i] == favouritePlayer && PlayerIsTargetable(StartOfRound.Instance.allPlayerScripts[i]) && !PathIsIntersectedByLineOfSight(StartOfRound.Instance.allPlayerScripts[i].transform.position, calculatePathDistance: false, avoidLineOfSight: false) && (!requireLineOfSight || HasLineOfSightToPosition(StartOfRound.Instance.allPlayerScripts[i].gameplayCamera.transform.position, viewWidth, 40)))
+                if (StartOfRound.Instance.allPlayerScripts[i] == favouritePlayer && PlayerIsTargetable(StartOfRound.Instance.allPlayerScripts[i]) && !PathIsIntersectedByLineOfSight(StartOfRound.Instance.allPlayerScripts[i].transform.position, calculatePathDistance: false, avoidLineOfSight: false) && (!requireLineOfSight || CheckLineOfSightForPosition(StartOfRound.Instance.allPlayerScripts[i].gameplayCamera.transform.position, viewWidth, 40)))
                 {
                     tempDist = Vector3.Distance(base.transform.position, StartOfRound.Instance.allPlayerScripts[i].transform.position);
                     if (tempDist < mostOptimalDistance)
@@ -667,7 +667,8 @@ namespace LethalThings.MonoBehaviours
             }
         }
 
-        public override void HitEnemy(int force = 1, PlayerControllerB playerWhoHit = null, bool playHitSFX = false)
+
+        public override void HitEnemy(int force = 1, PlayerControllerB playerWhoHit = null, bool playHitSFX = false, int hitID = -1)
         {
             base.HitEnemy(force, playerWhoHit);
             if (isEnemyDead)

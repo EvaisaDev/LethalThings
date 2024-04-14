@@ -10,7 +10,7 @@ namespace LethalThings.MonoBehaviours
 {
     public class HandheldRadar : GrabbableObject
     {
-        private bool turnedOn = false;
+        private NetworkVariable<bool> turnedOn = new NetworkVariable<bool>(false, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
         private Material screenOffMat;
         private Material screenOnMat;
 
@@ -39,16 +39,17 @@ namespace LethalThings.MonoBehaviours
             var anyPlayerHoldingRadar = false;
             foreach (var player in StartOfRound.Instance.allPlayerScripts)
             {
-                if (player != null && player.currentlyHeldObject is HandheldRadar radar)
+                if (player?.currentlyHeldObjectServer is HandheldRadar radar)
                 {
-                    if(radar.turnedOn)
+                    if(radar.turnedOn.Value)
                     {
                         anyPlayerHoldingRadar = true;
                         break;
                     }
                 }
             }
-            if (NetworkConfig.remoteRadarEnabled.Value && anyPlayerHoldingRadar) 
+
+            if (NetworkConfig.Instance.remoteRadarEnabledNetVar.Value && anyPlayerHoldingRadar) 
             { 
                 if (self.mapCamera != null)
                 {
@@ -67,10 +68,10 @@ namespace LethalThings.MonoBehaviours
 
         public override void Update()
         {
-            isBeingUsed = turnedOn;
+            isBeingUsed = turnedOn.Value;
 
             // if battery is dead, turn off
-            if (turnedOn && insertedBattery.charge <= 0)
+            if (turnedOn.Value && insertedBattery.charge <= 0)
             {
                 SwitchScreen(false);
             }
@@ -95,7 +96,11 @@ namespace LethalThings.MonoBehaviours
         {
             UnityEngine.Debug.Log("Switching screen: "+on);
 
-            turnedOn = on;
+            if (IsOwner)
+            {
+                turnedOn.Value = on;
+            }
+
 
             var sound = on ? turnOnSound : turnOffSound;
 
@@ -164,7 +169,7 @@ namespace LethalThings.MonoBehaviours
         {
             base.ItemActivate(used, buttonDown);
 
-            if (!IsOwner || !turnedOn)
+            if (!IsOwner || !turnedOn.Value)
             {
                 return;
             }
@@ -194,14 +199,14 @@ namespace LethalThings.MonoBehaviours
 
             if (!right)
             {
-                turnedOn = !turnedOn;
+                turnedOn.Value = !turnedOn.Value;
                 if (IsHost)
                 {
-                    SwitchScreenClientRpc(turnedOn);
+                    SwitchScreenClientRpc(turnedOn.Value);
                 }
                 else
                 {
-                    SwitchScreenServerRpc(turnedOn);
+                    SwitchScreenServerRpc(turnedOn.Value);
                 }
 
             }

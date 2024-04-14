@@ -16,10 +16,10 @@ namespace LethalThings.MonoBehaviours
         {
             On.GrabbableObject.RequireCooldown += GrabbableObject_RequireCooldown;
             On.GrabbableObject.ItemInteractLeftRightOnClient += GrabbableObject_ItemInteractLeftRightOnClient;
-            On.GrabbableObject.UseItemBatteries += GrabbableObject_UseItemBatteries;
+            On.GrabbableObject.UseItemBatteries += GrabbableObject_UseItemBatteries1;
         }
 
-        private static bool GrabbableObject_UseItemBatteries(On.GrabbableObject.orig_UseItemBatteries orig, GrabbableObject self)
+        private static bool GrabbableObject_UseItemBatteries1(On.GrabbableObject.orig_UseItemBatteries orig, GrabbableObject self, bool isToggle, bool buttonDown)
         {
             if (self is ThrowableNoisemaker noisemaker)
             {
@@ -29,8 +29,9 @@ namespace LethalThings.MonoBehaviours
                 }
             }
 
-            return orig(self);
+            return orig(self, isToggle, buttonDown);
         }
+
 
         private static void GrabbableObject_ItemInteractLeftRightOnClient(On.GrabbableObject.orig_ItemInteractLeftRightOnClient orig, GrabbableObject self, bool right)
         {

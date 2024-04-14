@@ -59,14 +59,14 @@ namespace LethalThings
             //On.GrabbableObject.UseItemBatteries += GrabbableObject_UseItemBatteries;
         }
 
-        private static bool GrabbableObject_UseItemBatteries(On.GrabbableObject.orig_UseItemBatteries orig, GrabbableObject self)
+        private static bool GrabbableObject_UseItemBatteries(On.GrabbableObject.orig_UseItemBatteries orig, GrabbableObject self, bool isThrowable, bool buttonDown)
         {
             if(self is ProjectileWeapon)
             {
                 return true;
             }
                 
-            return orig(self);
+            return orig(self,isThrowable, buttonDown);
         }
 
         public override void Start()

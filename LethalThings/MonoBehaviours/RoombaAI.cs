@@ -440,7 +440,7 @@ namespace LethalThings
         }
 
 
-        public override void HitEnemy(int force = 1, PlayerControllerB playerWhoHit = null, bool playHitSFX = false)
+        public override void HitEnemy(int force = 1, PlayerControllerB playerWhoHit = null, bool playHitSFX = false, int hitID = -1)
         {
             base.HitEnemy(force, playerWhoHit, false);
             angeredTimer = 18f;

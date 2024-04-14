@@ -80,12 +80,12 @@ namespace LethalThings
                 new CustomEnemy("Boomba", "Assets/Custom/LethalThings/Enemies/Roomba/Boomba.asset", NetworkConfig.boombaSpawnWeight.Value, Levels.LevelTypes.All, Enemies.SpawnType.Default, null, "Assets/Custom/LethalThings/Enemies/Roomba/BoombaFile.asset"),
                 
    
-                /*new CustomEnemy("Maggie", "Assets/Custom/LethalThings/Enemies/Maggie/Maggie.asset", NetworkConfig.maggieSpawnWeight.Value, Levels.LevelTypes.All, Enemies.SpawnType.Default, null, "Assets/Custom/LethalThings/Enemies/Maggie/MaggieFile.asset", null, (enemyType) => {
+                new CustomEnemy("Maggie", "Assets/Custom/LethalThings/Enemies/Maggie/Maggie.asset", NetworkConfig.maggieSpawnWeight.Value, Levels.LevelTypes.All, Enemies.SpawnType.Default, null, "Assets/Custom/LethalThings/Enemies/Maggie/MaggieFile.asset", null, (enemyType) => {
                     var goopRagdoll = MainAssets.LoadAsset<GameObject>("Assets/Custom/LethalThings/Enemies/Maggie/PlayerRagdollGoop.prefab");
                     Player.RegisterPlayerRagdoll("LTGoopRagdoll", goopRagdoll);
                 }),
                 new CustomEnemy("CrystalRay", "Assets/Custom/LethalThings/Enemies/CrystalRay/CrystalRay.asset", NetworkConfig.crystalRaySpawnWeight.Value, Levels.LevelTypes.All, Enemies.SpawnType.Default, null, "Assets/Custom/LethalThings/Enemies/CrystalRay/CrystalRayFile.asset"),
-                */
+                
 
                 // map objects
                 new MapHazard("TeleporterTrap", "Assets/Custom/LethalThings/hazards/TeleporterTrap/TeleporterTrap.asset", Levels.LevelTypes.All, null, (level) => { 

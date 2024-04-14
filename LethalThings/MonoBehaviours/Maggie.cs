@@ -923,7 +923,7 @@ namespace LethalThings.MonoBehaviours
             creatureAnimator.SetBool("Dead", value: true);
         }
 
-        public override void HitEnemy(int force = 1, PlayerControllerB playerWhoHit = null, bool playHitSFX = false)
+        public override void HitEnemy(int force = 1, PlayerControllerB playerWhoHit = null, bool playHitSFX = false, int hitID = -1)
         {
             base.HitEnemy(force, playerWhoHit, playHitSFX);
             enemyHP -= force;

@@ -34,7 +34,8 @@
         <PrivateAssets>all</PrivateAssets>
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       </PackageReference>
-      <PackageReference Include="LethalCompany.GameLibs.Steam" Version="49.0.0-alpha.1" Publicize="true" />
+      <PackageReference Include="Evaisa.LethalLib" Version="0.15.1" />
+      <PackageReference Include="LethalCompany.GameLibs.Steam" Version="50.0.0-ngd.0" Publicize="true" />
 	  <PackageReference Include="BepInEx.Analyzers" Version="1.*" PrivateAssets="all" />
       <PackageReference Include="BepInEx.Core" Version="5.*" />
       <PackageReference Include="BepInEx.PluginInfoProps" Version="2.*" />
@@ -44,9 +45,6 @@
     <ItemGroup>
       <Reference Include="LethalCompanyInputUtils">
         <HintPath>C:\Users\mail\AppData\Roaming\r2modmanPlus-local\LethalCompany\profiles\modding\BepInEx\plugins\Rune580-LethalCompany_InputUtils\LethalCompanyInputUtils\LethalCompanyInputUtils.dll</HintPath>
-      </Reference>
-      <Reference Include="LethalLib">
-        <HintPath>C:\Users\mail\AppData\Roaming\r2modmanPlus-local\LethalCompany\profiles\modding\BepInEx\plugins\LethalLib\LethalLib.dll</HintPath>
       </Reference>
       <Reference Include="MMHOOK_Assembly-CSharp">
         <HintPath>C:\Users\mail\AppData\Roaming\r2modmanPlus-local\LethalCompany\profiles\modding\BepInEx\plugins\MMHOOK\MMHOOK_Assembly-CSharp.dll</HintPath>
