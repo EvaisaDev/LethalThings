@@ -36,24 +36,28 @@ namespace LethalThings.MonoBehaviours
         private static void ManualCameraRenderer_Update(On.ManualCameraRenderer.orig_Update orig, ManualCameraRenderer self)
         {
             orig(self);
-            var anyPlayerHoldingRadar = false;
-            foreach (var player in StartOfRound.Instance.allPlayerScripts)
+            if (NetworkConfig.Instance.remoteRadarEnabledNetVar.Value)
             {
-                if (player?.currentlyHeldObjectServer is HandheldRadar radar)
+                var anyPlayerHoldingRadar = false;
+                foreach (var player in StartOfRound.Instance.allPlayerScripts)
                 {
-                    if(radar.turnedOn.Value)
+                    if (player?.currentlyHeldObjectServer is HandheldRadar)
                     {
-                        anyPlayerHoldingRadar = true;
-                        break;
+                        var radar = (HandheldRadar)player.currentlyHeldObjectServer;
+                        if (radar && radar.turnedOn.Value)
+                        {
+                            anyPlayerHoldingRadar = true;
+                            break;
+                        }
                     }
                 }
-            }
 
-            if (NetworkConfig.Instance.remoteRadarEnabledNetVar.Value && anyPlayerHoldingRadar) 
-            { 
-                if (self.mapCamera != null)
+                if (anyPlayerHoldingRadar)
                 {
-                    self.mapCamera.enabled = true;
+                    if (self.mapCamera != null)
+                    {
+                        self.mapCamera.enabled = true;
+                    }
                 }
             }
         }

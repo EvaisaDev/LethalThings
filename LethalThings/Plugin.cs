@@ -13,13 +13,13 @@ namespace LethalThings
 {
     [BepInPlugin(ModGUID, ModName, ModVersion)]
     [BepInDependency(LethalLib.Plugin.ModGUID)]
-    [BepInDependency(LethalCompanyInputUtils.LethalCompanyInputUtilsPlugin.ModId, BepInDependency.DependencyFlags.SoftDependency)]
+    [BepInDependency(LethalCompanyInputUtils.PluginInfo.PLUGIN_GUID, BepInDependency.DependencyFlags.SoftDependency)]
     [BepInDependency("FlipMods.ReservedItemSlotCore", BepInDependency.DependencyFlags.SoftDependency)]
     public class Plugin : BaseUnityPlugin
     {
         public const string ModGUID = "evaisa.lethalthings";
         public const string ModName = "LethalThings";
-        public const string ModVersion = "0.10.3";
+        public const string ModVersion = "0.10.5";
 
         public static ManualLogSource logger;
         public static ConfigFile config;
@@ -54,13 +54,13 @@ namespace LethalThings
             {
                 var iuVersion = BepInEx.Bootstrap.Chainloader.PluginInfos["com.rune580.LethalCompanyInputUtils"].Metadata.Version;
 
-                if (iuVersion.Major > 0 || (iuVersion.Minor == 4 && iuVersion.Build >= 3) || iuVersion.Minor > 4)
+                if (iuVersion.Major > 0 || iuVersion.Minor >= 7)
                 {
-                    logger.LogInfo("[Optional dependency] LethalCompanyInputUtils version is " + iuVersion.ToString() + ", which is compatible with LethalThings 0.8.0+");
+                    logger.LogInfo("[Optional dependency] LethalCompanyInputUtils version is " + iuVersion.ToString() + ", which is compatible with LethalThings 0.10.5+");
                 }
                 else
                 {
-                    logger.LogError("[Optional dependency] LethalCompanyInputUtils version is " + iuVersion.ToString() + ", which is not compatible with LethalThings 0.8.0+");
+                    logger.LogError("[Optional dependency] LethalCompanyInputUtils version is " + iuVersion.ToString() + ", which is not compatible with LethalThings 0.10.5+");
                     logger.LogError("Please update LethalCompanyInputUtils to version 0.4.3 or newer");
                     return;
                 }

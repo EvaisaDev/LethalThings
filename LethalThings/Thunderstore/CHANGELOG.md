@@ -1,3 +1,10 @@
+# LethalThings 0.10.5
+- Recompiled for latest version.
+
+# LethalThings 0.10.4
+**Bugfixes**
+- Maybe fixed issue with remote radar by making the code way worse. (idc)
+
 # LethalThings 0.10.3
 **Bugfixes**
 - Mod works on v50 now i think.
