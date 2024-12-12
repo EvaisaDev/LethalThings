@@ -1,3 +1,7 @@
+# LethalThings 0.10.6
+**Improvements**
+- Better compatibility for Utility Belt, should cause less probably with some other mods probably.
+
 # LethalThings 0.10.5
 - Recompiled for latest version.
 

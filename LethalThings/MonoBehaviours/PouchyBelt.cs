@@ -23,7 +23,7 @@ namespace LethalThings
 
         public static void Initialize()
         {
-            On.GameNetcodeStuff.PlayerControllerB.SetHoverTipAndCurrentInteractTrigger += PlayerControllerB_SetHoverTipAndCurrentInteractTrigger;
+            //On.GameNetcodeStuff.PlayerControllerB.SetHoverTipAndCurrentInteractTrigger += PlayerControllerB_SetHoverTipAndCurrentInteractTrigger;
             On.GameNetcodeStuff.PlayerControllerB.BeginGrabObject += PlayerControllerB_BeginGrabObject;
         }
 
@@ -39,35 +39,6 @@ namespace LethalThings
 
         private static void PlayerControllerB_BeginGrabObject(On.GameNetcodeStuff.PlayerControllerB.orig_BeginGrabObject orig, PlayerControllerB self)
         {
-            self.interactRay = new Ray(self.gameplayCamera.transform.position, self.gameplayCamera.transform.forward);
-            if (!Physics.Raycast(self.interactRay, out self.hit, self.grabDistance, self.interactableObjectsMask) || self.hit.collider.gameObject.layer == 8 || !(self.hit.collider.tag == "PhysicsProp") || self.twoHanded || self.sinkingValue > 0.73f)
-            {
-                return;
-            }
-            self.currentlyGrabbingObject = self.hit.collider.transform.gameObject.GetComponent<GrabbableObject>();
-            if (!GameNetworkManager.Instance.gameHasStarted && !self.currentlyGrabbingObject.itemProperties.canBeGrabbedBeforeGameStart && (StartOfRound.Instance.testRoom == null || !StartOfRound.Instance.testRoom.activeSelf))
-            {
-                return;
-            }
-            if (self.currentlyGrabbingObject == null || self.inSpecialInteractAnimation || self.currentlyGrabbingObject.isHeld || self.currentlyGrabbingObject.isPocketed)
-            {
-                return;
-            }
-            NetworkObject networkObject = self.currentlyGrabbingObject.NetworkObject;
-            if (networkObject == null || !networkObject.IsSpawned)
-            {
-                return;
-            }
-            if (self.currentlyGrabbingObject is PouchyBelt)
-            {
-                var hasBelt = self.ItemSlots.Any(x => x != null && x is PouchyBelt);
-
-                if (hasBelt)
-                {
-                    self.currentlyGrabbingObject.grabbable = false;
-                }
-            }
-
             orig(self);
 
             if (self.currentlyGrabbingObject is PouchyBelt)
@@ -76,41 +47,17 @@ namespace LethalThings
             }
         }
 
-        private static void PlayerControllerB_SetHoverTipAndCurrentInteractTrigger(On.GameNetcodeStuff.PlayerControllerB.orig_SetHoverTipAndCurrentInteractTrigger orig, PlayerControllerB self)
+        public override void InteractItem()
         {
-            orig(self);
-            if (Physics.Raycast(self.interactRay, out self.hit, self.grabDistance, self.interactableObjectsMask) && self.hit.collider.gameObject.layer != 8)
+            var hasBelt = GameNetworkManager.Instance.localPlayerController.ItemSlots.Any(x => x != null && x is PouchyBelt);
+
+            if (hasBelt)
             {
-                string text = self.hit.collider.tag;
-                if (text == "PhysicsProp")
-                {
-                    if (self.FirstEmptyItemSlot() == -1)
-                    {
-                        self.cursorTip.text = "Inventory full!";
-                    }
-                    else
-                    {
-                        GrabbableObject component2 = self.hit.collider.gameObject.GetComponent<GrabbableObject>();
-                        // if component is PouchyBelt
-                        if (component2 is PouchyBelt)
-                        {
-                            var hasBelt = self.ItemSlots.Any(x => x != null && x is PouchyBelt);
-
-                            if (hasBelt)
-                            {
-                                self.cursorTip.text = "(Cannot hold more than 1 belt)";
-                            }
-                            else
-                            {
-                                self.cursorTip.text = "Pick up belt";
-                            }
-                        }
-
-                    }
-                }
+                GameNetworkManager.Instance.localPlayerController.currentlyGrabbingObject.grabbable = false;
             }
+            base.InteractItem();
+        }
 
-         }
 
         public void InputReceived(InputAction.CallbackContext context)
         {
@@ -157,6 +104,20 @@ namespace LethalThings
         public override void LateUpdate()
         {
             base.LateUpdate();
+
+ 
+            var hasBelt = GameNetworkManager.Instance.localPlayerController.ItemSlots.Any(x => x != null && x is PouchyBelt);
+
+            if (hasBelt)
+            {
+                this.customGrabTooltip = "(Cannot hold more than 1 belt)";
+            }
+            else
+            {
+                this.customGrabTooltip = "Pick up belt";
+            }
+         
+
             if (previousPlayerHeldBy != null)
             {
                 // enable the belt

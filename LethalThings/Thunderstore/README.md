@@ -23,9 +23,12 @@
 - Regretevator (Roblox)
 	- Gnarpy origin (I think)
 - [horinhorin2006](https://twitter.com/horinhorin2006)
-	- Art which was used as a reference for the gnarpy model.
+	- Art which was used as a reference for the gnarpy model.	
+- [MrDrNose - EternityDev](https://mrdrnose.itch.io/)
+	- The maxwell song, and the evil maxwell bones, originate from the game [Voices Of The Void](https://mrdrnose.itch.io/votv) (amazing game i recommend checking it out.)
+- [Nolla Games](https://nollagames.com/)
+	- Toimari / Hämis characters.
 	
-
 ## Scrap items
 - Plushy named Arson  
 	- May set your house on fire if you displease her.  
