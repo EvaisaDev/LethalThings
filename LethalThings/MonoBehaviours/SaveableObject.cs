@@ -27,7 +27,7 @@ namespace LethalThings.MonoBehaviours
         public override void OnNetworkSpawn()
         {
             base.OnNetworkSpawn();
-            if (IsHost)
+            if (IsHost && uniqueId == 0)
             {
                 uniqueId = UnityEngine.Random.Range(0, 100000000);
 
