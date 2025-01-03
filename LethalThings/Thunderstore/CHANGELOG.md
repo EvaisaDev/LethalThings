@@ -1,3 +1,8 @@
+# LethalThings 0.10.7  
+**Improvements**  
+- Potential fix for ammo resetting upon loading save.
+   - Thanks PlagueTR [PR #81](https://github.com/EvaisaDev/LethalThings/pull/81)
+  
 # LethalThings 0.10.6
 **Improvements**
 - Better compatibility for Utility Belt, should cause less probably with some other mods probably.
