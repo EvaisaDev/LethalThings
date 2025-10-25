@@ -35,7 +35,7 @@
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       </PackageReference>
       <PackageReference Include="Evaisa.LethalLib" Version="0.15.1" />
-      <PackageReference Include="LethalCompany.GameLibs.Steam" Version="56.0.0-beta.1-ngd.0" Publicize="true" />
+      <PackageReference Include="LethalCompany.GameLibs.Steam" Version="73.0.0-ngd.0" Publicize="true" />
 	  <PackageReference Include="BepInEx.Analyzers" Version="1.*" PrivateAssets="all" />
       <PackageReference Include="BepInEx.Core" Version="5.*" />
       <PackageReference Include="BepInEx.PluginInfoProps" Version="2.*" />
@@ -61,8 +61,8 @@
 	</ItemGroup>
 	-->
 
-    <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-      <Exec Command="copy &quot;$(TargetPath)&quot; &quot;C:\Users\mail\Documents\GitHub\LethalCompanyModding\Assets\Plugins&quot; /Y&#xD;&#xA;netcode-patch &quot;$(TargetPath)&quot; @(ReferencePathWithRefAssemblies->'&quot;%(Identity)&quot;', ' ')&#xD;&#xA;copy &quot;$(TargetPath)&quot; &quot;C:\Users\mail\AppData\Roaming\r2modmanPlus-local\LethalCompany\profiles\modding\BepInEx\plugins\LethalThings&quot; /Y&#xD;&#xA;copy &quot;$(TargetDir)LethalThings.pdb&quot; &quot;C:\Users\mail\AppData\Roaming\r2modmanPlus-local\LethalCompany\profiles\modding\BepInEx\plugins\LethalThings&quot; /Y" />
+    <Target Name="NetcodePatch" AfterTargets="PostBuildEvent">
+      <Exec Command="netcode-patch -uv 2022.3.62 -nv 1.12.0 -tv 1.0.0 &quot;$(TargetPath)&quot; @(ReferencePathWithRefAssemblies->'&quot;%(Identity)&quot;', ' ')"/>
     </Target>
 	
 	<Target Name="LogReferencedAssemblies" BeforeTargets="Build">
