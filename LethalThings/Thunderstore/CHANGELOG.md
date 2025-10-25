@@ -1,3 +1,7 @@
+# LethalThings 0.10.8
+**Bugfixes**
+- Remove Debug feature that is broken on v73.
+
 # LethalThings 0.10.7  
 **Improvements**  
 - Potential fix for ammo resetting upon loading save.
