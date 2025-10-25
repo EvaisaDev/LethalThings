@@ -69,4 +69,9 @@
 	  <Message Importance="high" Text="Hello, world!" />
 	  <Message Importance="high" Text="@(ReferencePathWithRefAssemblies)" />
 	</Target>
+
+    <PropertyGroup>
+        <DebugSymbols>true</DebugSymbols>
+        <DebugType>embedded</DebugType>
+    </PropertyGroup>
 </Project>
