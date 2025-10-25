@@ -91,6 +91,10 @@ namespace LethalThings
                     NetworkConfig.boombaSpawnWeight.Value, Levels.LevelTypes.All, Enemies.SpawnType.Default, null,
                     "Assets/Custom/LethalThings/Enemies/Roomba/BoombaFile.asset"));
             }
+            else
+            {
+                Plugin.logger.LogInfo("Skipping Boomba enemy registration since spawn weight is 0");
+            }
 
             if (NetworkConfig.maggieSpawnWeight.Value > 0)
             {
@@ -104,6 +108,10 @@ namespace LethalThings
                         Player.RegisterPlayerRagdoll("LTGoopRagdoll", goopRagdoll);
                     }));
             }
+            else
+            {
+                Plugin.logger.LogInfo("Skipping Maggie enemy registration since spawn weight is 0");
+            }
 
             if (NetworkConfig.crystalRaySpawnWeight.Value > 0)
             {
@@ -111,6 +119,10 @@ namespace LethalThings
                     "Assets/Custom/LethalThings/Enemies/CrystalRay/CrystalRay.asset",
                     NetworkConfig.crystalRaySpawnWeight.Value, Levels.LevelTypes.All, Enemies.SpawnType.Default, null,
                     "Assets/Custom/LethalThings/Enemies/CrystalRay/CrystalRayFile.asset"));
+            }
+            else
+            {
+                Plugin.logger.LogInfo("Skipping CrystalRay enemy registration since spawn weight is 0");
             }
             
 

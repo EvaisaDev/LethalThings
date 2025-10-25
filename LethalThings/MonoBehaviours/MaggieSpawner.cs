@@ -18,6 +18,7 @@ namespace LethalThings.MonoBehaviours
         {
             if (NetworkConfig.maggieSpawnWeight.Value <= 0)
             {
+                Plugin.logger.LogInfo("Not initializing MaggieSpawner since spawn weight is 0");
                 return;
             }
             
