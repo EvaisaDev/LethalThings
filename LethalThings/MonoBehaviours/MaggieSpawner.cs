@@ -16,6 +16,11 @@ namespace LethalThings.MonoBehaviours
 
         public static void Init()
         {
+            if (NetworkConfig.maggieSpawnWeight.Value <= 0)
+            {
+                return;
+            }
+            
             maggieSpawner = Content.MainAssets.LoadAsset<GameObject>("Assets/Custom/LethalThings/Enemies/Maggie/MaggieSpawner.prefab");
 
             LethalLib.Modules.NetworkPrefabs.RegisterNetworkPrefab(maggieSpawner);
