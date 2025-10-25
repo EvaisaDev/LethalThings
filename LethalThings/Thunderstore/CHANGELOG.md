@@ -1,3 +1,10 @@
+# LethalThings 0.10.9
+**Improvements**
+- Prevent adding custom enemies with spawn weight set to 0. (due to bugged behavior of Maggie/Crystal Ray)
+
+**Bugfixes**
+- Build with netcode-patch.
+
 # LethalThings 0.10.8
 **Bugfixes**
 - Remove Debug feature that is broken on v73.
