@@ -22,7 +22,6 @@ namespace LethalThings.Patches
             HackingTool.Load();
             FlareController.Init();
             DecalRandomizer.Init();
-            Dart.Init();
             FatalitiesSign.Init();
             GremlinEnergy.Init();
             Arson.Init();
