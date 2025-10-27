@@ -1,3 +1,7 @@
+# LethalThings 0.10.11
+**Improvements**
+- Only apply Dart patches when darts are spawned. (Dartboard is still broken, but will at least not impact your performance when not spawned. Hopefully will be fixed in the future)
+
 # LethalThings 0.10.10
 **Bugfixes**
 - Build with up-to-date game libs & netcode-patch. (for real this time)
