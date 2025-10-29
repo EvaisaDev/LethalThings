@@ -28,6 +28,8 @@ namespace LethalThings.Patches
             MaggieSpawner.Init();
             ForcedPing.Init();
             ThrowableNoisemaker.Init();
+
+            Debug.Load();
         }
     }
 }

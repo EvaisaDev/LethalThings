@@ -66,17 +66,12 @@ namespace LethalThings.Patches
             if (NetworkConfig.Instance != null && NetworkConfig.Instance.enableItemChargerElectrocutionNetVar.Value)
             {
                 GrabbableObject currentlyHeldObjectServer = GameNetworkManager.Instance.localPlayerController.currentlyHeldObjectServer;
-                if (currentlyHeldObjectServer == null)
-                {
-                    return;
-                }
-                if (!currentlyHeldObjectServer.itemProperties.requiresBattery)
+                if (currentlyHeldObjectServer != null && !currentlyHeldObjectServer.itemProperties.requiresBattery)
                 {
                     if (currentlyHeldObjectServer.itemProperties.isConductiveMetal)
                     {
                         currentlyHeldObjectServer.GetComponent<LethalThings.PowerOutletStun>().Electrocute(self);
                     }
-                    return;
                 }
             }
             orig(self);
