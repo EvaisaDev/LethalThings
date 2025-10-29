@@ -35,7 +35,7 @@ namespace LethalThings
                 Prefabs.Add(content.ID, prefab);
             });
 
-            CustomContent[] content =
+            List<CustomContent> content =
             [
                 // scrap
                 new ScrapItem("Arson", "Assets/Custom/LethalThings/Scrap/Arson/ArsonPlush.asset", NetworkConfig.arsonSpawnChance.Value, Levels.LevelTypes.All),
@@ -75,16 +75,6 @@ namespace LethalThings
                 new Unlockable("FatalitiesSign", "Assets/Custom/LethalThings/Unlockables/Sign/Sign.asset", NetworkConfig.fatalitiesSignPrice.Value, null, null, "Assets/Custom/LethalThings/Unlockables/Sign/SignInfo.asset", StoreType.Decor),
                 new Unlockable("Dartboard", "Assets/Custom/LethalThings/Unlockables/dartboard/Dartboard.asset", NetworkConfig.dartBoardPrice.Value, null, null, "Assets/Custom/LethalThings/Unlockables/dartboard/DartboardInfo.asset", StoreType.Decor),
                 //new Unlockable("DeliveryRover", "Assets/Custom/LethalThings/Unlockables/Dog/Dog.asset", NetworkConfig.deliveryRoverPrice.Value, null, null, "Assets/Custom/LethalThings/Unlockables/Dog/DogInfo.asset", StoreType.ShipUpgrade),
-
-                // enemies
-                new CustomEnemy("Boomba", "Assets/Custom/LethalThings/Enemies/Roomba/Boomba.asset", NetworkConfig.boombaSpawnWeight.Value, Levels.LevelTypes.All, Enemies.SpawnType.Default, null, "Assets/Custom/LethalThings/Enemies/Roomba/BoombaFile.asset"),
-                
-   
-                new CustomEnemy("Maggie", "Assets/Custom/LethalThings/Enemies/Maggie/Maggie.asset", NetworkConfig.maggieSpawnWeight.Value, Levels.LevelTypes.All, Enemies.SpawnType.Default, null, "Assets/Custom/LethalThings/Enemies/Maggie/MaggieFile.asset", null, (enemyType) => {
-                    var goopRagdoll = MainAssets.LoadAsset<GameObject>("Assets/Custom/LethalThings/Enemies/Maggie/PlayerRagdollGoop.prefab");
-                    Player.RegisterPlayerRagdoll("LTGoopRagdoll", goopRagdoll);
-                }),
-                new CustomEnemy("CrystalRay", "Assets/Custom/LethalThings/Enemies/CrystalRay/CrystalRay.asset", NetworkConfig.crystalRaySpawnWeight.Value, Levels.LevelTypes.All, Enemies.SpawnType.Default, null, "Assets/Custom/LethalThings/Enemies/CrystalRay/CrystalRayFile.asset"),
                 
 
                 // map objects
@@ -93,6 +83,48 @@ namespace LethalThings
                     return new AnimationCurve(new Keyframe(0, 0), new Keyframe(1, 4));
                 })
             ];
+
+            // enemies
+            if (NetworkConfig.boombaSpawnWeight.Value > 0)
+            {
+                content.Add(new CustomEnemy("Boomba", "Assets/Custom/LethalThings/Enemies/Roomba/Boomba.asset",
+                    NetworkConfig.boombaSpawnWeight.Value, Levels.LevelTypes.All, Enemies.SpawnType.Default, null,
+                    "Assets/Custom/LethalThings/Enemies/Roomba/BoombaFile.asset"));
+            }
+            else
+            {
+                Plugin.logger.LogInfo("Skipping Boomba enemy registration since spawn weight is 0");
+            }
+
+            if (NetworkConfig.maggieSpawnWeight.Value > 0)
+            {
+                content.Add(new CustomEnemy("Maggie", "Assets/Custom/LethalThings/Enemies/Maggie/Maggie.asset",
+                    NetworkConfig.maggieSpawnWeight.Value, Levels.LevelTypes.All, Enemies.SpawnType.Default, null,
+                    "Assets/Custom/LethalThings/Enemies/Maggie/MaggieFile.asset", null, (enemyType) =>
+                    {
+                        var goopRagdoll =
+                            MainAssets.LoadAsset<GameObject>(
+                                "Assets/Custom/LethalThings/Enemies/Maggie/PlayerRagdollGoop.prefab");
+                        Player.RegisterPlayerRagdoll("LTGoopRagdoll", goopRagdoll);
+                    }));
+            }
+            else
+            {
+                Plugin.logger.LogInfo("Skipping Maggie enemy registration since spawn weight is 0");
+            }
+
+            if (NetworkConfig.crystalRaySpawnWeight.Value > 0)
+            {
+                content.Add(new CustomEnemy("CrystalRay",
+                    "Assets/Custom/LethalThings/Enemies/CrystalRay/CrystalRay.asset",
+                    NetworkConfig.crystalRaySpawnWeight.Value, Levels.LevelTypes.All, Enemies.SpawnType.Default, null,
+                    "Assets/Custom/LethalThings/Enemies/CrystalRay/CrystalRayFile.asset"));
+            }
+            else
+            {
+                Plugin.logger.LogInfo("Skipping CrystalRay enemy registration since spawn weight is 0");
+            }
+            
 
             ContentLoader.RegisterAll(content);
 

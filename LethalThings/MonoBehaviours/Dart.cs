@@ -19,6 +19,7 @@ namespace LethalThings.MonoBehaviours
     [ExecuteAlways]
     public class Dart : GrabbableRigidbody
     {
+        private static int _instanceCount;
 
         private PlayerControllerB playerThrownBy;
 
@@ -39,6 +40,37 @@ namespace LethalThings.MonoBehaviours
 
         public BoxCollider collider;
 
+        public void Awake()
+        {
+            if (_instanceCount == 0)
+            {
+                Plugin.logger.LogInfo("Adding dart patches");
+                On.HUDManager.AssignNewNodes += HUDManager_AssignNewNodes;
+                On.HUDManager.NodeIsNotVisible += HUDManager_NodeIsNotVisible;
+                On.HUDManager.MeetsScanNodeRequirements += HUDManager_MeetsScanNodeRequirements;
+            }
+
+            _instanceCount++;
+        }
+
+        public override void OnDestroy()
+        {
+            base.OnDestroy();
+            if (trackingPoint != null)
+            {
+                Destroy(trackingPoint);
+            }
+
+            _instanceCount--;
+            if (_instanceCount == 0)
+            {
+                Plugin.logger.LogInfo("Removing dart patches");
+                On.HUDManager.AssignNewNodes -= HUDManager_AssignNewNodes;
+                On.HUDManager.NodeIsNotVisible -= HUDManager_NodeIsNotVisible;
+                On.HUDManager.MeetsScanNodeRequirements -= HUDManager_MeetsScanNodeRequirements;
+            }
+        }
+        
         public override void Start()
         {
             base.Start();
@@ -53,13 +85,6 @@ namespace LethalThings.MonoBehaviours
 
             collider = GetComponent<BoxCollider>();
 
-        }
-
-        public static void Init()
-        {
-            On.HUDManager.AssignNewNodes += HUDManager_AssignNewNodes;
-            On.HUDManager.NodeIsNotVisible += HUDManager_NodeIsNotVisible;
-            On.HUDManager.MeetsScanNodeRequirements += HUDManager_MeetsScanNodeRequirements;
         }
 
         private static bool HUDManager_MeetsScanNodeRequirements(On.HUDManager.orig_MeetsScanNodeRequirements orig, HUDManager self, ScanNodeProperties node, PlayerControllerB playerScript)
@@ -402,15 +427,6 @@ namespace LethalThings.MonoBehaviours
                 trackingPoint.transform.SetParent(parent);
                 trackingPoint.transform.position = transform.position;
                 trackingPoint.transform.rotation = transform.rotation;
-            }
-        }
-
-        public override void OnDestroy()
-        {
-            base.OnDestroy();
-            if (trackingPoint != null)
-            {
-                Destroy(trackingPoint);
             }
         }
 

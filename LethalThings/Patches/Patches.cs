@@ -22,16 +22,12 @@ namespace LethalThings.Patches
             HackingTool.Load();
             FlareController.Init();
             DecalRandomizer.Init();
-            Dart.Init();
             FatalitiesSign.Init();
             GremlinEnergy.Init();
             Arson.Init();
             MaggieSpawner.Init();
             ForcedPing.Init();
             ThrowableNoisemaker.Init();
-            
-
-            Debug.Load();
         }
     }
 }

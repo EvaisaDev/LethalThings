@@ -1,3 +1,22 @@
+# LethalThings 0.10.11
+**Improvements**
+- Only apply Dart patches when darts are spawned. (Dartboard is still broken, but will at least not impact your performance when not spawned. Hopefully will be fixed in the future)
+
+# LethalThings 0.10.10
+**Bugfixes**
+- Build with up-to-date game libs & netcode-patch. (for real this time)
+
+# LethalThings 0.10.9
+**Improvements**
+- Prevent adding custom enemies with spawn weight set to 0. (due to bugged behavior of Maggie/Crystal Ray)
+
+**Bugfixes**
+- Build with netcode-patch.
+
+# LethalThings 0.10.8
+**Bugfixes**
+- Remove Debug feature that is broken on v73.
+
 # LethalThings 0.10.7  
 **Improvements**  
 - Potential fix for ammo resetting upon loading save.
