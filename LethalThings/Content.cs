@@ -73,7 +73,9 @@ namespace LethalThings
                 new Unlockable("SmallRug", "Assets/Custom/LethalThings/Unlockables/Rug/SmallRug.asset", NetworkConfig.smallRugPrice.Value, null, null, "Assets/Custom/LethalThings/Unlockables/Rug/RugInfo.asset", StoreType.Decor),
                 new Unlockable("LargeRug", "Assets/Custom/LethalThings/Unlockables/Rug/LargeRug.asset", NetworkConfig.largeRugPrice.Value, null, null, "Assets/Custom/LethalThings/Unlockables/Rug/RugInfo.asset", StoreType.Decor),
                 new Unlockable("FatalitiesSign", "Assets/Custom/LethalThings/Unlockables/Sign/Sign.asset", NetworkConfig.fatalitiesSignPrice.Value, null, null, "Assets/Custom/LethalThings/Unlockables/Sign/SignInfo.asset", StoreType.Decor),
-                new Unlockable("Dartboard", "Assets/Custom/LethalThings/Unlockables/dartboard/Dartboard.asset", NetworkConfig.dartBoardPrice.Value, null, null, "Assets/Custom/LethalThings/Unlockables/dartboard/DartboardInfo.asset", StoreType.Decor),
+                
+                // 29/10/2025 - Removed dartboard because darts refuse to collide with anything and I have not been able to figure out why.
+                //new Unlockable("Dartboard", "Assets/Custom/LethalThings/Unlockables/dartboard/Dartboard.asset", NetworkConfig.dartBoardPrice.Value, null, null, "Assets/Custom/LethalThings/Unlockables/dartboard/DartboardInfo.asset", StoreType.Decor),
                 //new Unlockable("DeliveryRover", "Assets/Custom/LethalThings/Unlockables/Dog/Dog.asset", NetworkConfig.deliveryRoverPrice.Value, null, null, "Assets/Custom/LethalThings/Unlockables/Dog/DogInfo.asset", StoreType.ShipUpgrade),
                 
 
