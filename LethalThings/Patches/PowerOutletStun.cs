@@ -53,10 +53,10 @@ namespace LethalThings.Patches
             orig(self);
             if (self.updateInterval == 0f)
             {
-                if (GameNetworkManager.Instance != null && GameNetworkManager.Instance.localPlayerController != null)
+                if (GameNetworkManager.Instance != null && GameNetworkManager.Instance.localPlayerController != null
+                    && GameNetworkManager.Instance.localPlayerController.currentlyHeldObjectServer != null && (GameNetworkManager.Instance.localPlayerController.currentlyHeldObjectServer.itemProperties.requiresBattery || GameNetworkManager.Instance.localPlayerController.currentlyHeldObjectServer.itemProperties.isConductiveMetal))
                 {
-                    self.triggerScript.interactable = GameNetworkManager.Instance.localPlayerController.currentlyHeldObjectServer != null && (GameNetworkManager.Instance.localPlayerController.currentlyHeldObjectServer.itemProperties.requiresBattery || GameNetworkManager.Instance.localPlayerController.currentlyHeldObjectServer.itemProperties.isConductiveMetal);
-                    return;
+                    self.triggerScript.interactable = true;
                 }
             }
         }
