@@ -62,6 +62,7 @@
   <PropertyGroup>
     <PluginFolder1>C:\Users\mail\Documents\GitHub\LethalCompanyModding\Assets\Plugins</PluginFolder1>
     <PluginFolder2>C:\Users\mail\AppData\Roaming\r2modmanPlus-local\LethalCompany\profiles\modding\BepInEx\plugins\LethalThings</PluginFolder2>
+	<PluginFolder3>O:\github\LethalThings\LethalThings\Thunderstore\plugins\LethalThings</PluginFolder3>
   </PropertyGroup>
 
   <Copy SourceFiles="$(TargetPath)"
@@ -73,11 +74,11 @@
         DestinationFolder="$(PluginFolder2)"
         SkipUnchangedFiles="true"
         Condition="Exists('$(TargetPath)')" />
-
-  <Copy SourceFiles="$(TargetDir)LethalThings.pdb"
-        DestinationFolder="$(PluginFolder2)"
+		
+	<Copy SourceFiles="$(TargetPath)"
+        DestinationFolder="$(PluginFolder3)"
         SkipUnchangedFiles="true"
-        Condition="Exists('$(TargetDir)LethalThings.pdb')" />
+        Condition="Exists('$(TargetPath)')" />
 </Target>
 
 	<Target Name="LogReferencedAssemblies" BeforeTargets="Build">

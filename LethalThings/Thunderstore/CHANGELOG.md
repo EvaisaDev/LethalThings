@@ -1,3 +1,9 @@
+# LethalThings 0.10.12
+**Changes**
+- Removed dartboards because darts are cursed and refuse to collide with anything, fuck darts.
+- Fixed debug menu.
+- Changed poweroutletstun hook, surely it works i did not test it.
+
 # LethalThings 0.10.11
 **Improvements**
 - Only apply Dart patches when darts are spawned. (Dartboard is still broken, but will at least not impact your performance when not spawned. Hopefully will be fixed in the future)
