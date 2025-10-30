@@ -274,18 +274,21 @@ namespace LethalThings
             {
                 return;
             }
-            // log tag and name
-            //Plugin.logger.LogInfo("[Boomba] Trigger enter, tag: " + other.tag + ", name: " + other.name);
-            if (other.CompareTag("Player") || other.transform.parent.CompareTag("Player"))
+            if (other.CompareTag("Player") || other.CompareTag("PlayerBody") || other.transform.parent.CompareTag("Player"))
             {
                 PlayerControllerB component = other.gameObject.GetComponent<PlayerControllerB>();
 
-                if(!other.CompareTag("Player"))
+                if(component == null)
                 {
                     component = other.transform.parent.GetComponent<PlayerControllerB>();
                 }
+                
+                if(component == null)
+                {
+                    component = other.transform.GetComponentInParent<PlayerControllerB>();
+                }
 
-                if (!(component != GameNetworkManager.Instance.localPlayerController) && component != null && !component.isPlayerDead)
+                if (component != null && component == GameNetworkManager.Instance.localPlayerController && !component.isPlayerDead)
                 {
                     localPlayerOnMine = true;
                     //pressMineDebounceTimer = 0.5f;
@@ -346,16 +349,21 @@ namespace LethalThings
         {
 
             //Debug.Log("Object leaving mine trigger, gameobject name: " + other.gameObject.name);
-            if (other.CompareTag("Player") || other.transform.parent.CompareTag("Player"))
+            if (other.CompareTag("Player") || other.CompareTag("PlayerBody") || other.transform.parent.CompareTag("Player"))
             {
                 PlayerControllerB component = other.gameObject.GetComponent<PlayerControllerB>();
 
-                if (!other.CompareTag("Player"))
+                if(component == null)
                 {
                     component = other.transform.parent.GetComponent<PlayerControllerB>();
                 }
+                
+                if(component == null)
+                {
+                    component = other.transform.GetComponentInParent<PlayerControllerB>();
+                }
 
-                if (component != null && !component.isPlayerDead && !(component != GameNetworkManager.Instance.localPlayerController))
+                if (component != null && !component.isPlayerDead && component == GameNetworkManager.Instance.localPlayerController)
                 {
                     localPlayerOnMine = false;
                     TriggerMineOnLocalClientByExiting();

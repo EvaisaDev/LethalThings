@@ -140,8 +140,6 @@ namespace LethalThings
 
             if (spawnExplosionEffect)
             {
-
-
                 UnityEngine.Object.Instantiate(StartOfRound.Instance.explosionPrefab, explosionPosition, Quaternion.Euler(-90f, 0f, 0f), holder).SetActive(value: true);
             }
 
@@ -155,21 +153,24 @@ namespace LethalThings
                 HUDManager.Instance.ShakeCamera(ScreenShakeType.Small);
             }
 
+            bool flag = false;
             Collider[] array = Physics.OverlapSphere(explosionPosition, maxDamageRange, 2621448, QueryTriggerInteraction.Collide);
             PlayerControllerB playerControllerB = null;
+            RaycastHit hitInfo;
             for (int i = 0; i < array.Length; i++)
             {
                 float num2 = Vector3.Distance(explosionPosition, array[i].transform.position);
-                if (num2 > 4f && Physics.Linecast(explosionPosition, array[i].transform.position + Vector3.up * 0.3f, 256, QueryTriggerInteraction.Ignore))
+                if (Physics.Linecast(explosionPosition, array[i].transform.position + Vector3.up * 0.3f, out hitInfo, 1073742080, QueryTriggerInteraction.Ignore) && num2 > 4f)
                 {
                     continue;
                 }
 
-                if (array[i].gameObject.layer == 3)
+                if (array[i].gameObject.layer == 3 && !flag)
                 {
                     playerControllerB = array[i].gameObject.GetComponent<PlayerControllerB>();
                     if (playerControllerB != null && playerControllerB.IsOwner)
                     {
+                        flag = true;
                         // calculate damage based on distance, so if player is minDamageRange or closer, they take full damage
                         // if player is maxDamageRange or further, they take no damage
                         // distance is num2

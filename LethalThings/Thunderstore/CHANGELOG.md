@@ -1,3 +1,9 @@
+# LethalThings 0.10.13
+**Changes**
+- I am a silly goober and forgot to remove the dart board configs and broke everything!!! YIPEEEE
+- Uhh fixed some hook for compatibility reasons thanks uhh.... who was it that PR'd that? ZigzagAwaka [PR #95](https://github.com/EvaisaDev/LethalThings/pull/95)
+- Boombas should explode properly now, idk how it ever worked. who the fuck coded this? me..? nah no way.
+
 # LethalThings 0.10.12
 **Changes**
 - Removed dartboards because darts are cursed and refuse to collide with anything, fuck darts.

@@ -67,7 +67,7 @@ namespace LethalThings
       
 
                 // plain items
-                new CustomItem("Dart", "Assets/Custom/LethalThings/Unlockables/dartboard/Dart.asset"),
+                //new CustomItem("Dart", "Assets/Custom/LethalThings/Unlockables/dartboard/Dart.asset"),
 
                 // unlockables
                 new Unlockable("SmallRug", "Assets/Custom/LethalThings/Unlockables/Rug/SmallRug.asset", NetworkConfig.smallRugPrice.Value, null, null, "Assets/Custom/LethalThings/Unlockables/Rug/RugInfo.asset", StoreType.Decor),

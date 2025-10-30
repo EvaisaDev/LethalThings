@@ -139,13 +139,13 @@ namespace LethalThings
         [HideInInspector]
         public NetworkVariable<int> fatalitiesSignPriceNetVar = new NetworkVariable<int>(0);
 
-        public static ConfigEntry<bool> dartBoardEnabled;
+        /*public static ConfigEntry<bool> dartBoardEnabled;
         [HideInInspector]
         public NetworkVariable<bool> dartBoardEnabledNetVar = new NetworkVariable<bool>(true);
 
         public static ConfigEntry<int> dartBoardPrice;
         [HideInInspector]
-        public NetworkVariable<int> dartBoardPriceNetVar = new NetworkVariable<int>(0);
+        public NetworkVariable<int> dartBoardPriceNetVar = new NetworkVariable<int>(0);*/
 
         /*public static ConfigEntry<bool> deliveryRoverEnabled;
         [HideInInspector]
@@ -227,8 +227,9 @@ namespace LethalThings
             largeRugPrice = Plugin.config.Bind<int>("Decor", "LargeRugPrice", 110, "How much does a large rug cost?");
             fatalitiesSignEnabled = Plugin.config.Bind<bool>("Decor", "FatalitiesSign", true, "Is the Fatalities Sign enabled?");
             fatalitiesSignPrice = Plugin.config.Bind<int>("Decor", "FatalitiesSignPrice", 100, "How much does the Fatalities Sign cost?");
-            dartBoardEnabled = Plugin.config.Bind<bool>("Decor", "DartBoard", true, "Is the Dart Board enabled?");
-            dartBoardPrice = Plugin.config.Bind<int>("Decor", "DartBoardPrice", 120, "How much does the Dart Board cost?");
+            // The dartboard has fallen to unity physics slop
+            //dartBoardEnabled = Plugin.config.Bind<bool>("Decor", "DartBoard", true, "Is the Dart Board enabled?");
+            // dartBoardPrice = Plugin.config.Bind<int>("Decor", "DartBoardPrice", 120, "How much does the Dart Board cost?");
             //deliveryRoverEnabled = Plugin.config.Bind<bool>("Decor", "DeliveryRover", true, "Is the Delivery Rover enabled?");
             //deliveryRoverPrice = Plugin.config.Bind<int>("Decor", "DeliveryRoverPrice", 600, "How much does the Delivery Rover cost?");
 
@@ -329,9 +330,9 @@ namespace LethalThings
             fatalitiesSign.SetPrice(Instance.fatalitiesSignPriceNetVar.Value);
             if (!Instance.fatalitiesSignEnabledNetVar.Value) fatalitiesSign.RemoveFromShop();
 
-            Unlockable dartBoard = Content.ContentLoader.LoadedContent["Dartboard"] as Unlockable;
+            /*Unlockable dartBoard = Content.ContentLoader.LoadedContent["Dartboard"] as Unlockable;
             dartBoard.SetPrice(Instance.dartBoardPriceNetVar.Value);
-            if (!Instance.dartBoardEnabledNetVar.Value) dartBoard.RemoveFromShop();
+            if (!Instance.dartBoardEnabledNetVar.Value) dartBoard.RemoveFromShop();*/
 
             //Unlockable deliveryRover = Content.ContentLoader.LoadedContent["DeliveryRover"] as Unlockable;
             //deliveryRover.SetPrice(Instance.deliveryRoverPriceNetVar.Value);
@@ -375,8 +376,8 @@ namespace LethalThings
                 largeRugPriceNetVar.Value = largeRugPrice.Value;
                 fatalitiesSignEnabledNetVar.Value = fatalitiesSignEnabled.Value;
                 fatalitiesSignPriceNetVar.Value = fatalitiesSignPrice.Value;
-                dartBoardEnabledNetVar.Value = dartBoardEnabled.Value;
-                dartBoardPriceNetVar.Value = dartBoardPrice.Value;
+                //dartBoardEnabledNetVar.Value = dartBoardEnabled.Value;
+                //dartBoardPriceNetVar.Value = dartBoardPrice.Value;
                 //deliveryRoverEnabledNetVar.Value = deliveryRoverEnabled.Value;
                 //deliveryRoverPriceNetVar.Value = deliveryRoverPrice.Value;
 
